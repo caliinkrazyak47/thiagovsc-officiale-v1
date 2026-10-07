@@ -410,27 +410,27 @@ export const ViralSlider: React.FC = () => {
   return (
     <section 
       id="tiktok" 
-      className="w-full relative bg-gradient-to-b from-[#FAFAF9] via-rose-50/25 to-[#FAFAF9] text-[#1A1622] py-20 sm:py-24 md:py-32 overflow-hidden select-none border-t border-b border-stone-200/80"
+      className="w-full relative bg-[#DE4176] text-white pt-16 md:pt-24 pb-20 md:pb-28 overflow-hidden select-none"
     >
       {/* Precision hairline grid accent */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#DE4176]/20 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-[#DE4176]/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20 pointer-events-none" />
 
       {/* Section Header */}
       <div className="px-6 md:px-14 flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 z-10 relative">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/25 shadow-sm mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/25 border border-white/20 shadow-sm mb-4">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DE4176] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DE4176]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.24em] text-[#DE4176] uppercase">
+            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.24em] text-white uppercase">
               TIKTOK FEED // TRANSMISIÓN VIRAL 24/7
             </span>
           </div>
-          <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-[#1A1622] uppercase">
+          <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-white uppercase">
             TIKTOK<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #DE4176' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #FFFFFF' }}>
               FEED
             </span>
           </h2>
@@ -438,11 +438,11 @@ export const ViralSlider: React.FC = () => {
 
         {/* Right Info: Live Counter & Interactive Hint */}
         <div className="flex flex-col md:items-end gap-1 mt-4 md:mt-0">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-sm border border-stone-200 text-[#DE4176] text-xs font-jakarta font-extrabold tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-lg text-[#DE4176] text-xs font-jakarta font-extrabold tracking-widest uppercase">
             <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse" />
             <span>VIDEO 0{current + 1} DE 0{tiktokVideos.length}</span>
           </div>
-          <span className="text-[10px] font-jakarta font-semibold text-stone-500 tracking-wider uppercase mt-1">
+          <span className="text-[10px] font-jakarta font-semibold text-white/80 tracking-wider uppercase mt-1">
             HAZ CLIC EN CUALQUIER VIDEO PARA REPRODUCIR / PAUSAR
           </span>
         </div>
@@ -456,7 +456,7 @@ export const ViralSlider: React.FC = () => {
           type="button"
           onClick={() => api?.scrollPrev()}
           aria-label="Video anterior"
-          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-[#DE4176] text-[#DE4176] hover:text-white border border-stone-200 flex items-center justify-center shadow-[0_12px_35px_rgba(222,65,118,0.15)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
+          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-black text-[#DE4176] hover:text-white flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
           <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5] group-hover:-translate-x-0.5 transition-transform" />
         </button>
@@ -466,7 +466,7 @@ export const ViralSlider: React.FC = () => {
           type="button"
           onClick={() => api?.scrollNext()}
           aria-label="Video siguiente"
-          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-[#DE4176] text-[#DE4176] hover:text-white border border-stone-200 flex items-center justify-center shadow-[0_12px_35px_rgba(222,65,118,0.15)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
+          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-black text-[#DE4176] hover:text-white flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
           <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5] group-hover:translate-x-0.5 transition-transform" />
         </button>
@@ -497,17 +497,17 @@ export const ViralSlider: React.FC = () => {
                     key={index}
                     className="relative flex flex-col items-center justify-center shrink-0 pl-3 sm:pl-5 basis-auto"
                   >
-                    {/* Double-Bezel Smartphone Chassis Container - Ceramic Titanium Edition */}
+                    {/* Double-Bezel Smartphone Chassis Container */}
                     <div
                       className={cn(
-                        'relative w-[85vw] sm:w-[320px] md:w-[345px] lg:w-[355px] h-[530px] sm:h-[570px] md:h-[610px] p-2 sm:p-2.5 rounded-[2.25rem] sm:rounded-[2.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none border border-stone-200/90',
+                        'relative w-[85vw] sm:w-[320px] md:w-[345px] lg:w-[355px] h-[530px] sm:h-[570px] md:h-[610px] p-1.5 sm:p-2 rounded-[2.25rem] sm:rounded-[2.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none',
                         isActive
-                          ? 'bg-gradient-to-b from-white via-[#FAF9F7] to-[#F3F2F0] shadow-[0_30px_70px_rgba(222,65,118,0.18)] scale-[1.02] ring-2 ring-[#DE4176]/40'
-                          : 'bg-white/80 ring-1 ring-stone-200/70 scale-[0.96] opacity-85 hover:opacity-100 hover:scale-[0.98]'
+                          ? 'bg-gradient-to-b from-white/35 via-white/10 to-white/25 ring-1 ring-white/40 shadow-[0_30px_80px_rgba(0,0,0,0.65)] scale-[1.02]'
+                          : 'bg-white/10 ring-1 ring-white/15 scale-[0.96] opacity-80 hover:opacity-100 hover:scale-[0.98]'
                       )}
                     >
                       {/* Inner OLED Display Core with Concentric Radius */}
-                      <div className="relative w-full h-full rounded-[calc(2.25rem-0.5rem)] sm:rounded-[calc(2.5rem-0.625rem)] overflow-hidden bg-black shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] border border-stone-300">
+                      <div className="relative w-full h-full rounded-[calc(2.25rem-0.375rem)] sm:rounded-[calc(2.5rem-0.5rem)] overflow-hidden bg-black shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] border border-white/20">
                         <CustomTikTokPlayer item={video} isActive={isActive} />
                       </div>
                     </div>
@@ -519,7 +519,7 @@ export const ViralSlider: React.FC = () => {
         </div>
       </div>
 
-      {/* Slider Pagination Dots (Raspberry & Stone) */}
+      {/* Slider Pagination Dots (White on the pink bottom half) */}
       <div className="flex justify-center items-center gap-2 mt-10 z-20 relative">
         {tiktokVideos.map((_, idx) => (
           <button
@@ -529,7 +529,7 @@ export const ViralSlider: React.FC = () => {
             aria-label={`Ir al video ${idx + 1}`}
             className={cn(
               'h-2 rounded-full transition-all duration-300 cursor-pointer',
-              current === idx ? 'w-8 bg-[#DE4176] shadow-md' : 'w-2 bg-stone-300 hover:bg-stone-400'
+              current === idx ? 'w-8 bg-white shadow-md' : 'w-2 bg-white/40 hover:bg-white/80'
             )}
           />
         ))}

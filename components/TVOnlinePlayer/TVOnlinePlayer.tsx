@@ -266,51 +266,51 @@ export const TVOnlinePlayer: React.FC = () => {
 
         {/* ==========================================
             PREMIUM CINEMA FRAME (MARCO DE ALTA GAMA)
-            Apple Studio Display / Titanium Ceramic White Edition
+            Brushed Obsidian, Micro-Bezels, Status LEDs & Hardware Details
         ========================================== */}
         <div className="w-full relative group">
           
           {/* Ambient Outer Glow */}
-          <div className="absolute -inset-1 sm:-inset-1.5 bg-gradient-to-r from-rose-100/60 via-white to-rose-100/60 rounded-3xl sm:rounded-[2.5rem] blur-xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          <div className="absolute -inset-1 sm:-inset-1.5 bg-gradient-to-r from-black/40 via-white/20 to-black/40 rounded-3xl sm:rounded-[2.5rem] blur-xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-          {/* Outer Chassis - Pure Titanium Ceramic Light */}
-          <div className="relative w-full rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] bg-gradient-to-b from-white via-[#FAF9F7] to-[#F4F3F0] p-2.5 sm:p-5 md:p-6 shadow-[0_25px_65px_rgba(222,65,118,0.08),0_2px_10px_rgba(0,0,0,0.03)] border border-stone-200/90">
+          {/* Outer Chassis */}
+          <div className="relative w-full rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] bg-gradient-to-b from-[#1C1824] via-[#100D16] to-[#08070B] p-2 sm:p-4 md:p-6 shadow-[0_30px_90px_rgba(0,0,0,0.65)] border border-white/20 backdrop-blur-2xl">
             
             {/* Studio Hardware Hex Screws in the 4 Corners */}
-            <div className="absolute top-3 left-3 w-2.5 h-2.5 rounded-full border border-stone-300 bg-stone-100 shadow-sm flex items-center justify-center pointer-events-none opacity-80">
-              <div className="w-1.5 h-[1px] bg-stone-400 rotate-45" />
+            <div className="absolute top-3 left-3 w-2.5 h-2.5 rounded-full border border-white/30 bg-zinc-900 shadow-inner flex items-center justify-center pointer-events-none opacity-60">
+              <div className="w-1.5 h-[1px] bg-white/50 rotate-45" />
             </div>
-            <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full border border-stone-300 bg-stone-100 shadow-sm flex items-center justify-center pointer-events-none opacity-80">
-              <div className="w-1.5 h-[1px] bg-stone-400 -rotate-45" />
+            <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full border border-white/30 bg-zinc-900 shadow-inner flex items-center justify-center pointer-events-none opacity-60">
+              <div className="w-1.5 h-[1px] bg-white/50 -rotate-45" />
             </div>
-            <div className="absolute bottom-3 left-3 w-2.5 h-2.5 rounded-full border border-stone-300 bg-stone-100 shadow-sm flex items-center justify-center pointer-events-none opacity-80">
-              <div className="w-1.5 h-[1px] bg-stone-400 -rotate-45" />
+            <div className="absolute bottom-3 left-3 w-2.5 h-2.5 rounded-full border border-white/30 bg-zinc-900 shadow-inner flex items-center justify-center pointer-events-none opacity-60">
+              <div className="w-1.5 h-[1px] bg-white/50 -rotate-45" />
             </div>
-            <div className="absolute bottom-3 right-3 w-2.5 h-2.5 rounded-full border border-stone-300 bg-stone-100 shadow-sm flex items-center justify-center pointer-events-none opacity-80">
-              <div className="w-1.5 h-[1px] bg-stone-400 rotate-45" />
+            <div className="absolute bottom-3 right-3 w-2.5 h-2.5 rounded-full border border-white/30 bg-zinc-900 shadow-inner flex items-center justify-center pointer-events-none opacity-60">
+              <div className="w-1.5 h-[1px] bg-white/50 rotate-45" />
             </div>
 
             {/* 
               TOP BEZEL HARDWARE BAR
               Studio Monitor Details: Status Jewels, Titanium Badge, Resolution Specs & VU Meter
             */}
-            <div className="w-full flex items-center justify-between pb-2.5 sm:pb-3.5 px-1 sm:px-2 border-b border-stone-200/80 text-stone-700 font-mono text-[9px] sm:text-xs">
+            <div className="w-full flex items-center justify-between pb-2 sm:pb-3 px-1 sm:px-2 border-b border-white/10 text-white font-mono text-[9px] sm:text-xs">
               
               {/* Left: Hardware Status Jewels */}
               <div className="flex items-center gap-1.5 sm:gap-3">
                 <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#EF4444] shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse" />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#EAB308] shadow-[0_0_6px_rgba(234,179,8,0.5)]" />
-                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#10B981] shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#EF4444] shadow-[0_0_8px_rgba(239,68,68,0.8)] animate-pulse" />
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#EAB308]/80 shadow-[0_0_6px_rgba(234,179,8,0.6)]" />
+                  <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-[#10B981]/80 shadow-[0_0_6px_rgba(16,185,129,0.6)]" />
                 </div>
-                <span className="font-black text-stone-800 tracking-wider sm:tracking-widest text-[8px] sm:text-[11px] uppercase">
+                <span className="font-black text-white/90 tracking-wider sm:tracking-widest text-[8px] sm:text-[11px] uppercase">
                   ALEATORIO // MÁXIMA CALIDAD
                 </span>
               </div>
 
               {/* Center: Live Peak Audio VU-Meter */}
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-stone-200 shadow-sm">
-                <span className="text-[8px] font-mono text-stone-500 font-bold uppercase tracking-wider">VU PEAK</span>
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/10 shadow-inner">
+                <span className="text-[8px] font-mono text-white/70 font-bold uppercase tracking-wider">VU PEAK</span>
                 <div className="flex items-center gap-0.5 h-2.5">
                   <span className="w-1 h-full bg-[#10B981] rounded-[1px] animate-pulse" />
                   <span className="w-1 h-full bg-[#10B981] rounded-[1px] animate-pulse" style={{ animationDelay: '0.1s' }} />
@@ -318,7 +318,7 @@ export const TVOnlinePlayer: React.FC = () => {
                   <span className="w-1 h-full bg-[#10B981] rounded-[1px] animate-pulse" style={{ animationDelay: '0.15s' }} />
                   <span className="w-1 h-full bg-[#EAB308] rounded-[1px] animate-pulse" style={{ animationDelay: '0.25s' }} />
                   <span className="w-1 h-full bg-[#EAB308] rounded-[1px] animate-pulse" style={{ animationDelay: '0.05s' }} />
-                  <span className="w-1 h-full bg-[#DE4176] rounded-[1px] animate-pulse" style={{ animationDelay: '0.3s' }} />
+                  <span className="w-1 h-full bg-[#EF4444] rounded-[1px] animate-pulse" style={{ animationDelay: '0.3s' }} />
                 </div>
               </div>
 
@@ -327,16 +327,16 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={setMaxResolution}
-                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-[#DE4176]/10 hover:bg-[#DE4176] hover:text-white border border-[#DE4176]/30 text-[#DE4176] font-bold text-[8px] sm:text-[10px] shadow-sm transition-all cursor-pointer haptic-press"
+                  className="flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 rounded bg-[#00ADEF]/25 hover:bg-[#00ADEF] hover:text-white border border-[#00ADEF]/50 text-[#00ADEF] font-bold text-[8px] sm:text-[10px] shadow-sm transition-all cursor-pointer"
                   title="Asegurar Máxima Calidad 4K"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#DE4176] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00ADEF] animate-pulse" />
                   <span>4K MÁXIMA</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleToggleFullscreen}
-                  className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-[9px] sm:text-[10px] transition-colors cursor-pointer border border-stone-200"
+                  className="hidden sm:flex items-center gap-1 px-2.5 py-0.5 rounded bg-white/10 hover:bg-white text-white hover:text-black font-bold text-[9px] sm:text-[10px] transition-colors cursor-pointer"
                   title="Ampliar Pantalla"
                 >
                   <Maximize className="w-2.5 h-2.5" />
@@ -349,11 +349,11 @@ export const TVOnlinePlayer: React.FC = () => {
             {/* 
               SCREEN INNER DISPLAY STAGE
               Aspect ratio 16:9 Cinema Widescreen
-              Inset Chamfered Bezel with Official YouTube Player
+              Inset Chamfered Bezel with Deep Vignette & Official YouTube Player
             */}
             <div
               ref={screenWrapperRef}
-              className={`reproductor-tv-max mt-2.5 sm:mt-4 rounded-xl sm:rounded-2xl md:rounded-[1.75rem] overflow-hidden bg-black shadow-[inset_0_2px_12px_rgba(0,0,0,0.4)] border border-stone-300/80 ${
+              className={`reproductor-tv-max mt-2 sm:mt-3.5 rounded-lg sm:rounded-2xl md:rounded-[1.75rem] overflow-hidden bg-black shadow-[inset_0_4px_30px_rgba(0,0,0,0.95)] border border-white/10 ${
                 isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !z-[9999] !rounded-none !border-0 !max-w-none' : ''
               }`}
             >
@@ -376,7 +376,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleToggleFullscreen}
-                  className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 hover:bg-[#DE4176] text-stone-900 hover:text-white font-mono text-xs font-bold tracking-wider uppercase backdrop-blur-md transition-all shadow-xl cursor-pointer border border-stone-200 haptic-press"
+                  className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-black/80 hover:bg-white text-white hover:text-black font-mono text-xs font-bold tracking-wider uppercase backdrop-blur-md transition-all shadow-xl cursor-pointer border border-white/20"
                 >
                   <span>SALIR DE PANTALLA COMPLETA</span>
                   <Minimize className="w-4 h-4" />
@@ -386,18 +386,18 @@ export const TVOnlinePlayer: React.FC = () => {
 
             {/* 
               BOTTOM BEZEL CONTROL & STATUS TRAY
-              Precision Finished Titanium Shelf with Sound Stepper, Play/Pause, Shuffle & Fullscreen
+              Precision Finished Metallic Shelf with Sound Stepper, Play/Pause, Shuffle & Fullscreen
             */}
-            <div className="w-full flex flex-wrap items-center justify-between pt-3 sm:pt-4 px-1 sm:px-2 text-stone-700 font-mono text-[9px] sm:text-xs gap-2">
+            <div className="w-full flex flex-wrap items-center justify-between pt-2.5 sm:pt-4 px-1 sm:px-2 text-white font-mono text-[9px] sm:text-xs gap-2">
               
               {/* Left: Play/Pause + Siguiente Aleatorio + Title */}
-              <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="flex items-center gap-2 sm:gap-2.5 text-white/90">
                 {/* Play / Pause Toggle Button */}
                 <button
                   type="button"
                   onClick={togglePlayPause}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black tracking-wider uppercase transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press ${
-                    isPlaying ? 'bg-stone-900 text-white hover:bg-stone-800' : 'bg-[#10B981] text-white hover:bg-[#059669]'
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black tracking-wider uppercase transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press ${
+                    isPlaying ? 'bg-white text-black hover:bg-white/90' : 'bg-[#10B981] text-white hover:bg-[#059669]'
                   }`}
                   title={isPlaying ? "Pausar vídeo" : "Reanudar vídeo"}
                 >
@@ -409,14 +409,14 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={playNextRandomVideo}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black tracking-wider uppercase transition-all shadow-[0_2px_12px_rgba(222,65,118,0.35)] hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black tracking-wider uppercase transition-all shadow-[0_2px_12px_rgba(222,65,118,0.4)] hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press"
                   title="Reproducir Siguiente Vídeo Aleatorio"
                 >
                   <Shuffle className="w-3 h-3" />
                   <span>ALEATORIO</span>
                 </button>
 
-                <span className="hidden lg:inline-block text-[9px] sm:text-[11px] font-bold text-stone-500 tracking-wider uppercase truncate max-w-xs">
+                <span className="hidden lg:inline-block text-[9px] sm:text-[11px] font-bold text-white/60 tracking-wider uppercase truncate max-w-xs">
                   {currentVideo?.title}
                 </span>
               </div>
@@ -424,37 +424,37 @@ export const TVOnlinePlayer: React.FC = () => {
               {/* Right: Volume Stepper + Fullscreen */}
               <div className="flex items-center gap-1.5 sm:gap-2.5">
                 {/* Interactive Volume Stepper & Mute Control */}
-                <div className="flex items-center gap-1 bg-white rounded-full px-2 py-1 border border-stone-200 shadow-sm">
+                <div className="flex items-center gap-1 bg-white/10 rounded-full px-2 py-1 border border-white/10 shadow-inner">
                   <button
                     type="button"
                     onClick={toggleMute}
-                    className="p-1 hover:text-[#DE4176] transition-colors cursor-pointer"
+                    className="p-1 hover:text-[#00ADEF] transition-colors cursor-pointer"
                     title={isMuted ? "Activar Sonido" : "Silenciar"}
                   >
                     {isMuted || volume === 0 ? (
                       <VolumeX className="w-3 h-3 text-[#EF4444]" />
                     ) : (
-                      <Volume2 className="w-3 h-3 text-[#DE4176]" />
+                      <Volume2 className="w-3 h-3 text-[#00ADEF]" />
                     )}
                   </button>
 
                   <button
                     type="button"
                     onClick={handleVolumeDown}
-                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-stone-100 active:scale-90 transition-all text-stone-700 font-bold text-xs cursor-pointer"
+                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white/20 active:scale-90 transition-all text-white/90 font-bold text-xs cursor-pointer"
                     title="Bajar Volumen (-15%)"
                   >
                     <Minus className="w-2.5 h-2.5" />
                   </button>
 
-                  <span className="font-mono text-[9px] sm:text-[10px] font-bold text-stone-800 min-w-[28px] text-center">
+                  <span className="font-mono text-[9px] sm:text-[10px] font-bold text-white/90 min-w-[28px] text-center">
                     {isMuted ? 'MUT' : `${volume}%`}
                   </span>
 
                   <button
                     type="button"
                     onClick={handleVolumeUp}
-                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-stone-100 active:scale-90 transition-all text-stone-700 font-bold text-xs cursor-pointer"
+                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white/20 active:scale-90 transition-all text-white/90 font-bold text-xs cursor-pointer"
                     title="Subir Volumen (+15%)"
                   >
                     <Plus className="w-2.5 h-2.5" />
@@ -465,10 +465,10 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={setMaxResolution}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#DE4176]/10 hover:bg-[#DE4176] text-[#DE4176] hover:text-white border border-[#DE4176]/30 font-bold tracking-wider transition-all cursor-pointer text-[9px] sm:text-[11px] haptic-press"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#00ADEF]/20 hover:bg-[#00ADEF] text-[#00ADEF] hover:text-white border border-[#00ADEF]/40 font-bold tracking-wider transition-all cursor-pointer text-[9px] sm:text-[11px] haptic-press"
                   title="Forzar Calidad 4K / Ultra HD"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#DE4176] animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00ADEF] animate-pulse" />
                   <span>4K MÁXIMA</span>
                 </button>
 
@@ -476,7 +476,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleToggleFullscreen}
-                  className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black tracking-wider transition-all duration-200 cursor-pointer shadow-[0_4px_15px_rgba(222,65,118,0.35)] text-[9px] sm:text-[11px] hover:scale-105 active:scale-95 haptic-press"
+                  className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#00ADEF] hover:bg-[#0092ca] text-white font-black tracking-wider transition-all duration-200 cursor-pointer shadow-[0_4px_15px_rgba(0,173,239,0.4)] text-[9px] sm:text-[11px] hover:scale-105 active:scale-95 haptic-press"
                   title="Pantalla Completa"
                 >
                   <Maximize className="w-3 h-3 sm:w-3.5 sm:h-3.5" />

@@ -11,7 +11,7 @@ export default function RadioPopupPage() {
   };
 
   return (
-    <div className="w-screen h-screen bg-[#FAFAF9] overflow-hidden">
+    <div className="w-screen h-screen bg-[#08070B] overflow-hidden">
       <CoverFlowRadio onClose={handleClose} isStandalone={true} />
     </div>
   );
