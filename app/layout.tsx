@@ -3,11 +3,34 @@ import { Teko, Inter, Space_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import type { Viewport, Metadata } from "next";
 import { Analytics } from "@/components/Analytics";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const clashDisplay = localFont({
   src: "../public/fonts/ClashDisplay-Medium.woff2",
   weight: "500",
   variable: "--font-clash",
+  display: "swap",
+});
+
+const panchang = localFont({
+  src: [
+    {
+      path: "../public/fonts/Panchang-Semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Panchang-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Panchang-Extrabold.woff2",
+      weight: "800",
+      style: "normal",
+    },
+  ],
+  variable: "--font-panchang",
   display: "swap",
 });
 
@@ -152,7 +175,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es" className={`${clashDisplay.variable} ${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
+    <html lang="es" suppressHydrationWarning className={`${clashDisplay.variable} ${panchang.variable} ${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
       <head>
         {/* Performance Preconnects for Ultra Fast Streaming */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -169,9 +192,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="overflow-x-hidden w-full min-h-screen bg-white text-[#B03366] antialiased">
-        <Analytics />
-        {children}
+      <body className="overflow-x-hidden w-full min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
+        <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false}>
+          <Analytics />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

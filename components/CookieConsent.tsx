@@ -2,229 +2,241 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cookie, ShieldCheck, Settings, Check, X } from 'lucide-react';
+import { Cookie, ShieldCheck, Settings, X, Check } from 'lucide-react';
 
-const STORAGE_KEY = 'thiagovsc_cookie_consent';
+const STORAGE_KEY = 'thiago_cookie_consent_rgpd';
 
 export const CookieConsent: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [showConfig, setShowConfig] = useState<boolean>(false);
-  const [analyticsEnabled, setAnalyticsEnabled] = useState<boolean>(true);
-  const [marketingEnabled, setMarketingEnabled] = useState<boolean>(true);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState<boolean>(false);
+  const [marketingEnabled, setMarketingEnabled] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if user already made a decision
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) {
-      // Delay entrance slightly for ultra-smooth page load
-      const timer = setTimeout(() => {
-        setIsVisible(true);
-      }, 1200);
-      return () => clearTimeout(timer);
-    }
+    // Listen for preloader completion or check after delay
+    const handlePreloaderDone = () => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        setTimeout(() => setIsVisible(true), 800);
+      }
+    };
 
-    // Listen for custom event to reopen settings from footer
+    window.addEventListener('preloader-finished', handlePreloaderDone);
+
+    // Initial check in case preloader was fast or already seen
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        setIsVisible(true);
+      }
+    }, 2000);
+
+    // Reopen listener from footer
     const handleReopen = () => {
       setIsVisible(true);
       setShowConfig(true);
     };
     window.addEventListener('open-cookie-settings', handleReopen);
-    return () => window.removeEventListener('open-cookie-settings', handleReopen);
+
+    return () => {
+      window.removeEventListener('preloader-finished', handlePreloaderDone);
+      window.removeEventListener('open-cookie-settings', handleReopen);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleAcceptAll = () => {
     const consent = {
-      essential: true,
+      necessary: true,
       analytics: true,
       marketing: true,
-      date: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     setIsVisible(false);
+    setShowConfig(false);
   };
 
-  const handleAcceptNecessary = () => {
+  const handleRejectAll = () => {
     const consent = {
-      essential: true,
+      necessary: true,
       analytics: false,
       marketing: false,
-      date: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     setIsVisible(false);
+    setShowConfig(false);
   };
 
   const handleSaveCustom = () => {
     const consent = {
-      essential: true,
+      necessary: true,
       analytics: analyticsEnabled,
       marketing: marketingEnabled,
-      date: new Date().toISOString(),
+      timestamp: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
     setIsVisible(false);
+    setShowConfig(false);
   };
 
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
-          initial={{ y: 80, opacity: 0, scale: 0.95 }}
-          animate={{ y: 0, opacity: 1, scale: 1 }}
-          exit={{ y: 80, opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-[999] max-w-lg w-[calc(100%-2rem)] select-none"
+        <motion.aside
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 40, opacity: 0 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          aria-label="Consentimiento de cookies RGPD"
+          className="fixed bottom-4 sm:bottom-6 left-4 sm:left-6 z-[999] max-w-md w-[calc(100%-2rem)] select-none"
         >
-          {/* Subtle Pink Ambient Glow */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-[#DE4176]/25 via-pink-200/20 to-[#DE4176]/25 rounded-3xl blur-xl opacity-75 pointer-events-none" />
-
-          {/* Main Card Shell - PURE WHITE AESTHETIC */}
-          <div className="relative w-full rounded-2xl sm:rounded-3xl bg-white/98 backdrop-blur-2xl border border-black/10 p-5 sm:p-6 shadow-[0_25px_70px_rgba(0,0,0,0.25)] text-zinc-900 font-mono">
-            
-            {/* Header: Icon + Title + Close */}
-            <div className="flex items-start justify-between gap-3 mb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/30 flex items-center justify-center text-[#DE4176] shadow-sm">
-                  <Cookie className="w-5 h-5 text-[#DE4176] animate-spin-slow" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#DE4176] animate-ping" />
-                    <h4 className="text-xs sm:text-sm font-black tracking-wider uppercase text-zinc-950 font-sans">
-                      POLÍTICA DE COOKIES
-                    </h4>
-                  </div>
-                  <p className="text-[10px] text-zinc-500 tracking-widest uppercase">
-                    THIAGOVSC OFFICIAL NETWORK
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleAcceptNecessary}
-                className="text-zinc-400 hover:text-zinc-800 transition-colors p-1 rounded-full hover:bg-zinc-100 cursor-pointer"
-                title="Cerrar y continuar con esenciales"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Description */}
-            <p className="text-[11px] sm:text-xs text-zinc-600 leading-relaxed mb-2 normal-case font-sans">
-              Utilizamos cookies propias y de terceros para optimizar la reproducción de audio y vídeo 4K en directo, recordar tus preferencias de reproducción y analizar el tráfico de forma segura.
-            </p>
-            <div className="flex items-center gap-3 text-[10px] text-zinc-500 mb-3 font-sans">
-              <a href="/politica-de-cookies" target="_blank" className="underline hover:text-[#DE4176] transition-colors">
-                Leer política de cookies
-              </a>
-              <span>•</span>
-              <a href="/politica-de-privacidad" target="_blank" className="underline hover:text-[#DE4176] transition-colors">
-                Política de privacidad
-              </a>
-            </div>
-
-            {/* Config Preferences Panel (Collapsible) */}
-            {showConfig && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-4 pt-3 border-t border-zinc-200 space-y-2.5 text-[11px]"
-              >
-                {/* Essential */}
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 border border-zinc-200">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <div>
-                      <span className="font-bold text-zinc-900 uppercase text-[10px]">Técnicas y Esenciales</span>
-                      <p className="text-[9px] text-zinc-500">Necesarias para la navegación y reproductores.</p>
-                    </div>
-                  </div>
-                  <span className="text-[9px] font-bold text-emerald-700 px-2 py-0.5 rounded bg-emerald-100 border border-emerald-200">
-                    SIEMPRE ACTIVAS
+          <div className="relative bg-[var(--petal)]/90 backdrop-blur-[16px] border border-[var(--line)] rounded-[20px] shadow-luxury p-5 sm:p-6 text-[var(--berry)] font-jost">
+            {!showConfig ? (
+              <div>
+                <div className="flex items-center gap-2.5 mb-2.5">
+                  <Cookie className="w-4 h-4 text-[var(--brand)]" />
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brand)]">
+                    Privacidad & Cookies
                   </span>
                 </div>
 
-                {/* Analytics */}
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 border border-zinc-200">
-                  <div>
-                    <span className="font-bold text-zinc-900 uppercase text-[10px]">Analíticas & Rendimiento</span>
-                    <p className="text-[9px] text-zinc-500">Medición de audiencia y velocidad de streaming.</p>
-                  </div>
+                <p className="text-xs leading-relaxed text-[var(--berry)]/85 mb-4">
+                  Utilizamos cookies necesarias para operar el portal de streaming y opcionales para analítica y personalización.{' '}
+                  <a
+                    href="#cookies"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowConfig(true);
+                    }}
+                    className="underline text-[var(--brand)] hover:opacity-80 transition-opacity"
+                  >
+                    Más información sobre cookies
+                  </a>.
+                </p>
+
+                {/* 3 botones con el mismo peso visual */}
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
-                    onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
-                    className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
-                      analyticsEnabled ? 'bg-[#DE4176]' : 'bg-zinc-300'
-                    }`}
+                    onClick={handleAcceptAll}
+                    className="py-2.5 px-3 rounded-full bg-[var(--brand)] text-[var(--champagne)] font-jost text-[11px] uppercase tracking-[0.15em] font-medium text-center hover:opacity-90 active:scale-95 transition-all shadow-sm cursor-pointer"
                   >
-                    <span
-                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                        analyticsEnabled ? 'right-0.5' : 'left-0.5'
-                      }`}
-                    />
+                    Aceptar
                   </button>
-                </div>
-
-                {/* Marketing */}
-                <div className="flex items-center justify-between p-2.5 rounded-xl bg-zinc-50 border border-zinc-200">
-                  <div>
-                    <span className="font-bold text-zinc-900 uppercase text-[10px]">Personalización & Media</span>
-                    <p className="text-[9px] text-zinc-500">Integración con redes y eventos exclusivos.</p>
-                  </div>
                   <button
                     type="button"
-                    onClick={() => setMarketingEnabled(!marketingEnabled)}
-                    className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
-                      marketingEnabled ? 'bg-[#DE4176]' : 'bg-zinc-300'
-                    }`}
+                    onClick={handleRejectAll}
+                    className="py-2.5 px-3 rounded-full border border-[var(--brand)] text-[var(--brand)] font-jost text-[11px] uppercase tracking-[0.15em] font-medium text-center hover:bg-[var(--brand)]/10 active:scale-95 transition-all cursor-pointer"
                   >
-                    <span
-                      className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
-                        marketingEnabled ? 'right-0.5' : 'left-0.5'
-                      }`}
-                    />
+                    Rechazar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfig(true)}
+                    className="py-2.5 px-3 rounded-full border border-[var(--line)] bg-[var(--blush)]/70 text-[var(--berry)] font-jost text-[11px] uppercase tracking-[0.15em] font-medium text-center hover:bg-[var(--blush)] active:scale-95 transition-all cursor-pointer"
+                  >
+                    Configurar
                   </button>
                 </div>
-              </motion.div>
-            )}
-
-            {/* Action Buttons Row */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
-              
-              <button
-                type="button"
-                onClick={() => setShowConfig(!showConfig)}
-                className="text-[10px] sm:text-[11px] font-bold text-zinc-500 hover:text-zinc-900 flex items-center justify-center gap-1 py-1.5 px-2 transition-colors cursor-pointer"
-              >
-                <Settings className="w-3.5 h-3.5 text-[#DE4176]" />
-                <span>{showConfig ? 'Ocultar opciones' : 'Configurar'}</span>
-              </button>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={showConfig ? handleSaveCustom : handleAcceptNecessary}
-                  className="flex-1 sm:flex-none px-4 py-2 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-bold text-[10px] sm:text-[11px] tracking-wider uppercase transition-all border border-zinc-200 cursor-pointer shadow-sm"
-                >
-                  {showConfig ? 'Guardar' : 'Solo necesarias'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleAcceptAll}
-                  className="flex-1 sm:flex-none px-5 py-2 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black text-[10px] sm:text-[11px] tracking-wider uppercase transition-all shadow-[0_4px_15px_rgba(222,65,118,0.4)] hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Aceptar todas</span>
-                </button>
               </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-3 border-b border-[var(--line)] pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-[var(--brand)]" />
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brand)]">
+                      Preferencias de Privacidad
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowConfig(false)}
+                    className="p-1 rounded-full text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer"
+                    aria-label="Cerrar configuración"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
 
-            </div>
+                <div className="space-y-3 mb-4 text-xs">
+                  {/* Necesarias */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--blush)]/40 border border-[var(--line)]">
+                    <div>
+                      <div className="font-medium text-[var(--berry)]">Técnicas y Necesarias</div>
+                      <div className="text-[10px] text-[var(--berry)]/70">Imprescindibles para el reproductor y streaming</div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-[var(--brand)] text-[var(--champagne)] font-mono">
+                      Bloqueada
+                    </span>
+                  </div>
 
+                  {/* Analíticas */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--blush)]/40 border border-[var(--line)]">
+                    <div>
+                      <div className="font-medium text-[var(--berry)]">Analíticas de Rendimiento</div>
+                      <div className="text-[10px] text-[var(--berry)]/70">Métricas anónimas de reproducción y tráfico</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
+                      className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                        analyticsEnabled ? 'bg-[var(--brand)]' : 'bg-[var(--line)]'
+                      }`}
+                      aria-label="Activar analíticas"
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                          analyticsEnabled ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  {/* Marketing */}
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--blush)]/40 border border-[var(--line)]">
+                    <div>
+                      <div className="font-medium text-[var(--berry)]">Marketing y Redes</div>
+                      <div className="text-[10px] text-[var(--berry)]/70">Interacción con feeds sociales y eventos</div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setMarketingEnabled(!marketingEnabled)}
+                      className={`w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                        marketingEnabled ? 'bg-[var(--brand)]' : 'bg-[var(--line)]'
+                      }`}
+                      aria-label="Activar marketing"
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                          marketingEnabled ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSaveCustom}
+                    className="flex-1 py-2.5 rounded-full bg-[var(--brand)] text-[var(--champagne)] font-jost text-[11px] uppercase tracking-[0.15em] font-medium text-center hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                  >
+                    Guardar Selección
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAcceptAll}
+                    className="py-2.5 px-4 rounded-full border border-[var(--brand)] text-[var(--brand)] font-jost text-[11px] uppercase tracking-[0.15em] font-medium text-center hover:bg-[var(--brand)]/10 transition-all cursor-pointer"
+                  >
+                    Aceptar Todas
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        </motion.div>
+        </motion.aside>
       )}
     </AnimatePresence>
   );

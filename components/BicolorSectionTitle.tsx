@@ -14,6 +14,7 @@ interface BicolorSectionTitleProps {
   secondWord: string;
   className?: string;
   align?: 'left' | 'center';
+  variant?: 'default' | 'onBrand';
 }
 
 export const BicolorSectionTitle: React.FC<BicolorSectionTitleProps> = ({
@@ -21,6 +22,7 @@ export const BicolorSectionTitle: React.FC<BicolorSectionTitleProps> = ({
   secondWord,
   className = '',
   align = 'left',
+  variant = 'default',
 }) => {
   const containerRef = useRef<HTMLHeadingElement>(null);
 
@@ -64,6 +66,9 @@ export const BicolorSectionTitle: React.FC<BicolorSectionTitleProps> = ({
     { scope: containerRef }
   );
 
+  const word1ColorClass = variant === 'onBrand' ? 'text-white' : 'text-[var(--berry)]';
+  const word2ColorClass = variant === 'onBrand' ? 'text-[var(--champagne)]' : 'text-[var(--brand)]';
+
   return (
     <h2
       ref={containerRef}
@@ -71,8 +76,8 @@ export const BicolorSectionTitle: React.FC<BicolorSectionTitleProps> = ({
         align === 'center' ? 'justify-center text-center' : 'justify-start text-left'
       } ${className}`}
     >
-      {/* Primera palabra: --frambuesa */}
-      <span className="word-1 inline-flex text-[#B03366] overflow-hidden py-1">
+      {/* Primera palabra */}
+      <span className={`word-1 inline-flex ${word1ColorClass} overflow-hidden py-1`}>
         {firstWord.split('').map((char, i) => (
           <span key={`w1-${i}`} className="inline-block overflow-hidden">
             <span className="bicolor-char inline-block">
@@ -82,8 +87,8 @@ export const BicolorSectionTitle: React.FC<BicolorSectionTitleProps> = ({
         ))}
       </span>
 
-      {/* Segunda palabra: --rosa */}
-      <span className="word-2 inline-flex text-[#DE4176] overflow-hidden py-1">
+      {/* Segunda palabra */}
+      <span className={`word-2 inline-flex ${word2ColorClass} overflow-hidden py-1`}>
         {secondWord.split('').map((char, i) => (
           <span key={`w2-${i}`} className="inline-block overflow-hidden">
             <span className="bicolor-char inline-block">

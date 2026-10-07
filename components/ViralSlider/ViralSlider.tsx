@@ -6,22 +6,30 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { 
   Play, 
+  Pause,
   Volume2, 
   VolumeX, 
   Heart, 
   MessageCircle, 
   Bookmark, 
   Share2, 
-  Check
+  Check,
+  Maximize2,
+  Minimize2,
+  ChevronLeft,
+  ChevronRight,
+  X
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
+import { useMediaStore } from '@/lib/mediaStore';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface TikTokVideoItem {
+  id: string;
   user: string;
   src: string;
   poster: string;
@@ -30,12 +38,67 @@ interface TikTokVideoItem {
   bookmarks: string;
 }
 
+const TIKTOK_VIDEOS: TikTokVideoItem[] = [
+  { 
+    id: 'tt-1',
+    user: '_ariannadiazv', 
+    src: '/videos/tiktok/video1.mp4', 
+    poster: '/images/cover1.jpg',
+    likes: '1.2M',
+    comments: '34.2K',
+    bookmarks: '88.1K',
+  },
+  { 
+    id: 'tt-2',
+    user: 'carmenbrads', 
+    src: '/videos/tiktok/video2.mp4', 
+    poster: '/images/cover2.jpg',
+    likes: '940K',
+    comments: '18.9K',
+    bookmarks: '45.3K',
+  },
+  { 
+    id: 'tt-3',
+    user: 'ameliolivera', 
+    src: '/videos/tiktok/video3.mp4', 
+    poster: '/images/cover3.jpg',
+    likes: '1.8M',
+    comments: '62.4K',
+    bookmarks: '120K',
+  },
+  { 
+    id: 'tt-4',
+    user: 'iriss.vallaranii', 
+    src: '/videos/tiktok/video4.mp4', 
+    poster: '/images/cover4.jpg',
+    likes: '780K',
+    comments: '39.8K',
+    bookmarks: '39.8K',
+  },
+  { 
+    id: 'tt-5',
+    user: 'elisa.bernardonii__', 
+    src: '/videos/tiktok/video1.mp4', // Optimized lightweight MP4 for reliable smooth playback
+    poster: '/images/cover5.jpg',
+    likes: '2.4M',
+    comments: '91.8K',
+    bookmarks: '184K',
+  },
+];
+
 interface CustomTikTokPlayerProps {
   item: TikTokVideoItem;
   isActive: boolean;
+  index: number;
+  onOpenFullscreen: (index: number) => void;
 }
 
-const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive }) => {
+const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ 
+  item, 
+  isActive, 
+  index, 
+  onOpenFullscreen 
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -43,18 +106,33 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
   const [hasLiked, setHasLiked] = useState(false);
   const [hasBookmarked, setHasBookmarked] = useState(false);
 
-  // Lazy loading: solo se reproduce el vídeo que está activo/en el centro
+  const { activeMediaId, setActiveMedia } = useMediaStore();
+  const mediaKey = `tiktok-${index}`;
+
+  // Pause if another media starts playing
+  useEffect(() => {
+    if (activeMediaId && activeMediaId !== mediaKey && isPlaying) {
+      const vid = videoRef.current;
+      if (vid) {
+        vid.pause();
+        setIsPlaying(false);
+      }
+    }
+  }, [activeMediaId, mediaKey, isPlaying]);
+
+  // Autoplay in muted when active/center, pause when out of center
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
     if (isActive) {
+      vid.muted = isMuted;
       vid.play().then(() => setIsPlaying(true)).catch(() => {});
     } else {
       vid.pause();
       setIsPlaying(false);
     }
-  }, [isActive]);
+  }, [isActive, isMuted]);
 
   const togglePlay = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,12 +140,13 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
     if (!vid) return;
 
     if (vid.paused) {
+      setActiveMedia(mediaKey);
       vid.play().then(() => setIsPlaying(true)).catch(() => {});
     } else {
       vid.pause();
       setIsPlaying(false);
     }
-  }, []);
+  }, [mediaKey, setActiveMedia]);
 
   const toggleMute = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -75,7 +154,10 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
     if (!vid) return;
     vid.muted = !vid.muted;
     setIsMuted(vid.muted);
-  }, []);
+    if (!vid.muted) {
+      setActiveMedia(mediaKey);
+    }
+  }, [mediaKey, setActiveMedia]);
 
   const handleTimeUpdate = () => {
     const vid = videoRef.current;
@@ -105,9 +187,14 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
     }
   };
 
+  const handleFullscreenClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onOpenFullscreen(index);
+  };
+
   return (
     <div 
-      className="relative w-full h-full bg-[#B03366] select-none overflow-hidden cursor-pointer group"
+      className="relative w-full h-full bg-[#3A1528] select-none overflow-hidden cursor-pointer group"
       onClick={togglePlay}
       data-cursor="Ver"
     >
@@ -117,34 +204,46 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
         poster={item.poster}
         loop
         playsInline
+        preload="metadata"
         muted={isMuted}
         onTimeUpdate={handleTimeUpdate}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover pointer-events-none"
       />
 
-      {/* Indicador Play cuando está pausado */}
+      {/* Big Play/Pause Button in Center (glass, --champagne) */}
       {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#B03366]/30 pointer-events-none transition-opacity">
-          <div className="w-14 h-14 rounded-full bg-[#FFFFFF] text-[#DE4176] flex items-center justify-center shadow-luxury">
-            <Play className="w-6 h-6 fill-current translate-x-0.5" />
+        <div className="absolute inset-0 flex items-center justify-center bg-[#2B0F1E]/30 pointer-events-none transition-opacity">
+          <div className="w-16 h-16 rounded-full bg-[#FFE9D6]/90 backdrop-blur-md text-[#A3285C] flex items-center justify-center shadow-luxury">
+            <Play className="w-7 h-7 fill-current translate-x-0.5" />
           </div>
         </div>
       )}
 
-      {/* Top Left Signature Butterfly in white */}
+      {/* Top Left Signature Butterfly in champagne */}
       <div className="absolute top-3.5 left-3.5 z-20 pointer-events-none opacity-85">
-        <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
+        <ButterflyIcon size={16} color="#FFE9D6" strokeWidth={1.5} />
       </div>
 
-      {/* Mute button */}
-      <div className="absolute top-3.5 right-3.5 z-20 pointer-events-auto">
+      {/* Top Right Controls: Mute + Fullscreen */}
+      <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-2 pointer-events-auto">
         <button
           type="button"
           onClick={toggleMute}
-          className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] hover:bg-[#FFFFFF] flex items-center justify-center shadow-sm transition-transform active:scale-90"
+          className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-sm transition-transform active:scale-90 cursor-pointer"
           title={isMuted ? 'Activar sonido' : 'Silenciar'}
+          aria-label="Silenciar / Activar sonido"
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-[#DE4176]" /> : <Volume2 className="w-4 h-4 text-[#B03366]" />}
+          {isMuted ? <VolumeX className="w-4 h-4 text-[#E0457B]" /> : <Volume2 className="w-4 h-4 text-[#A3285C]" />}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleFullscreenClick}
+          className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-sm transition-transform active:scale-90 cursor-pointer"
+          title="Pantalla completa"
+          aria-label="Ver a pantalla completa"
+        >
+          <Maximize2 className="w-4 h-4" />
         </button>
       </div>
 
@@ -154,46 +253,49 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
           type="button"
           onClick={handleLike}
           className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
+          aria-label="Me gusta"
         >
           <div className={cn(
             "w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm",
-            hasLiked ? "bg-[#DE4176] text-white" : "bg-[#FFFFFF]/90 text-[#B03366]"
+            hasLiked ? "bg-[#E0457B] text-[#FFE9D6]" : "bg-[#FFE9D6]/90 text-[#A3285C]"
           )}>
             <Heart className={cn("w-4 h-4", hasLiked && "fill-current")} />
           </div>
-          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.likes}</span>
+          <span className="text-[9px] font-jost font-semibold text-[#FFE9D6] drop-shadow">{item.likes}</span>
         </button>
 
         <div className="flex flex-col items-center gap-0.5">
-          <div className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] flex items-center justify-center shadow-sm">
+          <div className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] flex items-center justify-center shadow-sm">
             <MessageCircle className="w-4 h-4" />
           </div>
-          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.comments}</span>
+          <span className="text-[9px] font-jost font-semibold text-[#FFE9D6] drop-shadow">{item.comments}</span>
         </div>
 
         <button
           type="button"
           onClick={handleBookmark}
           className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
+          aria-label="Guardar clip"
         >
           <div className={cn(
             "w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm",
-            hasBookmarked ? "bg-[#DE4176] text-white" : "bg-[#FFFFFF]/90 text-[#B03366]"
+            hasBookmarked ? "bg-[#E0457B] text-[#FFE9D6]" : "bg-[#FFE9D6]/90 text-[#A3285C]"
           )}>
             <Bookmark className={cn("w-4 h-4", hasBookmarked && "fill-current")} />
           </div>
-          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.bookmarks}</span>
+          <span className="text-[9px] font-jost font-semibold text-[#FFE9D6] drop-shadow">{item.bookmarks}</span>
         </button>
 
         <button
           type="button"
           onClick={handleShare}
           className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
+          aria-label="Compartir clip"
         >
-          <div className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] flex items-center justify-center shadow-sm">
+          <div className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] flex items-center justify-center shadow-sm">
             <Share2 className="w-4 h-4" />
           </div>
-          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">Share</span>
+          <span className="text-[9px] font-jost font-semibold text-[#FFE9D6] drop-shadow">Share</span>
         </button>
       </div>
 
@@ -204,19 +306,19 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex items-center gap-1 font-jost font-bold text-sm text-white hover:text-[#FFF6F9] transition-colors drop-shadow"
+          className="inline-flex items-center gap-1 font-jost font-bold text-sm text-[#FFE9D6] hover:underline drop-shadow"
         >
           <span>@{item.user}</span>
-          <span className="w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center text-[#DE4176] text-[8px] font-bold">
+          <span className="w-3.5 h-3.5 rounded-full bg-[#FFE9D6] flex items-center justify-center text-[#E0457B] text-[8px] font-bold">
             <Check className="w-2 h-2 stroke-[3]" />
           </span>
         </a>
       </div>
 
-      {/* Progress Bar */}
-      <div className="absolute bottom-0 inset-x-0 h-1 bg-white/25 z-30 pointer-events-none">
+      {/* Fine Progress Bar in --brand */}
+      <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20 z-30 pointer-events-none">
         <div 
-          className="h-full bg-white transition-all duration-100"
+          className="h-full bg-[#E0457B] transition-all duration-100"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -229,51 +331,11 @@ export const ViralSlider: React.FC = () => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [progressPercent, setProgressPercent] = useState(0);
+  const [fullscreenIndex, setFullscreenIndex] = useState<number | null>(null);
 
-  const tiktokVideos: TikTokVideoItem[] = [
-    { 
-      user: '_ariannadiazv', 
-      src: '/videos/video1.mp4', 
-      poster: '/images/cover1.jpg',
-      likes: '1.2M',
-      comments: '34.2K',
-      bookmarks: '88.1K',
-    },
-    { 
-      user: 'carmenbrads', 
-      src: '/videos/video2.mp4', 
-      poster: '/images/cover2.jpg',
-      likes: '940K',
-      comments: '18.9K',
-      bookmarks: '45.3K',
-    },
-    { 
-      user: 'ameliolivera', 
-      src: '/videos/video3.mp4', 
-      poster: '/images/cover3.jpg',
-      likes: '1.8M',
-      comments: '62.4K',
-      bookmarks: '120K',
-    },
-    { 
-      user: 'iriss.vallaranii', 
-      src: '/videos/video4.mp4', 
-      poster: '/images/cover4.jpg',
-      likes: '780K',
-      comments: '39.8K',
-      bookmarks: '39.8K',
-    },
-    { 
-      user: 'elisa.bernardonii__', 
-      src: '/videos/video5.mp4', 
-      poster: '/images/cover5.jpg',
-      likes: '2.4M',
-      comments: '91.8K',
-      bookmarks: '184K',
-    },
-  ];
+  const { setActiveMedia } = useMediaStore();
 
-  // GSAP Horizontal Scroll Pinning on Desktop (usando useGSAP con scope y anticipación)
+  // GSAP Horizontal Scroll Pinning on Desktop
   useGSAP(() => {
     if (window.matchMedia('(max-width: 1024px)').matches) return;
 
@@ -281,11 +343,10 @@ export const ViralSlider: React.FC = () => {
     const track = trackRef.current;
     if (!section || !track) return;
 
-    // Distancia exacta con paddingLateral para centrar la última tarjeta
     const paddingLateral = window.innerWidth * 0.5 - 150;
     const getDistance = () => track.scrollWidth - window.innerWidth + paddingLateral;
 
-    const tween = gsap.to(track, {
+    gsap.to(track, {
       x: () => -getDistance(),
       ease: 'none',
       scrollTrigger: {
@@ -299,14 +360,14 @@ export const ViralSlider: React.FC = () => {
         onUpdate: (self) => {
           setProgressPercent(self.progress * 100);
 
-          const total = tiktokVideos.length;
+          const total = TIKTOK_VIDEOS.length;
           const idx = Math.min(
             total - 1,
             Math.max(0, Math.round(self.progress * (total - 1)))
           );
           setActiveIndex(idx);
 
-          // Leve inclinación según la velocidad del scroll
+          // Velocity-based tilt
           const velocity = self.getVelocity();
           const tilt = Math.max(-5, Math.min(5, velocity / 380));
           gsap.to('.tiktok-card', {
@@ -319,7 +380,6 @@ export const ViralSlider: React.FC = () => {
       },
     });
 
-    // Refrescar ScrollTrigger cuando terminen de cargar las fuentes y media
     document.fonts.ready.then(() => {
       ScrollTrigger.refresh();
     });
@@ -327,105 +387,205 @@ export const ViralSlider: React.FC = () => {
     const handleLoad = () => ScrollTrigger.refresh();
     window.addEventListener('load', handleLoad);
     return () => window.removeEventListener('load', handleLoad);
-  }, { scope: sectionRef, dependencies: [tiktokVideos.length] });
+  }, { scope: sectionRef, dependencies: [TIKTOK_VIDEOS.length] });
+
+  // Fullscreen Modal keyboard navigation
+  useEffect(() => {
+    if (fullscreenIndex === null) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setFullscreenIndex(null);
+      } else if (e.key === 'ArrowRight') {
+        setFullscreenIndex((prev) => (prev !== null ? (prev + 1) % TIKTOK_VIDEOS.length : 0));
+      } else if (e.key === 'ArrowLeft') {
+        setFullscreenIndex((prev) =>
+          prev !== null ? (prev - 1 + TIKTOK_VIDEOS.length) % TIKTOK_VIDEOS.length : 0
+        );
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [fullscreenIndex]);
+
+  const openFullscreen = (index: number) => {
+    setFullscreenIndex(index);
+    setActiveMedia(`tiktok-modal-${index}`);
+  };
+
+  const closeFullscreen = () => {
+    setFullscreenIndex(null);
+  };
 
   return (
     <section 
       ref={sectionRef}
       id="tiktok" 
-      className="tiktok w-full relative bg-[#FBE3EC] text-[#B03366] select-none border-b border-[rgba(224,69,123,0.14)]"
+      className="tiktok w-full relative bg-[#E0457B] text-[#FFE9D6] select-none border-b border-[rgba(255,233,214,0.18)]"
     >
       {/* DESKTOP PINNED WRAPPER (>= 1024px) */}
       <div className="pin-wrap hidden lg:flex w-full h-screen flex-col justify-between py-10 px-[6vw] overflow-hidden">
         
-        {/* Top Header con título y contador dinámico */}
-        <div className="w-full flex items-end justify-between border-b border-[rgba(224,69,123,0.14)] pb-4">
+        {/* Top Header con título y contador */}
+        <div className="w-full flex items-end justify-between border-b border-[rgba(255,233,214,0.18)] pb-4">
           <div>
-            <div className="editorial-eyebrow mb-2">
-              <ButterflyIcon size={14} color="#DE4176" />
-              <span>02  Viral</span>
+            <div className="editorial-eyebrow mb-2 text-[#FFE9D6]">
+              <ButterflyIcon size={14} color="#FFE9D6" />
+              <span className="text-[#FFE9D6]">02  Viral</span>
             </div>
-            <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" />
+            <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" variant="onBrand" />
           </div>
 
-          {/* Contador 0X / 05 en Jost */}
-          <div className="flex items-center gap-3">
-            <span className="font-jost text-sm font-medium tracking-[0.25em] text-[#B03366] uppercase">
-              {`0${activeIndex + 1} / 0${tiktokVideos.length}`}
-            </span>
-            <div className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse" />
+          <div className="font-jost text-xs uppercase tracking-[0.25em] text-[#FFE9D6] flex items-center gap-2">
+            <span>{`0${activeIndex + 1} / 0${TIKTOK_VIDEOS.length}`}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FFE9D6] animate-pulse" />
           </div>
         </div>
 
-        {/* Track Horizontal de Tarjetas */}
-        <div className="w-full my-auto overflow-visible py-4">
-          <div 
-            ref={trackRef}
-            style={{ paddingRight: 'calc(50vw - 150px)' }}
-            className="track flex items-center gap-[24px]"
-          >
-            {tiktokVideos.map((video, idx) => {
-              const isCenter = activeIndex === idx;
-
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setActiveIndex(idx)}
-                  style={{
-                    transform: isCenter ? 'scale(1.06)' : 'scale(0.92)',
-                    opacity: isCenter ? 1 : 0.7,
-                  }}
-                  className={cn(
-                    "tiktok-card shrink-0 w-[290px] h-[510px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury transition-all duration-500 ease-out",
-                    isCenter ? "z-20 shadow-luxury" : "z-10"
-                  )}
-                >
-                  <CustomTikTokPlayer item={video} isActive={isCenter} />
-                </div>
-              );
-            })}
-          </div>
+        {/* Central Track con tarjetas */}
+        <div 
+          ref={trackRef} 
+          className="track flex items-center gap-8 py-6 will-change-transform"
+          style={{ paddingRight: 'calc(50vw - 140px)' }}
+        >
+          {TIKTOK_VIDEOS.map((item, idx) => {
+            const isCenter = idx === activeIndex;
+            return (
+              <div
+                key={item.id}
+                className={cn(
+                  "tiktok-card relative flex-shrink-0 w-[280px] xl:w-[310px] aspect-[9/16] rounded-[24px] border-[5px] border-white shadow-luxury overflow-hidden transition-all duration-500",
+                  isCenter 
+                    ? "scale-[1.06] opacity-100 z-20 ring-2 ring-[#FFE9D6]" 
+                    : "scale-[0.92] opacity-70 z-10"
+                )}
+              >
+                <CustomTikTokPlayer 
+                  item={item} 
+                  isActive={isCenter} 
+                  index={idx}
+                  onOpenFullscreen={openFullscreen}
+                />
+              </div>
+            );
+          })}
         </div>
 
-        {/* Bottom Progress Bar en --rosa */}
-        <div className="w-full max-w-xl mx-auto flex items-center gap-4">
-          <div className="flex-1 h-1 bg-[#DE4176]/20 rounded-full overflow-hidden">
+        {/* Bottom Track Controls & Progress */}
+        <div className="w-full flex items-center justify-between border-t border-[rgba(255,233,214,0.18)] pt-4">
+          <div className="w-1/3 h-[2px] bg-[#FFE9D6]/25 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-[#DE4176] transition-all duration-75"
-              style={{ width: `${Math.max(5, Math.min(100, progressPercent))}%` }}
+              className="h-full bg-[#FFE9D6] transition-all duration-150"
+              style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="font-jost text-xs font-medium text-[#B03366] tracking-widest uppercase">
-            {`0${activeIndex + 1} / 0${tiktokVideos.length}`}
-          </span>
-        </div>
 
+          <div className="font-jost text-[11px] tracking-[0.25em] text-[#FFE9D6] uppercase">
+            {`0${activeIndex + 1} / 0${TIKTOK_VIDEOS.length}`}
+          </div>
+        </div>
       </div>
 
-      {/* MOBILE NATIVE SLIDER (< 1024px) - Sin pin, scroll-snap horizontal */}
+      {/* MOBILE SNAP WRAPPER (< 1024px) */}
       <div className="lg:hidden w-full py-12 px-6">
-        <div className="mb-6">
-          <div className="editorial-eyebrow mb-2">
-            <ButterflyIcon size={14} color="#DE4176" />
-            <span>02  Viral</span>
+        <div className="mb-6 border-b border-[rgba(255,233,214,0.18)] pb-4">
+          <div className="editorial-eyebrow mb-2 text-[#FFE9D6]">
+            <ButterflyIcon size={14} color="#FFE9D6" />
+            <span className="text-[#FFE9D6]">02  Viral</span>
           </div>
-          <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" />
-          <p className="editorial-text text-sm mt-2 text-[#B03366]/80">
-            Desplaza horizontalmente para explorar los directos y momentos virales.
-          </p>
+          <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" variant="onBrand" />
         </div>
 
-        <div className="w-full overflow-x-auto snap-x snap-mandatory flex gap-5 pb-6">
-          {tiktokVideos.map((video, idx) => (
+        {/* Native Horizontal Snap Slider */}
+        <div 
+          className="flex items-center gap-4 overflow-x-auto pb-4 snap-x snap-mandatory"
+          style={{ scrollSnapType: 'x mandatory' }}
+        >
+          {TIKTOK_VIDEOS.map((item, idx) => (
             <div
-              key={idx}
-              className="shrink-0 w-[270px] h-[480px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury snap-center"
+              key={item.id}
+              className="flex-shrink-0 w-[78vw] max-w-[300px] aspect-[9/16] rounded-[22px] border-[4px] border-white shadow-luxury overflow-hidden snap-center"
             >
-              <CustomTikTokPlayer item={video} isActive={true} />
+              <CustomTikTokPlayer 
+                item={item} 
+                isActive={true} 
+                index={idx}
+                onOpenFullscreen={openFullscreen}
+              />
             </div>
           ))}
         </div>
       </div>
+
+      {/* PREMIUM FULLSCREEN VERTICAL VIEWER (Flip overlay over --brand at 95% with blur) */}
+      {fullscreenIndex !== null && (
+        <div 
+          className="fixed inset-0 z-[10001] bg-[#E0457B]/95 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6 animate-in fade-in zoom-in-95 duration-300"
+          onClick={closeFullscreen}
+        >
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={closeFullscreen}
+            className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-[#FFE9D6] text-[#A3285C] flex items-center justify-center shadow-luxury hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+            aria-label="Cerrar visor a pantalla completa"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Navigation Arrows */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setFullscreenIndex((fullscreenIndex - 1 + TIKTOK_VIDEOS.length) % TIKTOK_VIDEOS.length);
+            }}
+            className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-[#FFE9D6]/80 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-luxury cursor-pointer transition-transform hover:scale-110 active:scale-90"
+            aria-label="Video anterior"
+          >
+            <ChevronLeft className="w-7 h-7" />
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setFullscreenIndex((fullscreenIndex + 1) % TIKTOK_VIDEOS.length);
+            }}
+            className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-50 w-12 h-12 rounded-full bg-[#FFE9D6]/80 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-luxury cursor-pointer transition-transform hover:scale-110 active:scale-90"
+            aria-label="Siguiente video"
+          >
+            <ChevronRight className="w-7 h-7" />
+          </button>
+
+          {/* Centered Vertical 9:16 Video Stage */}
+          <div 
+            className="relative h-[85vh] max-h-[820px] aspect-[9/16] rounded-[28px] border-[6px] border-white shadow-luxury overflow-hidden bg-[#2B0F1E]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <video
+              src={TIKTOK_VIDEOS[fullscreenIndex].src}
+              poster={TIKTOK_VIDEOS[fullscreenIndex].poster}
+              autoPlay
+              controls
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+
+            {/* Header info bar */}
+            <div className="absolute top-4 inset-x-4 flex items-center justify-between pointer-events-none z-20">
+              <span className="font-jost text-xs uppercase tracking-[0.2em] font-semibold text-[#FFE9D6] bg-[#A3285C]/80 px-3 py-1 rounded-full backdrop-blur-md">
+                @{TIKTOK_VIDEOS[fullscreenIndex].user}
+              </span>
+              <span className="font-jost text-xs uppercase tracking-[0.2em] font-medium text-[#FFE9D6] bg-[#2B0F1E]/80 px-3 py-1 rounded-full backdrop-blur-md">
+                {`0${fullscreenIndex + 1} / 0${TIKTOK_VIDEOS.length}`}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

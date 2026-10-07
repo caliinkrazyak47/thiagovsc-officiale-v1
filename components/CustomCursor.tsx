@@ -1,70 +1,107 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
 
 export const CustomCursor: React.FC = () => {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [cursorText, setCursorText] = useState<string | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const cursorRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+
+  const [cursorText, setCursorText] = useState<string>('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (window.matchMedia('(pointer: coarse)').matches) {
       setIsTouch(true);
       return;
     }
 
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+
+    // Use gsap.quickTo for 120fps stutter-free tracking
+    const xTo = gsap.quickTo(cursor, 'x', { duration: 0.12, ease: 'power3' });
+    const yTo = gsap.quickTo(cursor, 'y', { duration: 0.12, ease: 'power3' });
+
+    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+
     const handleMouseMove = (e: MouseEvent) => {
-      setPos({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
+      xTo(e.clientX);
+      yTo(e.clientY);
 
       const target = e.target as HTMLElement | null;
       const cursorTarget = target?.closest('[data-cursor]') as HTMLElement | null;
       if (cursorTarget) {
-        setCursorText(cursorTarget.getAttribute('data-cursor'));
+        const text = cursorTarget.getAttribute('data-cursor') || '';
+        setCursorText(text);
+        setIsExpanded(true);
       } else {
-        setCursorText(null);
+        setIsExpanded(false);
       }
     };
 
     const handleMouseLeave = () => {
-      setIsVisible(false);
+      gsap.to(cursor, { opacity: 0, duration: 0.2 });
+    };
+
+    const handleMouseEnter = () => {
+      gsap.to(cursor, { opacity: 1, duration: 0.2 });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, [isVisible]);
+  }, []);
 
-  if (isTouch || !isVisible) return null;
+  useEffect(() => {
+    if (!dotRef.current) return;
+    if (isExpanded) {
+      gsap.to(dotRef.current, {
+        width: 90,
+        height: 90,
+        backgroundColor: '#E0457B',
+        mixBlendMode: 'normal',
+        duration: 0.35,
+        ease: 'power3.out',
+      });
+    } else {
+      gsap.to(dotRef.current, {
+        width: 10,
+        height: 10,
+        backgroundColor: '#E0457B',
+        mixBlendMode: 'difference',
+        duration: 0.3,
+        ease: 'power3.out',
+      });
+    }
+  }, [isExpanded]);
 
-  const isExpanded = !!cursorText;
+  if (isTouch) return null;
 
   return (
     <div
-      className="fixed pointer-events-none z-[9999] transition-transform duration-75 ease-out select-none"
-      style={{
-        left: `${pos.x}px`,
-        top: `${pos.y}px`,
-        transform: 'translate(-50%, -50%)',
-        mixBlendMode: isExpanded ? 'normal' : 'multiply',
-      }}
+      ref={cursorRef}
+      className="fixed top-0 left-0 pointer-events-none z-[9999] will-change-transform select-none"
     >
       <div
-        className={`rounded-full flex items-center justify-center transition-all duration-300 font-jost font-medium tracking-[0.2em] text-[12px] text-white ${
-          isExpanded
-            ? 'w-20 h-20 bg-[#DE4176] shadow-[0_24px_48px_-24px_rgba(176,51,102,0.25)]'
-            : 'w-2.5 h-2.5 bg-[#DE4176]'
-        }`}
-        style={{
-          transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
-        }}
+        ref={dotRef}
+        className="w-[10px] h-[10px] rounded-full bg-[#E0457B] flex items-center justify-center text-center font-jost text-[11px] uppercase tracking-[0.2em] font-medium text-[#FFE9D6] shadow-luxury"
+        style={{ mixBlendMode: 'difference' }}
       >
-        {isExpanded && <span>{cursorText}</span>}
+        {isExpanded && (
+          <span ref={textRef} className="animate-in fade-in zoom-in-75 duration-200">
+            {cursorText}
+          </span>
+        )}
       </div>
     </div>
   );

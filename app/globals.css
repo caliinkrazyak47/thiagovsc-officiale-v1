@@ -5,30 +5,46 @@
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:ital,wght@0,300..700;1,300..700&display=swap');
 
 :root {
-  /* THIAGO BRAND PALETTE TOKENS (SOLO COLORES PLANOS) */
-  --perla: #FFFFFF;
-  --porcelana: #FFF6F9;
-  --polvo: #FBE3EC;
-  --rosa: #DE4176;
-  --frambuesa: #B03366;
-  --nacar: rgba(224, 69, 123, 0.14);
+  /* ROSÉ COUTURE PALETTE (TEMA CLARO POR DEFECTO) */
+  --petal: #FDE4EC;
+  --blush: #F8C8D8;
+  --rose: #F29BB8;
+  --brand: #E0457B;
+  --berry: #A3285C;
+  --champagne: #FFE9D6;
+  --line: rgba(163, 40, 92, 0.18);
+  --bg-current: var(--petal);
+  --surface: #FFFFFF;
 
   /* EASE EDITORIAL */
   --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+[data-theme="dark"] {
+  /* TEMA NOCHE ROSA (SIN NEGRO PURO, CONTRASTE AA) */
+  --petal: #2B0F1E;
+  --blush: #341224;
+  --rose: #42162E;
+  --brand: #E0457B;
+  --berry: #FFE4EE;
+  --champagne: #FFE9D6;
+  --line: rgba(255, 228, 238, 0.15);
+  --surface: #3A1528;
+  --bg-current: #2B0F1E;
 }
 
 html, body {
-  background-color: var(--perla);
-  color: var(--frambuesa);
+  background-color: var(--bg-current);
+  color: var(--berry);
   font-family: 'Jost', sans-serif;
   overflow-x: hidden;
-  selection-background-color: var(--rosa);
-  selection-color: var(--perla);
+  transition: background-color 400ms var(--ease-luxury), color 400ms var(--ease-luxury);
 }
 
 ::selection {
-  background-color: var(--rosa);
-  color: var(--perla);
+  background-color: var(--brand);
+  color: var(--champagne);
 }
 
 ::-webkit-scrollbar {
@@ -37,11 +53,37 @@ html, body {
 
 /* TIPOGRAFÍAS DE MARCA CARA */
 @font-face {
+  font-family: 'Panchang';
+  src: url('/fonts/Panchang-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Panchang';
+  src: url('/fonts/Panchang-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Panchang';
+  src: url('/fonts/Panchang-Extrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Clash Display';
   src: url('/fonts/ClashDisplay-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+}
+
+.font-panchang {
+  font-family: 'Panchang', var(--font-panchang), sans-serif;
 }
 
 .font-clash {
@@ -56,66 +98,16 @@ html, body {
   font-family: 'Jost', sans-serif;
 }
 
-/* TÍTULOS DE SECCIÓN MODERADOS */
-.editorial-title {
-  font-family: 'Bodoni Moda', serif;
-  font-size: clamp(2.25rem, 4vw, 3.75rem);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  font-weight: 400;
-  color: var(--frambuesa);
-}
-
-/* EYEBROW CON MARIPOSA DE LÍNEA SIN BORDE NI FONDO */
-.editorial-eyebrow {
-  font-family: 'Jost', sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--rosa);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-/* CUERPO DE TEXTO */
-.editorial-text {
-  font-family: 'Jost', sans-serif;
-  font-size: 16.5px;
-  line-height: 1.7;
-  color: var(--frambuesa);
-}
-
 /* SOMBRA DE LUJO PERMITIDA */
 .shadow-luxury {
-  box-shadow: 0 24px 48px -24px rgba(176, 51, 102, 0.25);
+  box-shadow: 0 30px 60px -25px rgba(163, 40, 92, 0.35);
 }
 
-/* MARQUEE KINETIC */
-.marquee-wrapper {
-  display: flex;
-  overflow: hidden;
-  white-space: nowrap;
+[data-theme="dark"] .shadow-luxury {
+  box-shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.45);
 }
 
-.marquee-content {
-  display: flex;
-  animation: scroll-marquee 28s linear infinite;
-}
-
-.marquee-content:hover {
-  animation-play-state: paused;
-}
-
-@keyframes scroll-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* BOTONES HÁPTICOS CON RADIUS 999PX */
+/* BOTONES HÁPTICOS */
 .btn-luxury {
   font-family: 'Jost', sans-serif;
   font-size: 13px;
@@ -127,6 +119,13 @@ html, body {
 
 .btn-luxury:active {
   transform: scale(0.96) !important;
+}
+
+/* VIEW TRANSITIONS CIRCLE EXPAND */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 /* PREFERS-REDUCED-MOTION */

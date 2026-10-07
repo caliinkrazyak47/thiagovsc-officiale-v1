@@ -2,20 +2,25 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
       colors: {
-        perla: "#FFFFFF",
-        porcelana: "#FFF6F9",
-        polvo: "#FBE3EC",
-        rosa: "#DE4176",
-        frambuesa: "#B03366",
-        nacar: "rgba(224, 69, 123, 0.14)",
+        petal: "var(--petal)",
+        blush: "var(--blush)",
+        rose: "var(--rose)",
+        brand: "var(--brand)",
+        berry: "var(--berry)",
+        champagne: "var(--champagne)",
+        line: "var(--line)",
+        surface: "var(--surface)",
       },
       boxShadow: {
-        luxury: "0 24px 48px -24px rgba(176, 51, 102, 0.25)",
+        luxury: "0 30px 60px -25px rgba(163, 40, 92, 0.35)",
+        darkLuxury: "0 30px 60px -25px rgba(0, 0, 0, 0.45)",
       },
       fontFamily: {
+        panchang: ["'Panchang'", "var(--font-panchang)", "sans-serif"],
         clash: ["'Clash Display'", "var(--font-clash)", "sans-serif"],
         bodoni: ["'Bodoni Moda'", "serif"],
         jost: ["'Jost'", "sans-serif"],

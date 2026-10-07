@@ -5,17 +5,24 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ReactLenis, useLenis } from '@studio-freight/react-lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import { Play } from 'lucide-react';
 import { DigitalClock } from '@/components/DigitalClock';
 import { TVOnlinePlayer } from '@/components/TVOnlinePlayer/TVOnlinePlayer';
 import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio/CoverFlowRadio';
 import { CookieConsent } from '@/components/CookieConsent';
 import { CustomCursor } from '@/components/CustomCursor';
-import { InitialLoader } from '@/components/InitialLoader';
+import { LuxuryPreloader } from '@/components/LuxuryPreloader';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
+import { KineticMarquee } from '@/components/KineticMarquee';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { SoundToggle } from '@/components/SoundToggle';
+import { SectionColorMorph } from '@/components/SectionColorMorph';
+import { useMediaStore } from '@/lib/mediaStore';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const LenisScrollTriggerSync: React.FC = () => {
   useLenis(() => {
@@ -33,107 +40,204 @@ const LenisScrollTriggerSync: React.FC = () => {
 };
 
 // ==========================================
-// HERO VIDEO COMPONENT (Zona segura de la cara respetada al 100%)
+// HERO VIDEO COMPONENT (Motionsites Cinematic Level)
 // ==========================================
 interface HeroVideoProps {
   onOpenRadio: () => void;
 }
 
 const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [autoplayFailed, setAutoplayFailed] = useState(false);
 
+  const { isSoundEnabled, activeMediaId, setActiveMedia } = useMediaStore();
+
+  // Autoplay management & Audio unlock sync
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     video.play().catch(() => {
-      // Autoplay fallback
+      setAutoplayFailed(true);
     });
   }, []);
 
+  // Sync sound with global media store
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isSoundEnabled && activeMediaId === 'hero') {
+      video.muted = false;
+      gsap.to(video, { volume: 0.6, duration: 1.2, ease: 'power2.out' });
+    } else if (!isSoundEnabled || (activeMediaId && activeMediaId !== 'hero')) {
+      video.muted = true;
+    }
+  }, [isSoundEnabled, activeMediaId]);
+
+  // Pause video when out of viewport via IntersectionObserver
+  useEffect(() => {
+    const video = videoRef.current;
+    const hero = heroRef.current;
+    if (!video || !hero) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => setAutoplayFailed(true));
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  // GSAP ScrollTrigger: Video scale from 1 to 1.12 + Title parallax
+  useGSAP(
+    () => {
+      if (!heroRef.current || !videoRef.current) return;
+
+      gsap.to(videoRef.current, {
+        scale: 1.12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      if (titleRef.current) {
+        gsap.to(titleRef.current, {
+          y: -60,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+          },
+        });
+      }
+    },
+    { scope: heroRef }
+  );
+
+  const heroHeadline = "El ritmo de tu mundo";
+
   return (
-    <div className="relative w-full overflow-hidden select-none">
+    <div ref={heroRef} className="relative w-full overflow-hidden select-none">
       {/* 16:9 Responsive Video Viewport */}
-      <section className="relative w-full aspect-video min-h-[500px] sm:min-h-[580px] md:min-h-[680px] lg:min-h-[780px] max-h-[1080px] overflow-hidden bg-[#FFF6F9]">
-        
+      <section className="relative w-full aspect-video min-h-[520px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[820px] max-h-[1080px] overflow-hidden bg-[#E0457B]">
         {/* Background Fallback Poster */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ 
-            backgroundImage: "url('/images/francesca-1.jpg')",
-            opacity: isVideoLoaded ? 0 : 1 
+          style={{
+            backgroundImage: "url('/hero-poster.jpg')",
+            opacity: isVideoLoaded ? 0 : 1,
           }}
         />
 
-        {/* Hero Background Video (El propio metraje ya contiene el logotipo original) */}
+        {/* Hero Background Video */}
         <video
           ref={videoRef}
           src="/videos/hero.mp4"
-          poster="/images/francesca-1.jpg"
+          poster="/hero-poster.jpg"
           autoPlay
           loop
-          muted
+          muted={!isSoundEnabled}
           playsInline
+          preload="metadata"
           onLoadedData={() => setIsVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 will-change-transform ${
             isVideoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
+          style={{ objectPosition: 'center 35%' }}
         />
 
-        {/* Hero Vignette / Ambient tint */}
-        <div className="absolute inset-0 bg-[rgba(176,51,102,0.14)] mix-blend-multiply pointer-events-none" />
+        {/* Play Fallback button if browser blocked autoplay */}
+        {autoplayFailed && (
+          <div className="absolute inset-0 flex items-center justify-center z-30 bg-[#2B0F1E]/40 pointer-events-auto">
+            <button
+              type="button"
+              onClick={() => {
+                videoRef.current?.play().then(() => setAutoplayFailed(false));
+                setActiveMedia('hero');
+              }}
+              className="w-16 h-16 rounded-full bg-[#FFE9D6] text-[#A3285C] flex items-center justify-center shadow-luxury cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+              aria-label="Reproducir video"
+            >
+              <Play className="w-7 h-7 fill-current translate-x-0.5" />
+            </button>
+          </div>
+        )}
+
+        {/* Ambient Warm Tint */}
+        <div className="absolute inset-0 bg-[rgba(163,40,92,0.14)] mix-blend-multiply pointer-events-none" />
 
         {/* 
           DESKTOP HERO STAGE (>= 768px):
           Zona segura de la cara (28%-72% ancho, 8%-70% alto) 100% limpia.
           Título arriba a la izquierda sobre el cielo: left 6vw, top 18vh, max-width 24vw.
         */}
-        <div className="hidden md:flex absolute left-[6vw] top-[18vh] max-w-[24vw] z-20 flex-col items-start pointer-events-none">
+        <div
+          ref={titleRef}
+          className="hidden md:flex absolute left-[6vw] top-[18vh] max-w-[24vw] z-20 flex-col items-start pointer-events-none"
+        >
           {/* Eyebrow con mariposa */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-flex items-center gap-2 mb-2.5 font-jost text-xs tracking-[0.3em] uppercase text-white drop-shadow-sm"
+            className="inline-flex items-center gap-2 mb-3 font-jost text-xs tracking-[0.3em] uppercase text-[#FFE9D6] drop-shadow-sm"
           >
-            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
+            <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
             <span>00  Plataforma oficial</span>
           </motion.div>
 
-          {/* Título en Clash Display blanco, clamp(1.75rem, 2.8vw, 2.75rem) */}
-          <h1 className="font-clash font-medium text-white text-[clamp(1.75rem,2.8vw,2.75rem)] leading-[1.05] tracking-[-0.035em] drop-shadow-md">
-            {"El ritmo de tu mundo".split(" ").map((word, wIdx) => (
-              <span key={wIdx} className="inline-block overflow-hidden py-0.5 mr-[0.25em]">
+          {/* Título en Panchang 700 color --champagne, clamp(1.6rem, 2.6vw, 2.6rem) con SplitText máscara */}
+          <h1 className="font-panchang font-bold text-[#FFE9D6] text-[clamp(1.6rem,2.6vw,2.6rem)] leading-[1.08] tracking-tight drop-shadow-md">
+            {heroHeadline.split('').map((char, i) => (
+              <span key={i} className="inline-block overflow-hidden py-0.5">
                 <motion.span
-                  initial={{ y: "115%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ 
-                    duration: 0.8, 
-                    delay: 0.15 + wIdx * 0.08, 
-                    ease: [0.22, 1, 0.36, 1] 
+                  initial={{ y: '100%' }}
+                  animate={{ y: '0%' }}
+                  transition={{
+                    duration: 0.75,
+                    delay: 0.2 + i * 0.02,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                   className="inline-block"
                 >
-                  {word}
+                  {char === ' ' ? '\u00A0' : char}
                 </motion.span>
               </span>
             ))}
           </h1>
 
-          {/* Subtítulo más pequeño sin superar 24vw */}
+          {/* Subtítulo max-width 24vw */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-2.5 font-jost text-xs lg:text-[13px] tracking-[0.16em] text-white/90 uppercase drop-shadow-sm font-normal max-w-[24vw]"
+            transition={{ duration: 0.9, delay: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3 font-jost text-xs lg:text-[13px] tracking-[0.16em] text-[#FFE9D6]/90 uppercase drop-shadow-sm font-normal max-w-[24vw]"
           >
             Emisión ininterrumpida 24/7 // Sonido de vanguardia
           </motion.p>
         </div>
 
-        {/* Desktop CTA Radio (Arriba a la derecha, fuera de la cara) */}
-        <motion.div 
+        {/* Desktop CTA Radio */}
+        <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -142,12 +246,12 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           <button
             type="button"
             onClick={onOpenRadio}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white transition-all shadow-luxury cursor-pointer btn-luxury"
+            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B] hover:opacity-95 text-[#FFE9D6] transition-all shadow-luxury cursor-pointer btn-luxury"
             title="Sintonizar Radio Live"
             data-cursor="Play"
           >
-            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
+            <span className="w-2 h-2 rounded-full bg-[#FFE9D6] animate-pulse" />
             <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
           </button>
         </motion.div>
@@ -155,20 +259,20 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
 
       {/* 
         MOBILE HERO TYPOGRAPHY (< 768px):
-        En móvil el título se coloca debajo del hero, sobre fondo --porcelana,
+        En móvil el título se coloca debajo del hero, sobre fondo --brand,
         dejando la foto 100% libre de texto sobre la cara.
       */}
-      <div className="md:hidden w-full bg-[#FFF6F9] px-6 py-8 border-b border-[rgba(224,69,123,0.14)] select-none">
-        <div className="inline-flex items-center gap-2 mb-2 font-jost text-xs tracking-[0.3em] uppercase text-[#DE4176]">
-          <ButterflyIcon size={14} color="#DE4176" strokeWidth={1.5} />
+      <div className="md:hidden w-full bg-[#E0457B] text-[#FFE9D6] px-6 py-8 border-b border-[rgba(255,233,214,0.18)] select-none">
+        <div className="inline-flex items-center gap-2 mb-2 font-jost text-xs tracking-[0.3em] uppercase text-[#FFE9D6]">
+          <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
           <span>00  Plataforma oficial</span>
         </div>
 
-        <h1 className="font-clash font-medium text-[#B03366] text-3xl leading-tight tracking-[-0.035em]">
-          El ritmo de tu <span className="text-[#DE4176]">mundo</span>
+        <h1 className="font-panchang font-bold text-white text-2xl sm:text-3xl leading-tight tracking-tight">
+          El ritmo de tu <span className="text-[#FFE9D6]">mundo</span>
         </h1>
 
-        <p className="mt-2 font-jost text-xs tracking-wider text-[#B03366]/75 uppercase">
+        <p className="mt-2 font-jost text-xs tracking-wider text-[#FFE9D6]/85 uppercase">
           Emisión ininterrumpida 24/7 // Sonido de vanguardia
         </p>
 
@@ -176,10 +280,10 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           <button
             type="button"
             onClick={onOpenRadio}
-            className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[#DE4176] text-white transition-all shadow-sm cursor-pointer btn-luxury"
+            className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[#FFE9D6] text-[#A3285C] transition-all shadow-luxury cursor-pointer btn-luxury font-medium"
           >
-            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <ButterflyIcon size={14} color="#A3285C" strokeWidth={1.5} />
+            <span className="w-2 h-2 rounded-full bg-[#A3285C] animate-pulse" />
             <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
           </button>
         </div>
@@ -263,8 +367,8 @@ export default function Home() {
     {
       id: 0,
       img: "/images/francesca-1.jpg",
-      title: "Street Chic // Editorial",
-      category: "Moda & Estilo",
+      title: "Editorial Haute Couture",
+      category: "Vanguardia & Glamour",
       rotation: -6,
       translateX: -30,
     },
@@ -292,10 +396,9 @@ export default function Home() {
     { num: "03", label: "TikTok Feed", target: "#tiktok" },
     { num: "04", label: "Zona Influencer", target: "#zona-influencer" },
     { num: "05", label: "Próximos Eventos", target: "#events" },
-    { num: "06", label: "Contacto", target: "#contact" },
+    { num: "06", label: "Contacto", target: "#footer" },
   ];
 
-  // Press logos for press marquee
   const pressLogos = [
     "VOGUE",
     "VANITY FAIR",
@@ -314,272 +417,246 @@ export default function Home() {
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
       <LenisScrollTriggerSync />
-      <div id="home" className="min-h-screen bg-white text-[#B03366] font-jost relative selection:bg-[#DE4176] selection:text-white">
+      <SectionColorMorph />
 
-        {/* 1.5S LUXURY CURTAIN INTRO LOADER */}
-        <InitialLoader />
+      <div id="home" className="min-h-screen text-[var(--berry)] font-jost relative selection:bg-[var(--brand)] selection:text-[var(--champagne)]">
+        {/* LUXURY PRELOADER CON LOGO ORIGINAL Y TELÓN */}
+        <LuxuryPreloader
+          onComplete={() => {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('preloader-finished'));
+            }
+          }}
+        />
 
         {/* EDITORIAL MAGNET CURSOR */}
         <CustomCursor />
 
         {/* ==========================================
-            FLOATING NAVBAR (Píldora en --perla al 85% con backdrop-blur-xl, borde 1px en --nacar)
+            FLOATING NAVBAR (Superficie de cristal, borde nacarado)
         ========================================== */}
-        <nav className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl px-5 sm:px-7 py-3 rounded-full bg-white/85 backdrop-blur-xl border border-[rgba(224,69,123,0.14)] shadow-luxury flex items-center justify-between select-none">
-          
+        <nav className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl px-5 sm:px-7 py-3 rounded-full bg-[var(--surface)]/85 backdrop-blur-xl border border-[var(--line)] shadow-luxury flex items-center justify-between select-none">
           {/* Logo THIAGO VSC con Mariposa de Línea */}
           <div className="flex items-center gap-3">
-            <a 
-              href="#home" 
+            <a
+              href="#home"
               onClick={(e) => handleNavClick(e, '#home')}
-              className="flex items-center gap-2 tracking-tight text-[#B03366] hover:text-[#DE4176] transition-colors cursor-pointer group"
+              className="flex items-center gap-2 tracking-tight text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer group"
             >
               <span className="font-bodoni font-normal text-xl tracking-tight">THIAGO</span>
-              <ButterflyIcon size={14} color="#DE4176" strokeWidth={1.5} className="group-hover:rotate-12 transition-transform duration-300" />
-              <span className="font-bodoni italic text-xl leading-none text-[#DE4176]">Vsc</span>
+              <ButterflyIcon size={14} color="#E0457B" strokeWidth={1.5} className="group-hover:rotate-12 transition-transform duration-300" />
+              <span className="font-bodoni italic text-xl leading-none text-[var(--brand)]">Vsc</span>
             </a>
           </div>
 
-          {/* Nav Links: text --frambuesa, activo con subrayado en --rosa */}
-          <div className="hidden md:flex items-center gap-7 lg:gap-8 font-jost text-xs uppercase tracking-[0.18em] font-medium text-[#B03366]">
-            <a 
-              href="#home" 
+          {/* Nav Links */}
+          <div className="hidden md:flex items-center gap-7 lg:gap-8 font-jost text-xs uppercase tracking-[0.18em] font-medium text-[var(--berry)]">
+            <a
+              href="#home"
               onClick={(e) => handleNavClick(e, '#home')}
               className={`relative transition-colors py-1 cursor-pointer ${
-                activeSection === 'home' ? 'text-[#DE4176] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[#DE4176]' : 'hover:text-[#DE4176]'
+                activeSection === 'home' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
               Inicio
             </a>
-            <a 
-              href="#tv" 
+            <a
+              href="#tv"
               onClick={(e) => handleNavClick(e, '#tv')}
               className={`relative transition-colors py-1 cursor-pointer ${
-                activeSection === 'tv' ? 'text-[#DE4176] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[#DE4176]' : 'hover:text-[#DE4176]'
+                activeSection === 'tv' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
               TV Online
             </a>
-            <a 
-              href="#tiktok" 
+            <a
+              href="#tiktok"
               onClick={(e) => handleNavClick(e, '#tiktok')}
               className={`relative transition-colors py-1 cursor-pointer ${
-                activeSection === 'tiktok' ? 'text-[#DE4176] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[#DE4176]' : 'hover:text-[#DE4176]'
+                activeSection === 'tiktok' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
               TikTok
             </a>
-            <a 
-              href="#zona-influencer" 
+            <a
+              href="#zona-influencer"
               onClick={(e) => handleNavClick(e, '#zona-influencer')}
               className={`relative transition-colors py-1 cursor-pointer ${
-                activeSection === 'zona-influencer' ? 'text-[#DE4176] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[#DE4176]' : 'hover:text-[#DE4176]'
+                activeSection === 'zona-influencer' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
               Influencer
             </a>
-            <a 
-              href="#events" 
+            <a
+              href="#events"
               onClick={(e) => handleNavClick(e, '#events')}
               className={`relative transition-colors py-1 cursor-pointer ${
-                activeSection === 'events' ? 'text-[#DE4176] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[#DE4176]' : 'hover:text-[#DE4176]'
+                activeSection === 'events' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
               Eventos
             </a>
           </div>
 
-          {/* Right: Reloj Digital + Botón EN VIVO RADIO + Menú Móvil */}
-          <div className="flex items-center gap-3 sm:gap-4">
-            <DigitalClock className="hidden sm:inline-flex" />
+          {/* Right Controls: Clock, Sound Toggle, Theme Toggle, Radio Button */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden lg:block">
+              <DigitalClock />
+            </div>
 
-            {/* Botón EN VIVO RADIO en --rosa sólido con mariposa y punto parpadeante */}
-            <button 
+            {/* Sound Equalizer Button */}
+            <SoundToggle />
+
+            {/* Dark Mode Toggle with GSAP Morph */}
+            <ThemeToggle />
+
+            {/* Radio FM Modal Trigger */}
+            <button
               type="button"
               onClick={() => setRadioModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-jost text-[11px] font-medium tracking-[0.18em] uppercase transition-all shadow-sm cursor-pointer btn-luxury"
-              title="Sintonizar Radio Live"
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--brand)] hover:opacity-95 text-[var(--champagne)] font-jost text-xs tracking-[0.16em] uppercase font-medium shadow-sm transition-all cursor-pointer btn-luxury"
+              title="Abrir Sintonizador de Radio FM"
               data-cursor="Play"
             >
-              <ButterflyIcon size={12} color="#FFFFFF" strokeWidth={1.5} />
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-              <span>Radio</span>
+              <ButterflyIcon size={12} color="#FFE9D6" strokeWidth={1.5} />
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--champagne)] animate-pulse" />
+              <span className="hidden sm:inline">Radio</span>
             </button>
 
-            <button 
-              onClick={() => setMenuOpen(true)}
-              aria-label="Abrir menú"
-              className="text-[#B03366] hover:text-[#DE4176] bg-[#FFF6F9] hover:bg-white w-9 h-9 rounded-full flex items-center justify-center transition-all border border-[rgba(224,69,123,0.18)] cursor-pointer btn-luxury"
+            {/* Mobile Hamburger */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden w-8 h-8 rounded-full border border-[var(--line)] flex items-center justify-center text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer"
+              aria-label="Abrir menú de navegación"
             >
-              <span className="font-medium text-sm">☰</span>
+              <span className="text-sm font-bold">☰</span>
             </button>
           </div>
         </nav>
 
-        {/* ==========================================
-            FULLSCREEN EDITORIAL LUXURY MENU OVERLAY
-        ========================================== */}
-        {menuOpen && (
-          <div 
-            className="fixed inset-0 z-[100] bg-[#FFF6F9]/95 backdrop-blur-2xl flex flex-col justify-between p-6 md:p-14 animate-in fade-in duration-200 select-none text-[#B03366]"
-            onClick={() => setMenuOpen(false)}
-          >
-            {/* Header inside Menu */}
-            <div className="flex justify-between items-center w-full max-w-5xl mx-auto" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-2">
-                <span className="font-bodoni text-2xl text-[#B03366]">THIAGO</span>
-                <ButterflyIcon size={16} color="#DE4176" />
-                <span className="font-bodoni italic text-2xl text-[#DE4176]">Vsc</span>
+        {/* Mobile Fullscreen Menu Drawer */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-40 bg-[var(--surface)]/95 backdrop-blur-2xl flex flex-col justify-center px-8 md:hidden select-none"
+            >
+              <div className="flex flex-col gap-6">
+                {navMenuItems.map((item) => (
+                  <a
+                    key={item.num}
+                    href={item.target}
+                    onClick={(e) => handleNavClick(e, item.target)}
+                    className="flex items-center gap-4 text-2xl font-panchang font-bold text-[var(--berry)] hover:text-[var(--brand)] transition-colors"
+                  >
+                    <span className="text-xs font-jost tracking-[0.2em] text-[var(--brand)] opacity-70">
+                      {item.num}
+                    </span>
+                    <span>{item.label}</span>
+                  </a>
+                ))}
               </div>
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="px-5 py-2 rounded-full border border-[rgba(224,69,123,0.2)] bg-white hover:bg-[#DE4176] hover:text-white text-[#B03366] text-xs font-jost font-medium tracking-widest uppercase transition-all flex items-center gap-2 cursor-pointer btn-luxury shadow-sm"
-              >
-                <span>Cerrar</span>
-                <span className="text-sm">✕</span>
-              </button>
-            </div>
-
-            {/* Menu Links */}
-            <div className="w-full max-w-5xl mx-auto my-auto py-8 flex flex-col gap-3 md:gap-5" onClick={(e) => e.stopPropagation()}>
-              {navMenuItems.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.target}
-                  onClick={(e) => handleNavClick(e, item.target)}
-                  className="group flex items-center gap-6 text-[#B03366] hover:text-[#DE4176] transition-all duration-300 py-3 border-b border-[rgba(224,69,123,0.12)]"
-                >
-                  <span className="font-jost text-sm text-[#B03366]/40 group-hover:text-[#DE4176]">
-                    {item.num} /
-                  </span>
-                  <span className="text-3xl md:text-5xl lg:text-6xl font-bodoni font-normal tracking-tight group-hover:translate-x-3 transition-transform duration-300">
-                    {item.label}
-                  </span>
-                </a>
-              ))}
-            </div>
-
-            {/* Menu Footer */}
-            <div className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-jost text-[#B03366]/70 pt-6 border-t border-[rgba(224,69,123,0.12)]" onClick={(e) => e.stopPropagation()}>
-              <div className="flex gap-6 uppercase tracking-wider">
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#DE4176] transition-colors">Instagram</a>
-                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#DE4176] transition-colors">TikTok</a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#DE4176] transition-colors">YouTube</a>
-                <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#DE4176] transition-colors">Spotify</a>
-              </div>
-              <div className="tracking-widest uppercase">
-                Edición Editorial // 2026
-              </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ==========================================
-            1. HERO SECTION (Imagen + Vídeo intactos, sin logo superpuesto)
+            1. HERO VIDEO (Rostro despejado al 100%)
         ========================================== */}
         <HeroVideo onOpenRadio={() => setRadioModalOpen(true)} />
 
         {/* ==========================================
-            2. MARQUEE 1 (Fondo --rosa, texto blanco en Bodoni Moda itálica 26px, mariposa de línea como separador)
+            2. MARQUEE CINÉTICO (Panchang 800 sobre --brand)
         ========================================== */}
-        <section className="py-6 sm:py-7 bg-[#DE4176] overflow-hidden select-none">
-          <div className="marquee-wrapper">
-            <div className="marquee-content font-bodoni italic text-white text-[24px] sm:text-[26px] tracking-normal flex items-center gap-12 whitespace-nowrap">
-              <span>Bienvenido a la plataforma oficial de Thiago VSC</span>
-              <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
-              <span>Emisión continua en alta definición 24/7</span>
-              <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
-              <span>Música urbana, sesiones exclusivas y momentos virales</span>
-              <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
-              <span>Bienvenido a la plataforma oficial de Thiago VSC</span>
-              <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
-              <span>Emisión continua en alta definición 24/7</span>
-              <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
-            </div>
-          </div>
-        </section>
+        <KineticMarquee id="marquee-top" />
 
         {/* ==========================================
-            3. TV ONLINE (Fondo --perla #FFFFFF)
+            3. TV ONLINE (Fondo --blush #F8C8D8)
         ========================================== */}
         <TVOnlinePlayer />
 
         {/* ==========================================
-            4. TIKTOK FEED (Fondo --polvo #FBE3EC, pausa suave de color)
+            4. TIKTOK FEED (Fondo --brand #E0457B)
         ========================================== */}
         <ViralSlider />
 
         {/* ==========================================
-            5. ZONA INFLUENCER (Fondo --porcelana #FFF6F9, sin texto CHIRI gigante)
+            5. ZONA INFLUENCER (Fondo --petal #FDE4EC)
         ========================================== */}
-        <section id="zona-influencer" className="w-full bg-[#FFF6F9] text-[#B03366] relative overflow-hidden py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 select-none border-b border-[rgba(224,69,123,0.14)]">
+        <section
+          id="zona-influencer"
+          className="w-full bg-[var(--petal)] text-[var(--berry)] relative overflow-hidden py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 select-none border-b border-[var(--line)]"
+        >
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-            
             {/* Columnas 1-6: Texto Editorial */}
             <div className="lg:col-span-6 flex flex-col justify-center">
               <div className="editorial-eyebrow mb-4">
-                <ButterflyIcon size={14} color="#DE4176" />
+                <ButterflyIcon size={14} color="#E0457B" />
                 <span>03  Talento</span>
               </div>
-              
+
               <BicolorSectionTitle firstWord="Zona" secondWord="Influencer" className="mb-3" />
 
-              {/* Subtítulo Nombre en Bodoni Moda 28px + TikTok badge */}
+              {/* Subtítulo Nombre en Bodoni Moda + TikTok badge */}
               <div className="mb-6 flex flex-wrap items-center gap-3">
-                <h3 className="text-2xl sm:text-[28px] font-bodoni text-[#B03366] font-normal tracking-tight">
+                <h3 className="text-2xl sm:text-[28px] font-bodoni text-[var(--berry)] font-normal tracking-tight">
                   FRANCESCA CHIRI
                 </h3>
                 <a
                   href="https://www.tiktok.com/@chiri_francesca"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-jost text-xs bg-[#DE4176] hover:bg-[#c22e61] text-white px-3.5 py-1.5 rounded-full font-medium shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer btn-luxury"
+                  className="font-jost text-xs bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] px-3.5 py-1.5 rounded-full font-medium shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer btn-luxury"
                 >
                   <span>@chiri_francesca</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--champagne)] animate-pulse" />
                 </a>
               </div>
 
-              {/* 3 Métricas en fila con números grandes en Bodoni y etiquetas en Jost */}
-              <div className="grid grid-cols-3 gap-4 py-5 my-2 border-y border-[rgba(224,69,123,0.14)]">
+              {/* 3 Métricas en fila */}
+              <div className="grid grid-cols-3 gap-4 py-5 my-2 border-y border-[var(--line)]">
                 <div>
-                  <div className="font-bodoni text-2xl sm:text-3xl text-[#B03366] font-normal leading-tight">
+                  <div className="font-bodoni text-2xl sm:text-3xl text-[var(--berry)] font-normal leading-tight">
                     1.8M+
                   </div>
-                  <div className="font-jost text-[11px] text-[#B03366]/70 uppercase tracking-wider mt-1">
+                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Audiencia activa
                   </div>
                 </div>
                 <div>
-                  <div className="font-bodoni text-2xl sm:text-3xl text-[#B03366] font-normal leading-tight">
+                  <div className="font-bodoni text-2xl sm:text-3xl text-[var(--berry)] font-normal leading-tight">
                     94%
                   </div>
-                  <div className="font-jost text-[11px] text-[#B03366]/70 uppercase tracking-wider mt-1">
+                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Engagement femenino
                   </div>
                 </div>
                 <div>
-                  <div className="font-bodoni text-xl sm:text-2xl text-[#B03366] font-normal leading-tight">
+                  <div className="font-bodoni text-xl sm:text-2xl text-[var(--berry)] font-normal leading-tight">
                     Europa & Latam
                   </div>
-                  <div className="font-jost text-[11px] text-[#B03366]/70 uppercase tracking-wider mt-1">
+                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Alcance global
                   </div>
                 </div>
               </div>
 
-              {/* Biografía concisa de 3 líneas */}
-              <p className="editorial-text text-[#B03366] max-w-lg my-6">
+              {/* Biografía concisa */}
+              <p className="editorial-text text-[var(--berry)] max-w-lg my-6">
                 Referente indiscutible del lifestyle y la moda curvy europea, Francesca Chiri conecta con millones de seguidores a través de rutinas de belleza, estilo vanguardista y una autenticidad magnética.
               </p>
 
-              {/* Botón Descubrir a Francesca en --rosa con flecha fina */}
+              {/* Botón Descubrir a Francesca */}
               <div>
-                <a 
+                <a
                   href="https://linktr.ee/chirifrancesca"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 bg-[#DE4176] hover:bg-[#c22e61] text-white font-jost font-medium px-8 py-3.5 text-xs tracking-[0.2em] rounded-full transition-all shadow-luxury cursor-pointer btn-luxury uppercase"
+                  className="group inline-flex items-center gap-3 bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] font-jost font-medium px-8 py-3.5 text-xs tracking-[0.2em] rounded-full transition-all shadow-luxury cursor-pointer btn-luxury uppercase"
                 >
                   <span>Descubrir a Francesca</span>
                   <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
@@ -587,7 +664,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Columnas 7-12: Montaje editorial tipo revista con fotos superpuestas y 3D tilt */}
+            {/* Columnas 7-12: Montaje editorial */}
             <div className="lg:col-span-6 flex items-center justify-center relative min-h-[460px] sm:min-h-[520px]" data-cursor="Ver">
               <div className="relative w-full max-w-[420px] aspect-[4/5] flex items-center justify-center">
                 {influencerCards.map((card, idx) => {
@@ -612,20 +689,20 @@ export default function Home() {
                         opacity: isAnotherHovered ? 0.65 : 1,
                         transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
                       }}
-                      className="absolute w-[260px] sm:w-[310px] md:w-[340px] aspect-[4/5] rounded-[20px] border-[6px] border-white shadow-luxury overflow-hidden cursor-pointer select-none bg-white"
+                      className="absolute w-[260px] sm:w-[310px] md:w-[340px] aspect-[4/5] rounded-[20px] border-[6px] border-white shadow-luxury overflow-hidden cursor-pointer select-none bg-[var(--surface)]"
                     >
-                      <img 
-                        src={card.img} 
-                        alt={card.title} 
+                      <img
+                        src={card.img}
+                        alt={card.title}
                         className="w-full h-full object-cover"
                       />
-                      
+
                       {/* Subtle Bottom Plate */}
                       <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
-                        <span className="px-3 py-1 rounded-full text-[10px] font-jost font-medium uppercase text-white bg-[#DE4176] shadow-sm">
+                        <span className="px-3 py-1 rounded-full text-[10px] font-jost font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
                           {card.category}
                         </span>
-                        <span className="text-[10px] font-jost font-medium text-[#B03366] bg-white/95 px-2.5 py-1 rounded-full shadow-sm">
+                        <span className="text-[10px] font-jost font-medium text-[var(--berry)] bg-[var(--surface)]/95 px-2.5 py-1 rounded-full shadow-sm">
                           Ver detalle
                         </span>
                       </div>
@@ -634,34 +711,35 @@ export default function Home() {
                 })}
               </div>
             </div>
-
           </div>
         </section>
 
         {/* ==========================================
-            6. PRÓXIMOS EVENTOS (Fondo --perla #FFFFFF)
-            Grid de carteles de moda con duotone muy suave en multiply que pasa a color completo en hover
+            6. PRÓXIMOS EVENTOS (Fondo --rose #F29BB8)
         ========================================== */}
-        <section id="events" className="w-full bg-white text-[#B03366] py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 relative overflow-hidden select-none">
+        <section
+          id="events"
+          className="w-full bg-[var(--rose)] text-[var(--berry)] py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 relative overflow-hidden select-none border-b border-[var(--line)]"
+        >
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end mb-12 sm:mb-16 gap-6">
             <div>
               <div className="editorial-eyebrow mb-4">
-                <ButterflyIcon size={14} color="#DE4176" />
+                <ButterflyIcon size={14} color="#E0457B" />
                 <span>04  Agenda</span>
               </div>
               <BicolorSectionTitle firstWord="Próximos" secondWord="Eventos" />
             </div>
-            
+
             <div className="flex flex-col md:items-end gap-1.5">
-              <a 
-                href="https://shokomadrid.com/es/collections/eventos-shoko-madrid" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center gap-2 text-xs font-jost font-medium text-[#DE4176] hover:underline underline-offset-4 tracking-[0.15em] uppercase transition-all cursor-pointer"
+              <a
+                href="https://shokomadrid.com/es/collections/eventos-shoko-madrid"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-xs font-jost font-medium text-[var(--brand)] hover:underline underline-offset-4 tracking-[0.15em] uppercase transition-all cursor-pointer"
               >
                 <span>Ver todos en Shôko →</span>
               </a>
-              <span className="text-[11px] font-jost text-[#B03366]/60 uppercase tracking-wider">
+              <span className="text-[11px] font-jost text-[var(--berry)]/70 uppercase tracking-wider">
                 Madrid // Calle de Toledo, 86
               </span>
             </div>
@@ -670,53 +748,50 @@ export default function Home() {
           {/* Cards Grid 3x2 en desktop / Snap en móvil */}
           <div className="max-w-6xl mx-auto overflow-x-auto snap-x snap-mandatory flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-5 pb-4">
             {shokoEvents.map((event, i) => (
-              <div 
-                key={i} 
-                className="min-w-[240px] md:min-w-0 snap-center bg-white p-2.5 rounded-[22px] border border-[rgba(224,69,123,0.14)] shadow-luxury transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between group cursor-pointer"
+              <div
+                key={i}
+                className="min-w-[240px] md:min-w-0 snap-center bg-[var(--surface)] p-2.5 rounded-[22px] border border-[var(--line)] shadow-luxury transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between group cursor-pointer"
                 data-cursor="Ver"
               >
-                {/* Poster Container (70% superior con duotone rosa en multiply) */}
-                <div className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-[#FFF6F9]">
-                  <img 
-                    src={event.img} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                    alt={event.title} 
+                {/* Poster Container con duotone rosa en multiply */}
+                <div className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-[var(--petal)]">
+                  <img
+                    src={event.img}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    alt={event.title}
                   />
 
-                  {/* Duotone Overlay en multiply suave que desaparece en hover */}
-                  <div className="absolute inset-0 bg-[#DE4176]/20 mix-blend-multiply opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
+                  {/* Duotone Overlay en multiply suave */}
+                  <div className="absolute inset-0 bg-[#E0457B]/20 mix-blend-multiply opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
 
-                  {/* Badge + HOY en --rosa */}
+                  {/* Badge + HOY */}
                   <div className="absolute top-2.5 right-2.5 z-10">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-jost font-medium bg-[#DE4176] text-white shadow-sm">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-jost font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
                       + Hoy
                     </span>
                   </div>
                 </div>
 
-                {/* Info Deck en --frambuesa */}
+                {/* Info Deck */}
                 <div className="pt-3 pb-1 flex flex-col flex-grow justify-between">
                   <div>
-                    {/* Fecha grande en Bodoni Moda 22px */}
-                    <div className="font-bodoni text-[22px] text-[#B03366] font-normal leading-tight">
+                    <div className="font-bodoni text-[22px] text-[var(--berry)] font-normal leading-tight">
                       {event.date}
                     </div>
-                    {/* Nombre en Jost 15px mayúsculas */}
-                    <h4 className="font-jost text-[14px] font-medium text-[#B03366] uppercase tracking-wider truncate mt-1">
+                    <h4 className="font-jost text-[14px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
                       {event.title}
                     </h4>
-                    {/* Ciudad en Jost */}
-                    <span className="font-jost text-[11px] text-[#B03366]/65 block mt-0.5 uppercase tracking-wide">
+                    <span className="font-jost text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
                       Madrid // Shôko
                     </span>
                   </div>
 
-                  {/* Botón Comprar Entradas: borde fino en --rosa que se rellena al hover */}
-                  <a 
-                    href={event.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="mt-3.5 w-full py-2.5 rounded-full border border-[#DE4176] text-[#DE4176] hover:bg-[#DE4176] hover:text-white font-jost text-[11px] font-medium tracking-[0.18em] text-center block transition-all shadow-sm uppercase btn-luxury"
+                  {/* Botón Comprar Entradas */}
+                  <a
+                    href={event.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-3.5 w-full py-2.5 rounded-full border border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-[var(--champagne)] font-jost text-[11px] font-medium tracking-[0.18em] text-center block transition-all shadow-sm uppercase btn-luxury"
                   >
                     Comprar entradas
                   </a>
@@ -727,17 +802,20 @@ export default function Home() {
         </section>
 
         {/* ==========================================
-            7. MARQUEE DE PRENSA (Fondo --porcelana #FFF6F9, bordes nacarados 1px, logos en --rosa al 45% -> 100% hover, mariposa de separador)
+            7. MARQUEE DE PRENSA (Fondo --blush #F8C8D8, logos en --berry al 60% -> 100% hover)
         ========================================== */}
-        <section className="py-7 bg-[#FFF6F9] border-y border-[rgba(224,69,123,0.14)] overflow-hidden select-none">
+        <section
+          id="press"
+          className="py-7 bg-[var(--blush)] border-y border-[var(--line)] overflow-hidden select-none"
+        >
           <div className="marquee-wrapper">
-            <div className="marquee-content font-bodoni text-xl md:text-2xl text-[#DE4176]/45 gap-14 flex items-center whitespace-nowrap">
+            <div className="marquee-content font-bodoni text-xl md:text-2xl text-[var(--berry)]/60 gap-14 flex items-center whitespace-nowrap">
               {pressLogos.map((logo, idx) => (
                 <React.Fragment key={idx}>
-                  <span className="hover:text-[#DE4176] transition-colors cursor-pointer tracking-wider font-normal">
+                  <span className="hover:text-[var(--berry)] transition-colors cursor-pointer tracking-wider font-normal">
                     {logo}
                   </span>
-                  <ButterflyIcon size={14} color="#DE4176" strokeWidth={1.5} />
+                  <ButterflyIcon size={14} color="#E0457B" strokeWidth={1.5} />
                 </React.Fragment>
               ))}
             </div>
@@ -745,10 +823,12 @@ export default function Home() {
         </section>
 
         {/* ==========================================
-            8. FOOTER (Fondo --rosa #DE4176, THIAGO gigante en Bodoni blanco con reveal, enlaces con subrayado de izq a der, mariposa centrada encima de copyright)
+            8. FOOTER (Fondo --brand #E0457B, THIAGO gigante en Bodoni blanco)
         ========================================== */}
-        <footer id="contact" className="bg-[#DE4176] text-white pt-20 pb-16 flex flex-col items-center relative overflow-hidden select-none">
-          
+        <footer
+          id="footer"
+          className="bg-[#E0457B] text-[#FFE9D6] pt-20 pb-16 flex flex-col items-center relative overflow-hidden select-none"
+        >
           {/* Giant THIAGO in Bodoni Moda white with letter-by-letter reveal */}
           <div className="w-full text-center overflow-hidden py-2">
             <h2 className="w-full font-bodoni text-white text-[19vw] leading-[0.72] tracking-[-0.04em] font-normal flex justify-center items-center select-none">
@@ -767,107 +847,109 @@ export default function Home() {
             </h2>
           </div>
 
-          {/* Social Links en blanco Jost 13px mayúsculas con subrayado animado de izq a der */}
-          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 sm:gap-12 font-jost text-xs sm:text-[13px] font-medium uppercase tracking-[0.2em] text-white">
+          {/* Social Links */}
+          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 sm:gap-12 font-jost text-xs sm:text-[13px] font-medium uppercase tracking-[0.2em] text-[#FFE9D6]">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="relative group py-1">
               <span>Instagram</span>
-              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-white transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
             </a>
             <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="relative group py-1">
               <span>TikTok</span>
-              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-white transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
             </a>
             <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="relative group py-1">
               <span>YouTube</span>
-              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-white transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
             </a>
             <a href="https://spotify.com" target="_blank" rel="noopener noreferrer" className="relative group py-1">
               <span>Spotify</span>
-              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-white transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
             </a>
             <a href="mailto:contacto@thiagovsc.com" className="relative group py-1">
               <span>Contacto</span>
-              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-white transition-all duration-300" />
+              <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
             </a>
           </div>
 
-          {/* Sello de la firma: Mariposa centrada encima de copyright */}
+          {/* Sello de la firma */}
           <div className="mt-12 mb-3">
-            <ButterflyIcon size={22} color="#FFFFFF" strokeWidth={1.5} />
+            <ButterflyIcon size={22} color="#FFE9D6" strokeWidth={1.5} />
           </div>
 
-          {/* Legal Links en blanco al 70% */}
-          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 font-jost text-[11px] uppercase tracking-wider text-white/70">
-            <a href="/aviso-legal" className="hover:text-white transition-colors underline-offset-4 hover:underline">Aviso Legal</a>
+          {/* Legal Links */}
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 font-jost text-[11px] uppercase tracking-wider text-[#FFE9D6]/80">
+            <a href="/aviso-legal" className="hover:text-white transition-colors underline-offset-4 hover:underline">
+              Aviso Legal
+            </a>
             <span>•</span>
-            <a href="/politica-de-privacidad" className="hover:text-white transition-colors underline-offset-4 hover:underline">Política de Privacidad</a>
+            <a href="/politica-de-privacidad" className="hover:text-white transition-colors underline-offset-4 hover:underline">
+              Política de Privacidad
+            </a>
             <span>•</span>
-            <a href="/politica-de-cookies" className="hover:text-white transition-colors underline-offset-4 hover:underline">Política de Cookies</a>
+            <a href="/politica-de-cookies" className="hover:text-white transition-colors underline-offset-4 hover:underline">
+              Política de Cookies
+            </a>
             <span>•</span>
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => {
                 if (typeof window !== 'undefined') {
                   window.dispatchEvent(new CustomEvent('open-cookie-settings'));
                 }
-              }} 
+              }}
               className="hover:text-white transition-colors underline-offset-4 hover:underline cursor-pointer font-jost uppercase"
             >
-              Configurar Cookies
+              Cookies
             </button>
           </div>
 
-          <div className="mt-4 text-[11px] font-jost text-white/60 tracking-widest uppercase">
+          <div className="mt-4 text-[11px] font-jost text-[#FFE9D6]/60 tracking-widest uppercase">
             © 2026 THIAGO VSC • ALL RIGHTS RESERVED
           </div>
         </footer>
 
         {/* ==========================================
-            FULL-SIZE LIGHTBOX MODAL (Editorial Frosted Backdrop)
+            FULL-SIZE LIGHTBOX MODAL
         ========================================== */}
         {lightboxCard && (
-          <div 
+          <div
             className="fixed inset-0 z-[200] flex flex-col justify-between p-4 sm:p-8 animate-in fade-in duration-200 select-none overflow-hidden"
             onClick={() => setLightboxCard(null)}
           >
-            {/* Blurred Backdrop */}
-            <div 
+            <div
               className="absolute inset-0 bg-cover bg-center scale-125 blur-3xl opacity-40 pointer-events-none"
               style={{ backgroundImage: `url(${lightboxCard.img})` }}
             />
-            <div className="absolute inset-0 bg-white/85 backdrop-blur-xl pointer-events-none" />
+            <div className="absolute inset-0 bg-[#2B0F1E]/80 backdrop-blur-xl pointer-events-none" />
 
-            {/* Lightbox Header */}
             <div className="w-full max-w-5xl mx-auto flex justify-between items-center z-10 relative" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-3">
-                <span className="px-4 py-1.5 rounded-full text-xs font-jost font-medium uppercase text-white bg-[#DE4176] shadow-sm">
+                <span className="px-4 py-1.5 rounded-full text-xs font-jost font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
                   {lightboxCard.title}
                 </span>
-                <span className="hidden sm:inline-block text-xs font-jost text-[#B03366] font-medium bg-[#FFF6F9] px-3 py-1 rounded-full border border-[rgba(224,69,123,0.18)]">
+                <span className="hidden sm:inline-block text-xs font-jost text-[var(--champagne)] font-medium bg-[#3A1528]/60 px-3 py-1 rounded-full border border-[var(--line)]">
                   Francesca Chiri
                 </span>
               </div>
 
               <button
                 onClick={() => setLightboxCard(null)}
-                className="px-5 py-2 rounded-full border border-[rgba(224,69,123,0.2)] bg-white hover:bg-[#DE4176] hover:text-white text-[#B03366] text-xs font-jost font-medium tracking-widest uppercase transition-all flex items-center gap-2 shadow-luxury cursor-pointer btn-luxury"
+                className="px-5 py-2 rounded-full border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--brand)] hover:text-white text-[var(--berry)] text-xs font-jost font-medium tracking-widest uppercase transition-all flex items-center gap-2 shadow-luxury cursor-pointer btn-luxury"
               >
                 <span>Cerrar</span>
                 <span className="text-sm">✕</span>
               </button>
             </div>
 
-            {/* Photo in Center */}
             <div className="w-full max-w-5xl mx-auto my-auto flex items-center justify-center relative p-2 z-10" onClick={(e) => e.stopPropagation()}>
-              <img 
-                src={lightboxCard.img} 
-                alt={lightboxCard.title} 
+              <img
+                src={lightboxCard.img}
+                alt={lightboxCard.title}
                 className="max-h-[78vh] max-w-[90vw] object-contain rounded-2xl border-[6px] border-white shadow-luxury animate-in zoom-in-95 duration-200"
               />
             </div>
 
-            {/* Lightbox Footer */}
-            <div className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-jost text-[#B03366] z-10 pt-2 relative" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-jost text-[#FFE9D6] z-10 pt-2 relative" onClick={(e) => e.stopPropagation()}>
               <span className="tracking-wider font-medium">FRANCESCA CHIRI // ZONA INFLUENCER</span>
               <div className="flex gap-2">
                 {influencerCards.map((c, i) => (
@@ -875,7 +957,9 @@ export default function Home() {
                     key={c.id}
                     onClick={() => setLightboxCard(c)}
                     className={`px-3.5 py-1.5 rounded-full transition-all text-[11px] font-medium cursor-pointer ${
-                      lightboxCard.id === c.id ? 'bg-[#DE4176] text-white shadow-sm' : 'bg-[#FFF6F9] text-[#B03366] hover:bg-white border border-[rgba(224,69,123,0.18)]'
+                      lightboxCard.id === c.id
+                        ? 'bg-[var(--brand)] text-[var(--champagne)] shadow-sm'
+                        : 'bg-[#3A1528]/60 text-[var(--champagne)] hover:bg-[#3A1528]/80 border border-[var(--line)]'
                     }`}
                   >
                     Foto 0{i + 1}
@@ -890,14 +974,14 @@ export default function Home() {
             STANDALONE TUNER FM RADIO MODAL
         ========================================== */}
         {radioModalOpen && (
-          <div 
+          <div
             className="fixed inset-0 z-[250] flex items-center justify-center p-3 sm:p-6 md:p-10 animate-in fade-in duration-200 select-none"
             onClick={() => setRadioModalOpen(false)}
           >
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-2xl" />
+            <div className="absolute inset-0 bg-[#2B0F1E]/80 backdrop-blur-2xl" />
 
-            <div 
-              className="relative w-full max-w-5xl h-[88vh] max-h-[780px] bg-[#FFF6F9] rounded-3xl overflow-hidden border border-[rgba(224,69,123,0.18)] shadow-luxury z-10 animate-in zoom-in-95 duration-200 flex flex-col"
+            <div
+              className="relative w-full max-w-5xl h-[88vh] max-h-[780px] bg-[var(--surface)] rounded-3xl overflow-hidden border border-[var(--line)] shadow-luxury z-10 animate-in zoom-in-95 duration-200 flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
               <CoverFlowRadio onClose={() => setRadioModalOpen(false)} />
@@ -905,9 +989,8 @@ export default function Home() {
           </div>
         )}
 
-        {/* COOKIE CONSENT BANNER */}
+        {/* COOKIE CONSENT BANNER (Premium RGPD) */}
         <CookieConsent />
-
       </div>
     </ReactLenis>
   );

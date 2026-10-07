@@ -8,6 +8,7 @@ import { Maximize, Minimize, Volume2, VolumeX, Shuffle, Play, Pause, Plus, Minus
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
+import { useMediaStore } from '@/lib/mediaStore';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -19,6 +20,8 @@ export const TVOnlinePlayer: React.FC = () => {
   const chassisRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const screenWrapperRef = useRef<HTMLDivElement>(null);
+
+  const { activeMediaId, setActiveMedia } = useMediaStore();
   
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -31,6 +34,14 @@ export const TVOnlinePlayer: React.FC = () => {
       setClientOrigin(window.location.origin);
     }
   }, []);
+
+  // Pause TV if another media starts playing
+  useEffect(() => {
+    if (activeMediaId && activeMediaId !== 'tv' && isPlaying) {
+      sendCommand('pauseVideo');
+      setIsPlaying(false);
+    }
+  }, [activeMediaId, isPlaying]);
 
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(() => {
     return Math.floor(Math.random() * PLAYLIST_VIDEOS.length);
@@ -166,7 +177,7 @@ export const TVOnlinePlayer: React.FC = () => {
     <section
       ref={sectionRef}
       id="tv"
-      className="w-full min-h-screen lg:h-screen flex flex-col justify-center items-center relative bg-white py-12 lg:py-16 px-4 sm:px-6 select-none border-b border-[rgba(224,69,123,0.14)] overflow-hidden"
+      className="w-full min-h-screen lg:h-screen flex flex-col justify-center items-center relative bg-[var(--blush)] py-12 lg:py-16 px-4 sm:px-6 select-none border-b border-[var(--line)] overflow-hidden"
     >
       <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center my-auto">
         
@@ -178,17 +189,17 @@ export const TVOnlinePlayer: React.FC = () => {
           className="mb-6 lg:mb-8"
         />
 
-        {/* Reproductor centrado con bisel de 12px en --polvo y radius 24px */}
+        {/* Reproductor centrado con bisel de 12px en --petal y radius 24px */}
         <div 
           ref={chassisRef}
           style={{ width: 'min(1100px, 88vw)' }}
-          className="p-[12px] bg-[#FBE3EC] rounded-[24px] border border-[rgba(224,69,123,0.14)] shadow-luxury mx-auto transition-transform"
+          className="p-[12px] bg-[var(--petal)] rounded-[24px] border border-[var(--line)] shadow-luxury mx-auto transition-transform"
           data-cursor="Play"
         >
           {/* Pantalla 16:9 con radius 16px */}
           <div
             ref={screenWrapperRef}
-            className={`relative w-full aspect-video rounded-[16px] overflow-hidden bg-[#B03366] ${
+            className={`relative w-full aspect-video rounded-[16px] overflow-hidden bg-[var(--berry)] ${
               isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !z-[9999] !rounded-none !max-w-none' : ''
             }`}
           >
@@ -207,7 +218,7 @@ export const TVOnlinePlayer: React.FC = () => {
               <button
                 type="button"
                 onClick={handleToggleFullscreen}
-                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFFFFF] text-[#B03366] font-jost text-xs tracking-[0.2em] uppercase shadow-luxury cursor-pointer"
+                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface)] text-[var(--berry)] font-jost text-xs tracking-[0.2em] uppercase shadow-luxury cursor-pointer"
               >
                 <span>Salir</span>
                 <Minimize className="w-4 h-4" />
@@ -215,15 +226,15 @@ export const TVOnlinePlayer: React.FC = () => {
             )}
           </div>
 
-          {/* Controles de abajo en --perla (#FFFFFF) con texto --frambuesa y botones en --rosa */}
-          <div className="mt-3 bg-[#FFFFFF] rounded-[16px] p-3 sm:p-3.5 border border-[rgba(224,69,123,0.14)] flex flex-wrap items-center justify-between text-[#B03366] font-jost text-xs gap-3">
+          {/* Controles de abajo en --surface con texto --berry y botones en --brand */}
+          <div className="mt-3 bg-[var(--surface)] rounded-[16px] p-3 sm:p-3.5 border border-[var(--line)] flex flex-wrap items-center justify-between text-[var(--berry)] font-jost text-xs gap-3">
             
             {/* Controles Izquierda */}
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 onClick={togglePlayPause}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-medium tracking-[0.15em] uppercase text-[11px] bg-[#DE4176] text-white hover:bg-[#c22e61] cursor-pointer btn-luxury shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-medium tracking-[0.15em] uppercase text-[11px] bg-[var(--brand)] text-[var(--champagne)] hover:opacity-90 cursor-pointer btn-luxury shadow-sm"
                 title={isPlaying ? "Pausar emisión" : "Reanudar emisión"}
               >
                 {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
@@ -233,7 +244,7 @@ export const TVOnlinePlayer: React.FC = () => {
               <button
                 type="button"
                 onClick={playNextRandomVideo}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[rgba(224,69,123,0.3)] text-[#DE4176] hover:bg-[#FFF6F9] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer btn-luxury"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer btn-luxury"
                 title="Reproducir siguiente video aleatorio"
               >
                 <Shuffle className="w-3 h-3" />
@@ -244,7 +255,7 @@ export const TVOnlinePlayer: React.FC = () => {
             {/* Controles Derecha */}
             <div className="flex items-center gap-3">
               {/* Control de Volumen */}
-              <div className="flex items-center gap-1.5 bg-[#FFF6F9] px-2.5 py-1 rounded-full border border-[rgba(224,69,123,0.2)]">
+              <div className="flex items-center gap-1.5 bg-[var(--petal)] px-2.5 py-1 rounded-full border border-[var(--line)]">
                 <button
                   type="button"
                   onClick={toggleMute}
