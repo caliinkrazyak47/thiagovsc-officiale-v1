@@ -1053,7 +1053,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-[#2B0F1E]/80 backdrop-blur-2xl" />
 
             <div
-              className="relative w-full max-w-5xl h-[88vh] max-h-[780px] bg-[var(--surface)] rounded-3xl overflow-hidden border border-[var(--line)] shadow-luxury z-10 animate-in zoom-in-95 duration-200 flex flex-col"
+              className="relative w-full max-w-5xl h-[88vh] max-h-[780px] bg-[#FFF4F7] rounded-3xl overflow-hidden border border-[#E0457B]/35 shadow-[0_30px_90px_rgba(224,69,123,0.35)] z-10 animate-in zoom-in-95 duration-200 flex flex-col ring-1 ring-[#E0457B]/20"
               onClick={(e) => e.stopPropagation()}
             >
               <CoverFlowRadio onClose={() => setRadioModalOpen(false)} />

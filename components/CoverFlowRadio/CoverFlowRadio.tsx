@@ -119,7 +119,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
     }
   }, [isPlaying, currentStation.streamUrl, loadStream]);
 
-  // Next / Previous Stations
+  // Next / Prev station handlers
   const handlePrev = useCallback(() => {
     setActiveIndex((prev) => (prev > 0 ? prev - 1 : RADIO_STATIONS.length - 1));
   }, []);
@@ -128,21 +128,18 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
     setActiveIndex((prev) => (prev < RADIO_STATIONS.length - 1 ? prev + 1 : 0));
   }, []);
 
-  // Volume change handler
+  // Volume Handlers
   const handleVolumeChange = (newVol: number) => {
     setVolume(newVol);
     if (audioRef.current) {
       audioRef.current.volume = newVol / 100;
-      audioRef.current.muted = newVol === 0;
-    }
-    if (newVol === 0) {
-      setIsMuted(true);
-    } else if (isMuted) {
-      setIsMuted(false);
+      if (newVol > 0 && isMuted) {
+        audioRef.current.muted = false;
+        setIsMuted(false);
+      }
     }
   };
 
-  // Toggle Mute
   const handleToggleMute = () => {
     if (!audioRef.current) return;
     if (isMuted) {
@@ -175,7 +172,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
   const tunerPercentage = ((activeIndex) / (RADIO_STATIONS.length - 1)) * 100;
 
   return (
-    <div className="w-full h-full min-h-[640px] flex flex-col justify-between bg-[#FFF6F9] text-[#B03366] select-none overflow-hidden relative font-jost">
+    <div className="w-full h-full min-h-[640px] flex flex-col justify-between bg-[#FFF4F7] text-[#3B0D22] select-none overflow-hidden relative font-jost">
       {/* Hidden HTML5 Audio Element */}
       <audio
         ref={audioRef}
@@ -189,23 +186,23 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
       />
 
       {/* ====================================================
-          HEADER: STUDIO RECEIVER TOP BAR
+          HEADER: STUDIO RECEIVER TOP BAR (Rosé Couture)
       ==================================================== */}
-      <header className="w-full px-5 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between border-b border-[rgba(224,69,123,0.14)] bg-white/90 backdrop-blur-xl z-30">
+      <header className="w-full px-5 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between border-b border-[rgba(224,69,123,0.18)] bg-[#FFE8F0]/95 backdrop-blur-xl z-30">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#FFF6F9] border border-[rgba(224,69,123,0.2)] flex items-center justify-center shadow-sm">
-            <ButterflyIcon size={16} color="#DE4176" />
+          <div className="w-9 h-9 rounded-full bg-[#FFF4F7] border border-[rgba(224,69,123,0.3)] flex items-center justify-center shadow-sm">
+            <ButterflyIcon size={16} color="#E0457B" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bodoni font-normal text-base tracking-tight text-[#B03366]">
-                Thiago VSC <span className="italic text-[#DE4176]">Studio</span>
+              <span className="font-bodoni font-normal text-base tracking-tight text-[#3B0D22]">
+                Thiago VSC <span className="italic text-[#E0457B]">Studio</span>
               </span>
-              <span className="text-[10px] font-jost px-2.5 py-0.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/30 text-[#DE4176] font-medium uppercase tracking-widest">
+              <span className="text-[10px] font-jost px-2.5 py-0.5 rounded-full bg-[#E0457B]/15 border border-[#E0457B]/30 text-[#E0457B] font-semibold uppercase tracking-widest">
                 FM Broadcast
               </span>
             </div>
-            <p className="text-[10px] font-jost text-[#B03366]/60 tracking-wider uppercase">
+            <p className="text-[10px] font-jost text-[#3B0D22]/70 tracking-wider uppercase font-medium">
               Receptor sintonizador 24/7 // Audio de alta fidelidad
             </p>
           </div>
@@ -214,22 +211,22 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
         {/* Center/Right Status Indicators */}
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Signal Quality Meter */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF6F9] border border-[rgba(224,69,123,0.18)]">
-            <span className="text-[10px] font-jost text-[#B03366]/70 uppercase tracking-widest">Señal</span>
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#FFF4F7] border border-[rgba(224,69,123,0.25)]">
+            <span className="text-[10px] font-jost text-[#3B0D22]/80 uppercase tracking-widest font-medium">Señal</span>
             <div className="flex items-end gap-1 h-3">
-              <span className="w-1 h-1 bg-[#DE4176] rounded-full" />
-              <span className="w-1 h-1.5 bg-[#DE4176] rounded-full" />
-              <span className="w-1 h-2 bg-[#DE4176] rounded-full" />
-              <span className="w-1 h-2.5 bg-[#DE4176] rounded-full animate-pulse" />
-              <span className="w-1 h-3 bg-[#DE4176] rounded-full animate-pulse" />
+              <span className="w-1 h-1 bg-[#E0457B] rounded-full" />
+              <span className="w-1 h-1.5 bg-[#E0457B] rounded-full" />
+              <span className="w-1 h-2 bg-[#E0457B] rounded-full" />
+              <span className="w-1 h-2.5 bg-[#E0457B] rounded-full animate-pulse" />
+              <span className="w-1 h-3 bg-[#E0457B] rounded-full animate-pulse" />
             </div>
           </div>
 
           {/* Live Indicator Pill */}
-          <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#DE4176] text-white text-[10px] font-jost font-medium tracking-widest uppercase shadow-sm">
+          <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#E0457B] text-[#FFE9D6] text-[10px] font-jost font-semibold tracking-widest uppercase shadow-sm">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE9D6] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFE9D6]"></span>
             </span>
             <span>En directo</span>
           </div>
@@ -238,7 +235,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
           {onClose && (
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-[#FFF6F9] hover:bg-[#DE4176] hover:text-white border border-[rgba(224,69,123,0.2)] text-[#B03366] flex items-center justify-center transition-all cursor-pointer btn-luxury"
+              className="w-8 h-8 rounded-full bg-[#FFF4F7] hover:bg-[#E0457B] hover:text-[#FFE9D6] border border-[rgba(224,69,123,0.3)] text-[#3B0D22] flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               title="Cerrar sintonizador"
             >
               <X className="w-4 h-4" />
@@ -250,34 +247,34 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
       {/* ====================================================
           ANALOG / DIGITAL FM FREQUENCY TUNER GAUGE
       ==================================================== */}
-      <div className="w-full bg-[#FFF6F9] border-b border-[rgba(224,69,123,0.14)] px-6 sm:px-12 py-3 z-20 flex flex-col items-center">
-        <div className="w-full max-w-3xl flex items-center justify-between text-[10px] font-jost text-[#B03366]/60 tracking-wider mb-1.5 uppercase">
+      <div className="w-full bg-[#FFE8F0] border-b border-[rgba(224,69,123,0.18)] px-6 sm:px-12 py-3 z-20 flex flex-col items-center">
+        <div className="w-full max-w-3xl flex items-center justify-between text-[10px] font-jost text-[#3B0D22]/70 tracking-wider mb-1.5 uppercase font-medium">
           <span>88.0 MHz</span>
           <span>92.0 MHz</span>
           <span className="hidden sm:inline">96.0 MHz</span>
-          <span className="text-[#DE4176] font-semibold">100.0 MHz</span>
+          <span className="text-[#E0457B] font-bold">100.0 MHz</span>
           <span className="hidden sm:inline">104.0 MHz</span>
           <span>108.0 MHz</span>
         </div>
 
         {/* Ruler Bar with Tick Marks and Live Floating Needle */}
-        <div className="w-full max-w-3xl relative h-3.5 bg-white rounded-full border border-[rgba(224,69,123,0.18)] overflow-hidden flex items-center px-1">
+        <div className="w-full max-w-3xl relative h-3.5 bg-[#FFF4F7] rounded-full border border-[rgba(224,69,123,0.25)] overflow-hidden flex items-center px-1 shadow-inner">
           {/* Tick lines */}
-          <div className="w-full flex justify-between items-center opacity-30 pointer-events-none">
+          <div className="w-full flex justify-between items-center opacity-40 pointer-events-none">
             {Array.from({ length: 33 }).map((_, i) => (
               <span 
                 key={i} 
-                className={`w-[1px] bg-[#B03366] ${i % 4 === 0 ? 'h-2.5' : 'h-1.5'}`} 
+                className={`w-[1px] bg-[#A3285C] ${i % 4 === 0 ? 'h-2.5' : 'h-1.5'}`} 
               />
             ))}
           </div>
 
           {/* Illuminated Tuning Needle */}
           <div 
-            className="absolute top-0 bottom-0 w-3 rounded-full bg-[#DE4176] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] -translate-x-1/2 flex items-center justify-center"
+            className="absolute top-0 bottom-0 w-3 rounded-full bg-[#E0457B] shadow-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] -translate-x-1/2 flex items-center justify-center"
             style={{ left: `${Math.max(2, Math.min(98, tunerPercentage))}%` }}
           >
-            <span className="w-1 h-full bg-white rounded-full" />
+            <span className="w-1 h-full bg-[#FFE9D6] rounded-full" />
           </div>
         </div>
       </div>
@@ -295,7 +292,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
             type="button"
             onClick={handlePrev}
             aria-label="Emisora anterior"
-            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white hover:bg-[#DE4176] hover:text-white border border-[rgba(224,69,123,0.2)] text-[#B03366] flex items-center justify-center shadow-luxury transition-all cursor-pointer btn-luxury"
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF4F7] hover:bg-[#E0457B] hover:text-[#FFE9D6] border border-[rgba(224,69,123,0.3)] text-[#3B0D22] flex items-center justify-center shadow-[0_8px_25px_rgba(224,69,123,0.25)] transition-all cursor-pointer hover:scale-105 active:scale-95"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -305,7 +302,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
             type="button"
             onClick={handleNext}
             aria-label="Siguiente emisora"
-            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white hover:bg-[#DE4176] hover:text-white border border-[rgba(224,69,123,0.2)] text-[#B03366] flex items-center justify-center shadow-luxury transition-all cursor-pointer btn-luxury"
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#FFF4F7] hover:bg-[#E0457B] hover:text-[#FFE9D6] border border-[rgba(224,69,123,0.3)] text-[#3B0D22] flex items-center justify-center shadow-[0_8px_25px_rgba(224,69,123,0.25)] transition-all cursor-pointer hover:scale-105 active:scale-95"
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -342,18 +339,18 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                   }}
                   className="absolute w-[210px] xs:w-[230px] sm:w-[265px] md:w-[285px] aspect-square cursor-pointer group"
                 >
-                  {/* Luxury Double-Bezel Card Outer Chassis */}
+                  {/* Luxury Double-Bezel Card Outer Chassis in Warm Rose Porcelain */}
                   <div
                     className={`w-full h-full p-2.5 sm:p-3 rounded-[2.25rem] transition-all duration-300 relative select-none ${
                       isCenter
-                        ? 'bg-white border-2 border-white shadow-luxury ring-1 ring-[rgba(224,69,123,0.2)]'
-                        : 'bg-white/80 border border-[rgba(224,69,123,0.14)] hover:bg-white shadow-sm'
+                        ? 'bg-[#FFF5F8] border-2 border-[#E0457B]/40 shadow-[0_20px_50px_rgba(224,69,123,0.32)] ring-2 ring-[#E0457B]/25'
+                        : 'bg-[#FFE8F0]/90 border border-[rgba(224,69,123,0.22)] hover:bg-[#FFF5F8] shadow-sm'
                     }`}
                   >
                     {/* Inner Album Core */}
-                    <div className="w-full h-full rounded-[calc(2.25rem-0.6rem)] overflow-hidden relative bg-[#FFF6F9] border border-[rgba(224,69,123,0.14)] flex flex-col justify-between">
+                    <div className="w-full h-full rounded-[calc(2.25rem-0.6rem)] overflow-hidden relative bg-[#FFE8F0] border border-[rgba(224,69,123,0.2)] flex flex-col justify-between">
                       {/* Station Artwork */}
-                      <div className="relative w-full h-full flex items-center justify-center p-4 bg-[#FFFFFF]">
+                      <div className="relative w-full h-full flex items-center justify-center p-4 bg-[#FFF4F7]">
                         <img
                           src={station.cover}
                           alt={station.name}
@@ -364,28 +361,28 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                       {/* Top Bar on Center Card: Live Badge & ISO Country Tag */}
                       <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10 pointer-events-none">
                         {isCenter && isPlaying ? (
-                          <div className="inline-flex items-center gap-1.5 bg-[#DE4176] text-white text-[9px] font-jost font-medium px-2.5 py-0.5 rounded-full shadow-sm">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                          <div className="inline-flex items-center gap-1.5 bg-[#E0457B] text-[#FFE9D6] text-[9px] font-jost font-semibold px-2.5 py-0.5 rounded-full shadow-sm">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FFE9D6] animate-pulse" />
                             <span>ON AIR</span>
                           </div>
                         ) : (
-                          <div className="inline-flex items-center gap-1 bg-white/90 border border-[rgba(224,69,123,0.2)] text-[#B03366] text-[9px] font-jost font-medium px-2 py-0.5 rounded-full shadow-sm">
+                          <div className="inline-flex items-center gap-1 bg-[#FFF4F7]/95 border border-[rgba(224,69,123,0.3)] text-[#3B0D22] text-[9px] font-jost font-medium px-2 py-0.5 rounded-full shadow-sm">
                             <span>0{idx + 1}</span>
                           </div>
                         )}
 
                         {/* Country ISO Badge */}
-                        <div className="px-2 py-0.5 rounded-full bg-white/90 border border-[rgba(224,69,123,0.2)] text-[9px] font-jost font-medium text-[#B03366] uppercase tracking-wider shadow-sm">
+                        <div className="px-2 py-0.5 rounded-full bg-[#FFF4F7]/95 border border-[rgba(224,69,123,0.3)] text-[9px] font-jost font-medium text-[#3B0D22] uppercase tracking-wider shadow-sm">
                           [{station.countryCode}]
                         </div>
                       </div>
 
                       {/* Bottom Info Bar on Album */}
-                      <div className="absolute bottom-0 inset-x-0 p-3 pt-6 bg-white/95 border-t border-[rgba(224,69,123,0.12)] pointer-events-none">
-                        <div className="text-[10px] font-jost text-[#DE4176] uppercase truncate font-medium">
+                      <div className="absolute bottom-0 inset-x-0 p-3 pt-6 bg-[#FFF5F8]/95 border-t border-[rgba(224,69,123,0.18)] pointer-events-none">
+                        <div className="text-[10px] font-jost text-[#E0457B] uppercase truncate font-semibold">
                           {station.frequency}
                         </div>
-                        <h4 className="font-bodoni text-sm sm:text-base text-[#B03366] tracking-tight uppercase truncate font-normal">
+                        <h4 className="font-bodoni text-sm sm:text-base text-[#3B0D22] tracking-tight uppercase truncate font-normal">
                           {station.name}
                         </h4>
                       </div>
@@ -402,19 +399,19 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
         ==================================================== */}
         <div className="text-center mt-5 sm:mt-7 z-30 max-w-xl mx-auto flex flex-col items-center">
           {/* Country & Genre Tag */}
-          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white border border-[rgba(224,69,123,0.2)] text-[#B03366] font-jost text-[11px] font-medium uppercase tracking-wider mb-2 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#FFF4F7] border border-[rgba(224,69,123,0.3)] text-[#3B0D22] font-jost text-[11px] font-medium uppercase tracking-wider mb-2 shadow-sm">
             <span>[{currentStation.countryCode}] {currentStation.country}</span>
-            <span className="text-[#DE4176]">•</span>
-            <span className="text-[#DE4176]">{currentStation.genre}</span>
+            <span className="text-[#E0457B]">•</span>
+            <span className="text-[#E0457B] font-semibold">{currentStation.genre}</span>
           </div>
 
           {/* Large Station Headline in Bodoni Moda */}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bodoni text-[#B03366] tracking-tight uppercase leading-none font-normal">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bodoni text-[#3B0D22] tracking-tight uppercase leading-none font-normal">
             {currentStation.name}
           </h2>
 
           {/* Technical Frequency Slogan */}
-          <p className="text-xs sm:text-sm font-jost text-[#DE4176] font-medium tracking-widest mt-2 uppercase">
+          <p className="text-xs sm:text-sm font-jost text-[#E0457B] font-semibold tracking-widest mt-2 uppercase">
             {currentStation.frequency}
           </p>
         </div>
@@ -423,34 +420,34 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
       {/* ====================================================
           MASTER TRANSPORT CONTROL DECK (Footer Tray)
       ==================================================== */}
-      <footer className="w-full bg-white border-t border-[rgba(224,69,123,0.14)] px-4 sm:px-8 py-3.5 sm:py-4 z-40 shadow-sm">
+      <footer className="w-full bg-[#FFE8F0] border-t border-[rgba(224,69,123,0.18)] px-4 sm:px-8 py-3.5 sm:py-4 z-40 shadow-sm">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           
           {/* Left: Station Preview + Live Audio VU Spectrum */}
           <div className="flex items-center gap-3.5 min-w-[220px] w-full sm:w-auto">
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-[rgba(224,69,123,0.2)] shrink-0 shadow-sm bg-[#FFF6F9] flex items-center justify-center">
+            <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-[rgba(224,69,123,0.3)] shrink-0 shadow-sm bg-[#FFF4F7] flex items-center justify-center">
               <img
                 src={currentStation.cover}
                 alt={currentStation.name}
                 className="w-full h-full object-contain p-1"
               />
               {isPlaying && (
-                <div className="absolute inset-0 bg-[#DE4176]/20 flex items-center justify-center">
-                  <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-ping" />
+                <div className="absolute inset-0 bg-[#E0457B]/20 flex items-center justify-center">
+                  <span className="w-2 h-2 rounded-full bg-[#E0457B] animate-ping" />
                 </div>
               )}
             </div>
 
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-bodoni font-normal text-sm text-[#B03366] tracking-tight truncate max-w-[150px]">
+                <span className="font-bodoni font-normal text-sm text-[#3B0D22] tracking-tight truncate max-w-[150px]">
                   {currentStation.name}
                 </span>
-                <span className="text-[9px] font-jost px-1.5 py-0.5 rounded bg-[#FFF6F9] text-[#DE4176] font-medium shrink-0 border border-[rgba(224,69,123,0.2)]">
+                <span className="text-[9px] font-jost px-1.5 py-0.5 rounded bg-[#FFF4F7] text-[#E0457B] font-semibold shrink-0 border border-[rgba(224,69,123,0.3)]">
                   [{currentStation.countryCode}]
                 </span>
               </div>
-              <span className="text-[10px] font-jost text-[#B03366]/60 truncate uppercase font-medium">
+              <span className="text-[10px] font-jost text-[#3B0D22]/70 truncate uppercase font-medium">
                 {isPlaying ? 'Emisión en directo' : 'En pausa'}
               </span>
             </div>
@@ -464,7 +461,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                     height: isPlaying ? `${Math.max(20, (i % 2 === 0 ? 80 : 100) * h)}%` : '15%',
                     animationDuration: `${0.35 + (i % 4) * 0.12}s`,
                   }}
-                  className={`w-1 rounded-full bg-[#DE4176] transition-all ${
+                  className={`w-1 rounded-full bg-[#E0457B] transition-all ${
                     isPlaying ? 'animate-pulse' : 'opacity-30'
                   }`}
                 />
@@ -479,7 +476,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
               type="button"
               onClick={handlePrev}
               aria-label="Emisora anterior"
-              className="w-10 h-10 rounded-full bg-[#FFF6F9] hover:bg-[#DE4176] hover:text-white text-[#B03366] flex items-center justify-center transition-all border border-[rgba(224,69,123,0.2)] cursor-pointer btn-luxury"
+              className="w-10 h-10 rounded-full bg-[#FFF4F7] hover:bg-[#E0457B] hover:text-[#FFE9D6] text-[#3B0D22] flex items-center justify-center transition-all border border-[rgba(224,69,123,0.3)] cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               title="Anterior emisora (Flecha Izq)"
             >
               <SkipBack className="w-4 h-4 fill-current" />
@@ -491,11 +488,11 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
               onClick={togglePlay}
               disabled={isLoading}
               aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
-              className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-luxury cursor-pointer btn-luxury relative"
+              className="w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#E0457B] hover:bg-[#A3285C] text-[#FFE9D6] flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-[0_10px_30px_rgba(224,69,123,0.45)] cursor-pointer relative"
               title={isPlaying ? "Pausar emisión" : "Reproducir emisión"}
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-[#FFE9D6] border-t-transparent rounded-full animate-spin" />
               ) : isPlaying ? (
                 <Pause className="w-5 h-5 fill-current" />
               ) : (
@@ -508,7 +505,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
               type="button"
               onClick={handleNext}
               aria-label="Siguiente emisora"
-              className="w-10 h-10 rounded-full bg-[#FFF6F9] hover:bg-[#DE4176] hover:text-white text-[#B03366] flex items-center justify-center transition-all border border-[rgba(224,69,123,0.2)] cursor-pointer btn-luxury"
+              className="w-10 h-10 rounded-full bg-[#FFF4F7] hover:bg-[#E0457B] hover:text-[#FFE9D6] text-[#3B0D22] flex items-center justify-center transition-all border border-[rgba(224,69,123,0.3)] cursor-pointer shadow-sm hover:scale-105 active:scale-95"
               title="Siguiente emisora (Flecha Der)"
             >
               <SkipForward className="w-4 h-4 fill-current" />
@@ -520,13 +517,13 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
             <button
               type="button"
               onClick={handleToggleMute}
-              className="text-[#B03366] hover:text-[#DE4176] transition-colors cursor-pointer btn-luxury p-1"
+              className="text-[#3B0D22] hover:text-[#E0457B] transition-colors cursor-pointer p-1"
               title={isMuted ? 'Activar sonido' : 'Silenciar'}
             >
               {isMuted || volume === 0 ? (
-                <VolumeX className="w-4 h-4 text-[#DE4176]" />
+                <VolumeX className="w-4 h-4 text-[#E0457B]" />
               ) : (
-                <Volume2 className="w-4 h-4 text-[#B03366]" />
+                <Volume2 className="w-4 h-4 text-[#3B0D22]" />
               )}
             </button>
 
@@ -537,11 +534,11 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                 max="100"
                 value={isMuted ? 0 : volume}
                 onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                className="w-full h-1.5 bg-[#FFF6F9] border border-[rgba(224,69,123,0.2)] rounded-lg appearance-none cursor-pointer accent-[#DE4176]"
+                className="w-full h-1.5 bg-[#FFF4F7] border border-[rgba(224,69,123,0.3)] rounded-lg appearance-none cursor-pointer accent-[#E0457B]"
               />
             </div>
 
-            <span className="text-[11px] font-jost text-[#B03366] w-9 text-right font-medium tabular-nums">
+            <span className="text-[11px] font-jost text-[#3B0D22] w-9 text-right font-semibold tabular-nums">
               {isMuted ? 'MUT' : `${volume}%`}
             </span>
           </div>

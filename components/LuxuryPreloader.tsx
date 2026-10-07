@@ -53,7 +53,7 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
   const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
-  const [statusText, setStatusText] = useState('INICIALIZANDO SISTEMA 4K');
+  const [statusText, setStatusText] = useState('01/03 · SINTONIZANDO SEÑAL 4K');
   const [isQuickSession, setIsQuickSession] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,9 +77,9 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
     if (centerStageRef.current) {
       tl.to(centerStageRef.current, {
         opacity: 0,
-        scale: 1.04,
-        y: -15,
-        duration: 0.45,
+        scale: 1.05,
+        y: -20,
+        duration: 0.5,
         ease: 'power2.in',
       });
     }
@@ -153,14 +153,14 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
       onUpdate: () => {
         const p = Math.round(progressObj.val);
         setProgress(p);
-        if (p < 25) {
-          setStatusText('SINTONIZANDO SEÑAL 4K');
-        } else if (p < 60) {
-          setStatusText('CALIBRANDO AUDIO DE ALTA DEFINICIÓN');
-        } else if (p < 95) {
-          setStatusText('SINCRONIZANDO EXPERIENCIA');
+        if (p < 30) {
+          setStatusText('01/03 · SINTONIZANDO SEÑAL 4K');
+        } else if (p < 70) {
+          setStatusText('02/03 · CALIBRANDO AUDIO DE ALTA DEFINICIÓN');
+        } else if (p < 99) {
+          setStatusText('03/03 · SINCRONIZANDO EXPERIENCIA');
         } else {
-          setStatusText('SISTEMA LISTO');
+          setStatusText('SISTEMA LISTO · 100%');
         }
       },
       onComplete: () => {
@@ -191,7 +191,7 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[10000] pointer-events-auto select-none overflow-hidden flex flex-col items-center justify-center bg-[#E0457B]"
+      className="fixed inset-0 z-[10000] pointer-events-auto select-none overflow-hidden flex flex-col items-center justify-between bg-[#E0457B]"
     >
       {/* Top Curtain Panel */}
       <div
@@ -205,18 +205,52 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
         className="absolute bottom-0 inset-x-0 h-1/2 bg-[#E0457B] z-10 will-change-transform shadow-[0_-4px_30px_rgba(0,0,0,0.12)]"
       />
 
-      {/* Center Content Stage */}
+      {/* Atmospheric Radial Ambient Glow */}
+      <div 
+        className="absolute inset-0 z-15 pointer-events-none opacity-50"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(255, 233, 214, 0.25) 0%, rgba(163, 40, 92, 0.6) 80%)',
+        }}
+      />
+
+      {/* ====================================================
+          TOP TELEMETRY BAR (Ultra-Modern Editorial Studio)
+      ==================================================== */}
+      <header className="relative z-20 w-full px-6 sm:px-12 py-6 flex items-center justify-between text-[#FFE9D6]/80 font-satoshi text-[11px] sm:text-xs tracking-[0.25em] uppercase font-medium">
+        <div className="flex items-center gap-3">
+          <ButterflyIcon size={16} color="#FFE9D6" />
+          <span>THIAGO VSC // PLATAFORMA OFICIAL</span>
+        </div>
+
+        <div className="hidden sm:flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-400 animate-pulse" />
+            <span>LIVE 4K UHD</span>
+          </div>
+          <span className="opacity-40">|</span>
+          <span>41.3879° N, 2.1699° E</span>
+        </div>
+      </header>
+
+      {/* ====================================================
+          CENTER STAGE (Grand Kinetic Title + Audio Visualizer)
+      ==================================================== */}
       <div
         ref={centerStageRef}
         className="relative z-20 flex flex-col items-center justify-center px-4 sm:px-8 w-full max-w-5xl my-auto text-center"
       >
-        {/* Eyebrow Label */}
-        <div 
-          className="inline-flex items-center gap-2.5 mb-5 sm:mb-7 font-satoshi text-xs sm:text-sm tracking-[0.32em] uppercase text-[#FFE9D6]/90 font-medium"
-          style={{ textShadow: '0 2px 14px rgba(163,40,92,0.4)' }}
-        >
-          <ButterflyIcon size={16} color="#FFE9D6" />
-          <span>PLATAFORMA OFICIAL // EMISIÓN EXCLUSIVA</span>
+        {/* Subtle Live Audio Equalizer Cluster */}
+        <div className="flex items-end justify-center gap-1.5 h-6 mb-5 pointer-events-none">
+          {[0.4, 0.8, 0.55, 0.95, 0.7, 1.0, 0.65, 0.85, 0.45].map((h, i) => (
+            <span
+              key={i}
+              style={{
+                height: `${Math.max(25, h * 100)}%`,
+                animationDuration: `${0.4 + (i % 3) * 0.15}s`,
+              }}
+              className="w-1 rounded-full bg-[#FFE9D6] animate-pulse opacity-90 shadow-[0_0_8px_rgba(255,233,214,0.6)]"
+            />
+          ))}
         </div>
 
         {/* GRAND EDITORIAL TITLE: "THIAGOVSC" */}
@@ -227,7 +261,12 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
           >
             {brandLetters.map((char, index) => (
               <span key={index} className="inline-block overflow-hidden py-0.5">
-                <span className="preloader-letter inline-block transform-gpu will-change-transform">
+                <span 
+                  className="preloader-letter inline-block transform-gpu will-change-transform bg-gradient-to-b from-white via-[#FFE9D6] to-[#FFE9D6] bg-clip-text text-transparent"
+                  style={{
+                    filter: 'drop-shadow(0 2px 20px rgba(255, 233, 214, 0.35))',
+                  }}
+                >
                   {char}
                 </span>
               </span>
@@ -236,15 +275,15 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
         </div>
 
         {/* Sub-headline slogan */}
-        <p className="mt-3 sm:mt-5 font-satoshi text-xs sm:text-sm tracking-[0.24em] text-[#FFE9D6]/85 uppercase font-medium">
-          EL RITMO DE TU MUNDO · 24/7 EN VIVO
+        <p className="mt-3 sm:mt-5 font-satoshi text-xs sm:text-sm tracking-[0.28em] text-[#FFE9D6]/90 uppercase font-medium">
+          EL RITMO DE TU MUNDO · EMISIÓN CONTINUA 24/7
         </p>
 
-        {/* Sleek Minimalist Progress Track */}
+        {/* Modern Minimalist Progress Track with Glowing Tip */}
         <div className="mt-8 sm:mt-10 w-full max-w-md flex flex-col items-center">
           <div className="w-full h-[2.5px] bg-[#FFE9D6]/20 rounded-full overflow-hidden relative shadow-inner">
             <div
-              className="h-full bg-[#FFE9D6] rounded-full will-change-[width] shadow-[0_0_12px_rgba(255,233,214,0.8)] transition-all duration-75"
+              className="h-full bg-gradient-to-r from-[#FFE9D6]/70 via-[#FFE9D6] to-white rounded-full will-change-[width] shadow-[0_0_12px_rgba(255,233,214,0.9)] transition-all duration-75"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -255,13 +294,13 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
               <span className="w-2 h-2 rounded-full bg-[#FFE9D6] animate-pulse" />
               <span className="text-[#FFE9D6]/90">{statusText}</span>
             </div>
-            <div className="text-sm font-bold tracking-widest">
+            <div className="text-sm font-bold tracking-widest text-white">
               {progress < 10 ? `0${progress}` : progress}%
             </div>
           </div>
         </div>
 
-        {/* Luxury Enter CTA on Ready */}
+        {/* Luxury Apple-Style CTA Buttons on Ready */}
         <div
           ref={buttonsRef}
           className={`mt-8 flex flex-col sm:flex-row items-center gap-4 transition-all duration-300 ${
@@ -271,7 +310,7 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
           <button
             type="button"
             onClick={() => handleExit(true)}
-            className="group relative inline-flex items-center gap-3 px-8 py-3 rounded-full bg-[#FFE9D6] text-[#A3285C] font-satoshi text-xs uppercase tracking-[0.22em] font-bold shadow-[0_10px_30px_rgba(163,40,92,0.4)] hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer overflow-hidden"
+            className="group relative inline-flex items-center gap-3 px-8 py-3 rounded-full bg-[#FFE9D6] text-[#A3285C] font-satoshi text-xs uppercase tracking-[0.22em] font-bold shadow-[0_10px_30px_rgba(163,40,92,0.45)] hover:bg-white hover:scale-105 active:scale-95 transition-all cursor-pointer overflow-hidden"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3285C] opacity-75" />
@@ -291,12 +330,14 @@ export const LuxuryPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
         </div>
       </div>
 
-      {/* Footer Minimal Edition mark */}
-      <div className="absolute bottom-6 inset-x-0 z-20 flex justify-between px-8 text-[#FFE9D6]/60 font-satoshi text-[11px] tracking-[0.25em] uppercase font-medium">
-        <span>EST. 2026 // BARCELONA</span>
-        <span className="hidden sm:inline">ALTA FIDELIDAD AUDIBLE Y VISUAL</span>
+      {/* ====================================================
+          FOOTER TELEMETRY / EDITION SIGNATURE
+      ==================================================== */}
+      <footer className="relative z-20 w-full px-6 sm:px-12 py-6 flex justify-between items-center text-[#FFE9D6]/70 font-satoshi text-[11px] tracking-[0.25em] uppercase font-medium">
+        <span>EST. 2026 // BARCELONA STUDIO</span>
+        <span className="hidden sm:inline">ALTA DEFINICIÓN AUDIBLE Y VISUAL</span>
         <span>{progress < 10 ? `0${progress}` : progress} / 100</span>
-      </div>
+      </footer>
     </div>
   );
 };
