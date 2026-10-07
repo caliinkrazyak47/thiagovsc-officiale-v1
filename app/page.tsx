@@ -50,7 +50,6 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [autoplayFailed, setAutoplayFailed] = useState(false);
 
   const { isSoundEnabled, activeMediaId, setActiveMedia } = useMediaStore();
 
@@ -59,9 +58,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.play().catch(() => {
-      setAutoplayFailed(true);
-    });
+    video.play().catch(() => {});
   }, []);
 
   // Sync sound: only mute hero when another media plays or sound is disabled; NEVER pause hero
@@ -87,7 +84,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            video.play().catch(() => setAutoplayFailed(true));
+            video.play().catch(() => {});
           } else {
             video.pause();
           }
@@ -147,10 +144,10 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           }}
         />
 
-        {/* Hero Background Video - Sin tintes, sin overlay, idéntico al original */}
+        {/* Hero Background Video - Sin filtros, sin overlays, bucle puro continuo */}
         <video
           ref={videoRef}
-          src="/videos/hero.mp4"
+          src="https://res.cloudinary.com/v47hsuhi/video/upload/v1791278204/Requesting_video_edit_without_re__20261006111622.mp4"
           poster="/hero-poster.jpg"
           autoPlay
           loop
@@ -168,24 +165,16 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
             isVideoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ objectPosition: 'center 35%' }}
-        />
-
-        {/* Play Fallback button if browser blocked autoplay */}
-        {autoplayFailed && (
-          <div className="absolute inset-0 flex items-center justify-center z-30 bg-[#2B0F1E]/40 pointer-events-auto">
-            <button
-              type="button"
-              onClick={() => {
-                videoRef.current?.play().then(() => setAutoplayFailed(false));
-                setActiveMedia('hero');
-              }}
-              className="w-16 h-16 rounded-full bg-[#FFE9D6] text-[#A3285C] flex items-center justify-center shadow-luxury cursor-pointer hover:scale-105 active:scale-95 transition-transform"
-              aria-label="Reproducir video"
-            >
-              <Play className="w-7 h-7 fill-current translate-x-0.5" />
-            </button>
-          </div>
-        )}
+        >
+          <source 
+            src="https://res.cloudinary.com/v47hsuhi/video/upload/v1791278204/Requesting_video_edit_without_re__20261006111622.mp4" 
+            type="video/mp4" 
+          />
+          <source 
+            src="/videos/hero_cloudinary.mp4" 
+            type="video/mp4" 
+          />
+        </video>
 
         {/* 
           DESKTOP HERO STAGE (>= 768px):
@@ -250,26 +239,42 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           </motion.p>
         </div>
 
-        {/* Desktop Top Right: Ecualizador a la izquierda + Botón EN VIVO RADIO en la misma línea */}
+        {/* Desktop Top Right: Botón ULTRA-PREMIUM RADIO EN VIVO (sin botón de puntitos) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="hidden md:flex items-center gap-3 absolute z-20 pointer-events-auto"
+          className="hidden md:flex items-center absolute z-20 pointer-events-auto"
           style={{ right: '5vw', top: 'calc(56px + 6vh)' }}
         >
-          <SoundToggle compact />
-          <button
+          <motion.button
             type="button"
             onClick={onOpenRadio}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B] hover:opacity-95 text-[#FFE9D6] transition-all shadow-luxury cursor-pointer"
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="group relative inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B]/85 hover:bg-[#E0457B] text-[#FFE9D6] border border-[#FFE9D6]/40 shadow-[0_10px_30px_-5px_rgba(163,40,92,0.5),inset_0_1px_1px_rgba(255,233,214,0.35)] backdrop-blur-md transition-all duration-300 cursor-pointer overflow-hidden"
             title="Sintonizar Radio Live"
             data-cursor="Play"
           >
-            <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
-            <span className="w-2 h-2 rounded-full bg-[#FFE9D6] animate-pulse" />
-            <span className="font-satoshi text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
-          </button>
+            {/* Sheen sweep on hover */}
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+            
+            <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} className="transition-transform duration-300 group-hover:scale-110" />
+            
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE9D6] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFE9D6]" />
+            </span>
+
+            <span className="font-satoshi text-xs font-semibold tracking-[0.22em] uppercase">
+              RADIO EN VIVO
+            </span>
+
+            <span className="font-satoshi text-[10px] tracking-widest text-[#FFE9D6]/80 uppercase pl-1 border-l border-[#FFE9D6]/30">
+              24/7
+            </span>
+          </motion.button>
         </motion.div>
       </section>
 
@@ -288,16 +293,20 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           Emisión ininterrumpida 24/7 // Sonido de vanguardia
         </p>
 
-        <div className="mt-5 flex items-center gap-3">
-          <SoundToggle compact />
-          <button
+        <div className="mt-5 flex items-center">
+          <motion.button
             type="button"
             onClick={onOpenRadio}
-            className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[var(--surface)] text-[var(--berry)] font-satoshi text-xs font-medium tracking-[0.16em] uppercase shadow-sm cursor-pointer"
+            whileTap={{ scale: 0.97 }}
+            className="group relative inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#FFE9D6] text-[#A3285C] font-satoshi text-xs font-bold tracking-[0.18em] uppercase shadow-[0_8px_20px_rgba(163,40,92,0.35)] cursor-pointer"
           >
-            <ButterflyIcon size={12} color="#E0457B" strokeWidth={1.5} />
-            <span>EN VIVO RADIO</span>
-          </button>
+            <ButterflyIcon size={13} color="#A3285C" strokeWidth={1.5} />
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3285C] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#A3285C]" />
+            </span>
+            <span>RADIO EN VIVO</span>
+          </motion.button>
         </div>
       </div>
     </div>

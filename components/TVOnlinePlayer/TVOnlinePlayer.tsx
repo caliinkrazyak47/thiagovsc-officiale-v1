@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Maximize, Minimize, Volume2, VolumeX, Shuffle, Play, Pause, Plus, Minus } from 'lucide-react';
+import { Maximize, Minimize, Volume2, VolumeX, Shuffle, Play, Pause, Plus, Minus, Tv } from 'lucide-react';
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
@@ -12,7 +12,6 @@ import { useMediaStore } from '@/lib/mediaStore';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
-export const PLAYLIST_ID = 'PLALJOp7e_srk';
 export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
 
 export const TVOnlinePlayer: React.FC = () => {
@@ -21,12 +20,12 @@ export const TVOnlinePlayer: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const screenWrapperRef = useRef<HTMLDivElement>(null);
 
-  const { activeMediaId } = useMediaStore();
+  const { activeMediaId, setActiveMedia } = useMediaStore();
   
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [volume, setVolumeState] = useState<number>(100);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volume, setVolumeState] = useState<number>(85);
+  const [isMuted, setIsMuted] = useState<boolean>(true);
   const [clientOrigin, setClientOrigin] = useState<string>('');
 
   useEffect(() => {
@@ -43,9 +42,7 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, [activeMediaId, isPlaying]);
 
-  const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(() => {
-    return Math.floor(Math.random() * PLAYLIST_VIDEOS.length);
-  });
+  const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
   const currentVideoIndexRef = useRef<number>(currentVideoIndex);
   currentVideoIndexRef.current = currentVideoIndex;
 
@@ -62,15 +59,28 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, []);
 
+  const handleIframeLoaded = useCallback(() => {
+    // Force maximum 1080p HD quality and smooth playback
+    setTimeout(() => {
+      sendCommand('setPlaybackQuality', ['hd1080']);
+      sendCommand('setSuggestedQuality', ['hd1080']);
+      if (isPlaying) {
+        sendCommand('playVideo');
+      }
+    }, 500);
+  }, [isPlaying, sendCommand]);
+
   const togglePlayPause = useCallback(() => {
     if (isPlaying) {
       sendCommand('pauseVideo');
       setIsPlaying(false);
     } else {
+      setActiveMedia('tv');
       sendCommand('playVideo');
+      sendCommand('setPlaybackQuality', ['hd1080']);
       setIsPlaying(true);
     }
-  }, [isPlaying, sendCommand]);
+  }, [isPlaying, sendCommand, setActiveMedia]);
 
   const playNextRandomVideo = useCallback(() => {
     const total = PLAYLIST_VIDEOS.length;
@@ -84,21 +94,25 @@ export const TVOnlinePlayer: React.FC = () => {
     const nextVideo = PLAYLIST_VIDEOS[nextIndex];
     if (nextVideo && iframeRef.current) {
       const nextOriginParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
-      iframeRef.current.src = `https://www.youtube.com/embed/${nextVideo.id}?list=PLALJOp7e_srk&autoplay=1&mute=0&enablejsapi=1&playsinline=1&vq=hd2160&rel=0&hd=1${nextOriginParam}`;
+      const muteParam = isMuted ? '1' : '0';
+      iframeRef.current.src = `https://www.youtube.com/embed/${nextVideo.id}?autoplay=1&mute=${muteParam}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1${nextOriginParam}`;
       setIsPlaying(true);
+      setActiveMedia('tv');
     }
-  }, [clientOrigin]);
+  }, [clientOrigin, isMuted, setActiveMedia]);
 
   const toggleMute = useCallback(() => {
     if (isMuted) {
+      setActiveMedia('tv');
       sendCommand('unMute');
-      sendCommand('setVolume', [volume || 80]);
+      sendCommand('setVolume', [volume || 85]);
+      sendCommand('playVideo');
       setIsMuted(false);
     } else {
       sendCommand('mute');
       setIsMuted(true);
     }
-  }, [isMuted, volume, sendCommand]);
+  }, [isMuted, volume, sendCommand, setActiveMedia]);
 
   const handleVolumeUp = useCallback(() => {
     const newVol = Math.min(100, volume + 10);
@@ -148,29 +162,31 @@ export const TVOnlinePlayer: React.FC = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // GSAP ScrollTrigger Scrub: smooth scale into view
+  // Performance-optimized reveal: fade in once without continuously scaling chassis during scroll
   useGSAP(() => {
     if (!sectionRef.current || !chassisRef.current) return;
 
     gsap.fromTo(
       chassisRef.current,
-      { scale: 0.88 },
+      { opacity: 0.85, y: 30 },
       {
-        scale: 1,
-        ease: 'none',
+        opacity: 1,
+        y: 0,
+        duration: 0.9,
+        ease: 'power2.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 85%',
-          end: 'center center',
-          scrub: 1,
+          start: 'top 80%',
+          once: true,
         },
       }
     );
   }, { scope: sectionRef });
 
   const originParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
-  const initialVideoId = currentVideo?.id || '2Vv-BfVoq4g';
-  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?list=PLALJOp7e_srk&autoplay=1&mute=0&enablejsapi=1&playsinline=1&vq=hd2160&rel=0&hd=1${originParam}`;
+  const initialVideoId = currentVideo?.id || 'kPa7bsKwL-c';
+  // Autoplay=1 with mute=1 ensures zero browser autoplay blocking; enablejsapi=1 allows HD commands; no broken playlist ID
+  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1${originParam}`;
 
   return (
     <section
@@ -197,13 +213,12 @@ export const TVOnlinePlayer: React.FC = () => {
         <div 
           ref={chassisRef}
           style={{ width: 'min(1100px, 88vw)' }}
-          className="p-[12px] bg-[var(--petal)] rounded-[24px] border border-[var(--line)] shadow-luxury flex flex-col gap-3 mx-auto transition-transform"
-          data-cursor="Play"
+          className="p-[12px] bg-[var(--petal)] rounded-[24px] border border-[var(--line)] shadow-luxury flex flex-col gap-3 mx-auto"
         >
           {/* Pantalla 16:9 con radius 16px */}
           <div
             ref={screenWrapperRef}
-            className={`relative w-full aspect-video rounded-[16px] overflow-hidden bg-[var(--berry)] ${
+            className={`relative w-full aspect-video rounded-[16px] overflow-hidden bg-black ${
               isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !z-[9999] !rounded-none !max-w-none' : ''
             }`}
           >
@@ -212,11 +227,32 @@ export const TVOnlinePlayer: React.FC = () => {
               id="tv-online-yt-iframe"
               src={youtubeEmbedUrl}
               title="Thiago VSC TV Online"
-              className="w-full h-full border-0"
+              className="w-full h-full border-0 transform-gpu"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
+              loading="eager"
+              onLoad={handleIframeLoaded}
             />
+
+            {/* Quick Unmute Pill Overlay if muted */}
+            {isMuted && !isFullscreen && (
+              <button
+                type="button"
+                onClick={toggleMute}
+                className="absolute bottom-4 left-4 z-20 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[var(--surface)]/90 backdrop-blur-md text-[var(--berry)] font-satoshi text-xs tracking-wider uppercase shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-[var(--line)]"
+                title="Activar audio de la emisión"
+              >
+                <VolumeX className="w-3.5 h-3.5 text-[var(--brand)] animate-pulse" />
+                <span>Activar sonido</span>
+              </button>
+            )}
+
+            {/* Live Indicator Badge on top left of screen */}
+            <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-satoshi text-[11px] tracking-widest uppercase pointer-events-none">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span>EMISIÓN HD</span>
+            </div>
 
             {isFullscreen && (
               <button
@@ -254,6 +290,11 @@ export const TVOnlinePlayer: React.FC = () => {
                 <Shuffle className="w-3 h-3" />
                 <span>Aleatorio</span>
               </button>
+
+              <div className="hidden md:flex items-center gap-1.5 text-[11px] text-[var(--berry)]/70 pl-2 border-l border-[var(--line)] font-medium truncate max-w-[280px]">
+                <Tv className="w-3.5 h-3.5 text-[var(--brand)] shrink-0" />
+                <span className="truncate">{currentVideo?.title}</span>
+              </div>
             </div>
 
             {/* Controles Derecha */}
