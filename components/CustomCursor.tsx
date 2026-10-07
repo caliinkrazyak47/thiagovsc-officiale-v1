@@ -9,7 +9,6 @@ export const CustomCursor: React.FC = () => {
   const [isTouch, setIsTouch] = useState(false);
 
   useEffect(() => {
-    // Check touch devices
     if (window.matchMedia('(pointer: coarse)').matches) {
       setIsTouch(true);
       return;
@@ -19,7 +18,6 @@ export const CustomCursor: React.FC = () => {
       setPos({ x: e.clientX, y: e.clientY });
       if (!isVisible) setIsVisible(true);
 
-      // Check hover targets for data-cursor attribute
       const target = e.target as HTMLElement | null;
       const cursorTarget = target?.closest('[data-cursor]') as HTMLElement | null;
       if (cursorTarget) {
@@ -53,13 +51,14 @@ export const CustomCursor: React.FC = () => {
         left: `${pos.x}px`,
         top: `${pos.y}px`,
         transform: 'translate(-50%, -50%)',
+        mixBlendMode: isExpanded ? 'normal' : 'multiply',
       }}
     >
       <div
-        className={`rounded-full flex items-center justify-center transition-all duration-300 font-mono font-bold tracking-widest text-[11px] text-white shadow-editorial ${
+        className={`rounded-full flex items-center justify-center transition-all duration-300 font-jost font-medium tracking-[0.2em] text-[12px] text-white ${
           isExpanded
-            ? 'w-16 h-16 bg-[#DE4176] scale-100'
-            : 'w-3 h-3 bg-[#DE4176] scale-100'
+            ? 'w-20 h-20 bg-[#DE4176] shadow-[0_24px_48px_-24px_rgba(176,51,102,0.25)]'
+            : 'w-2.5 h-2.5 bg-[#DE4176]'
         }`}
         style={{
           transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',

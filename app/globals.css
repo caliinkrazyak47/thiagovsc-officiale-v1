@@ -2,92 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:ital,wght@0,300..700;1,300..700&display=swap');
 
 :root {
-  /* BRAND PALETTE SKILL TOKENS */
-  --pink: #DE4176;
-  --white: #FFFFFF;
-  --blush: #FFF4F7;
-  --ink: #3B0D22;
+  /* THIAGO BRAND PALETTE TOKENS (SOLO COLORES PLANOS) */
+  --perla: #FFFFFF;
+  --porcelana: #FFF6F9;
+  --polvo: #FBE3EC;
+  --rosa: #DE4176;
+  --frambuesa: #B03366;
+  --nacar: rgba(224, 69, 123, 0.14);
 
-  /* MOTION EASING */
-  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+  /* EASE EDITORIAL */
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html, body {
-  background-color: var(--white);
-  color: var(--ink);
-  font-family: 'Inter', sans-serif;
+  background-color: var(--perla);
+  color: var(--frambuesa);
+  font-family: 'Jost', sans-serif;
   overflow-x: hidden;
-  selection-background-color: var(--pink);
-  selection-color: var(--white);
+  selection-background-color: var(--rosa);
+  selection-color: var(--perla);
 }
 
 ::selection {
-  background-color: var(--pink);
-  color: var(--white);
+  background-color: var(--rosa);
+  color: var(--perla);
 }
 
 ::-webkit-scrollbar {
   display: none;
 }
 
-/* TYPOGRAPHY UTILITIES */
-.font-display {
-  font-family: 'Archivo Black', sans-serif;
+/* TIPOGRAFÍAS DE MARCA CARA */
+.font-bodoni {
+  font-family: 'Bodoni Moda', serif;
 }
 
-.font-serif-italic {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
+.font-jost {
+  font-family: 'Jost', sans-serif;
 }
 
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
+/* TÍTULOS DE SECCIÓN MODERADOS */
+.editorial-title {
+  font-family: 'Bodoni Moda', serif;
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+  color: var(--frambuesa);
 }
 
-.font-sans {
-  font-family: 'Inter', sans-serif;
-}
-
-/* EDITORIAL SECTION HEADERS */
-.editorial-h2 {
-  font-size: clamp(3rem, 8vw, 8.5rem);
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-}
-
-/* TELEMETRY LABELS */
-.editorial-pill {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
+/* EYEBROW CON MARIPOSA DE LÍNEA SIN BORDE NI FONDO */
+.editorial-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--pink);
-  border: 1px solid var(--pink);
-  background-color: transparent;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
+  color: var(--rosa);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
-/* EDITORIAL BODY */
-.editorial-body {
-  font-family: 'Inter', sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  color: rgba(59, 13, 34, 0.75);
+/* CUERPO DE TEXTO */
+.editorial-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 16.5px;
+  line-height: 1.7;
+  color: var(--frambuesa);
 }
 
-/* EDITORIAL ALLOWED SHADOW */
-.shadow-editorial {
-  box-shadow: 0 30px 60px -20px rgba(59, 13, 34, 0.18);
+/* SOMBRA DE LUJO PERMITIDA */
+.shadow-luxury {
+  box-shadow: 0 24px 48px -24px rgba(176, 51, 102, 0.25);
 }
 
-/* MARQUEE ANIMATION */
+/* MARQUEE KINETIC */
 .marquee-wrapper {
   display: flex;
   overflow: hidden;
@@ -96,7 +91,7 @@ html, body {
 
 .marquee-content {
   display: flex;
-  animation: scroll-marquee 30s linear infinite;
+  animation: scroll-marquee 28s linear infinite;
 }
 
 .marquee-content:hover {
@@ -108,29 +103,17 @@ html, body {
   100% { transform: translateX(-50%); }
 }
 
-/* FAST TELEVISION PLAYER 16:9 CONTAINER */
-.reproductor-tv-editorial {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  aspect-ratio: 16 / 9;
+/* BOTONES HÁPTICOS CON RADIUS 999PX */
+.btn-luxury {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-radius: 999px;
+  transition: transform 180ms var(--ease-luxury), box-shadow 180ms ease-out, background-color 200ms ease, color 200ms ease;
 }
 
-.reproductor-tv-editorial iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* HAPTIC / ELASTIC BUTTON PRESS */
-.haptic-press {
-  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease-out;
-}
-
-.haptic-press:active {
+.btn-luxury:active {
   transform: scale(0.96) !important;
 }
 

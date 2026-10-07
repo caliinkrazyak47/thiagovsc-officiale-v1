@@ -5,31 +5,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        pink: {
-          DEFAULT: "var(--pink)",
-          solid: "#DE4176",
-        },
-        white: {
-          DEFAULT: "#FFFFFF",
-        },
-        blush: {
-          DEFAULT: "#FFF4F7",
-        },
-        ink: {
-          DEFAULT: "#3B0D22",
-        },
+        perla: "#FFFFFF",
+        porcelana: "#FFF6F9",
+        polvo: "#FBE3EC",
+        rosa: "#DE4176",
+        frambuesa: "#B03366",
+        nacar: "rgba(224, 69, 123, 0.14)",
       },
       boxShadow: {
-        editorial: "0 30px 60px -20px rgba(59, 13, 34, 0.18)",
+        luxury: "0 24px 48px -24px rgba(176, 51, 102, 0.25)",
       },
       fontFamily: {
-        display: ["'Archivo Black'", "sans-serif"],
-        serif: ["'Instrument Serif'", "serif"],
-        mono: ["'JetBrains Mono'", "monospace"],
-        sans: ["'Inter'", "sans-serif"],
+        bodoni: ["'Bodoni Moda'", "serif"],
+        jost: ["'Jost'", "sans-serif"],
       },
       transitionTimingFunction: {
-        editorial: "cubic-bezier(0.22, 1, 0.36, 1)",
+        luxury: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     },
   },

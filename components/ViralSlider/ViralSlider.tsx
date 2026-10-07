@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import Autoplay from 'embla-carousel-autoplay';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   ChevronLeft, 
   ChevronRight, 
   Play, 
-  Pause, 
   Volume2, 
   VolumeX, 
   Heart, 
@@ -17,12 +17,9 @@ import {
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-} from '@/components/ui/carousel';
+import { ButterflyIcon } from '@/components/ButterflyIcon';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface TikTokVideoItem {
   user: string;
@@ -107,9 +104,9 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
 
   return (
     <div 
-      className="relative w-full h-full bg-[#3B0D22] select-none overflow-hidden cursor-pointer group"
+      className="relative w-full h-full bg-[#B03366] select-none overflow-hidden cursor-pointer group"
       onClick={togglePlay}
-      data-cursor="VER"
+      data-cursor="Ver"
     >
       <video
         ref={videoRef}
@@ -122,98 +119,99 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
         className="w-full h-full object-cover"
       />
 
-      {/* Play/Pause Overlay indicator */}
+      {/* Indicador Play cuando está pausado */}
       {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#3B0D22]/40 pointer-events-none transition-opacity">
-          <div className="w-16 h-16 rounded-full bg-white text-[#DE4176] flex items-center justify-center shadow-editorial">
-            <Play className="w-7 h-7 fill-current translate-x-0.5" />
+        <div className="absolute inset-0 flex items-center justify-center bg-[#B03366]/30 pointer-events-none transition-opacity">
+          <div className="w-14 h-14 rounded-full bg-[#FFFFFF] text-[#DE4176] flex items-center justify-center shadow-luxury">
+            <Play className="w-6 h-6 fill-current translate-x-0.5" />
           </div>
         </div>
       )}
 
-      {/* Top Controls: Sound toggle */}
-      <div className="absolute top-4 right-4 z-20 pointer-events-auto">
+      {/* Top Left Signature Butterfly in white */}
+      <div className="absolute top-3.5 left-3.5 z-20 pointer-events-none opacity-85">
+        <ButterflyIcon size={16} color="#FFFFFF" strokeWidth={1.5} />
+      </div>
+
+      {/* Mute button */}
+      <div className="absolute top-3.5 right-3.5 z-20 pointer-events-auto">
         <button
           type="button"
           onClick={toggleMute}
-          className="w-10 h-10 rounded-full bg-white/90 text-[#3B0D22] hover:bg-white flex items-center justify-center shadow-sm transition-transform active:scale-90"
+          className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] hover:bg-[#FFFFFF] flex items-center justify-center shadow-sm transition-transform active:scale-90"
           title={isMuted ? 'Activar sonido' : 'Silenciar'}
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-[#DE4176]" /> : <Volume2 className="w-4 h-4 text-[#3B0D22]" />}
+          {isMuted ? <VolumeX className="w-4 h-4 text-[#DE4176]" /> : <Volume2 className="w-4 h-4 text-[#B03366]" />}
         </button>
       </div>
 
       {/* Right Social Actions Rail */}
-      <div className="absolute right-3.5 bottom-16 z-20 flex flex-col items-center gap-3.5 pointer-events-auto">
-        {/* Like */}
+      <div className="absolute right-3 bottom-14 z-20 flex flex-col items-center gap-3 pointer-events-auto">
         <button
           type="button"
           onClick={handleLike}
-          className="flex flex-col items-center gap-1 cursor-pointer transition-transform active:scale-90"
+          className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
         >
           <div className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm",
-            hasLiked ? "bg-[#DE4176] text-white" : "bg-white/90 text-[#3B0D22]"
+            "w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm",
+            hasLiked ? "bg-[#DE4176] text-white" : "bg-[#FFFFFF]/90 text-[#B03366]"
           )}>
-            <Heart className={cn("w-5 h-5", hasLiked && "fill-current")} />
+            <Heart className={cn("w-4 h-4", hasLiked && "fill-current")} />
           </div>
-          <span className="text-[10px] font-mono font-bold text-white drop-shadow">{item.likes}</span>
+          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.likes}</span>
         </button>
 
-        {/* Comments */}
-        <div className="flex flex-col items-center gap-1">
-          <div className="w-10 h-10 rounded-full bg-white/90 text-[#3B0D22] flex items-center justify-center shadow-sm">
-            <MessageCircle className="w-5 h-5" />
+        <div className="flex flex-col items-center gap-0.5">
+          <div className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] flex items-center justify-center shadow-sm">
+            <MessageCircle className="w-4 h-4" />
           </div>
-          <span className="text-[10px] font-mono font-bold text-white drop-shadow">{item.comments}</span>
+          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.comments}</span>
         </div>
 
-        {/* Bookmark */}
         <button
           type="button"
           onClick={handleBookmark}
-          className="flex flex-col items-center gap-1 cursor-pointer transition-transform active:scale-90"
+          className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
         >
           <div className={cn(
-            "w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm",
-            hasBookmarked ? "bg-[#DE4176] text-white" : "bg-white/90 text-[#3B0D22]"
+            "w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm",
+            hasBookmarked ? "bg-[#DE4176] text-white" : "bg-[#FFFFFF]/90 text-[#B03366]"
           )}>
-            <Bookmark className={cn("w-5 h-5", hasBookmarked && "fill-current")} />
+            <Bookmark className={cn("w-4 h-4", hasBookmarked && "fill-current")} />
           </div>
-          <span className="text-[10px] font-mono font-bold text-white drop-shadow">{item.bookmarks}</span>
+          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">{item.bookmarks}</span>
         </button>
 
-        {/* Share */}
         <button
           type="button"
           onClick={handleShare}
-          className="flex flex-col items-center gap-1 cursor-pointer transition-transform active:scale-90"
+          className="flex flex-col items-center gap-0.5 cursor-pointer transition-transform active:scale-90"
         >
-          <div className="w-10 h-10 rounded-full bg-white/90 text-[#3B0D22] flex items-center justify-center shadow-sm">
-            <Share2 className="w-5 h-5" />
+          <div className="w-9 h-9 rounded-full bg-[#FFFFFF]/90 text-[#B03366] flex items-center justify-center shadow-sm">
+            <Share2 className="w-4 h-4" />
           </div>
-          <span className="text-[10px] font-mono font-bold text-white drop-shadow">Share</span>
+          <span className="text-[9px] font-jost font-semibold text-white drop-shadow">Share</span>
         </button>
       </div>
 
       {/* Bottom Creator Handle */}
-      <div className="absolute bottom-4 left-4 right-16 z-20 pointer-events-auto">
+      <div className="absolute bottom-3.5 left-3.5 right-14 z-20 pointer-events-auto">
         <a
           href={`https://www.tiktok.com/@${item.user.replace('@', '')}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="inline-flex items-center gap-1.5 font-display text-base text-white hover:text-[#FFF4F7] transition-colors drop-shadow"
+          className="inline-flex items-center gap-1 font-jost font-bold text-sm text-white hover:text-[#FFF6F9] transition-colors drop-shadow"
         >
           <span>@{item.user}</span>
-          <span className="w-4 h-4 rounded-full bg-white flex items-center justify-center text-[#DE4176] text-[9px] font-bold">
-            <Check className="w-2.5 h-2.5 stroke-[3]" />
+          <span className="w-3.5 h-3.5 rounded-full bg-white flex items-center justify-center text-[#DE4176] text-[8px] font-bold">
+            <Check className="w-2 h-2 stroke-[3]" />
           </span>
         </a>
       </div>
 
       {/* Progress Bar */}
-      <div className="absolute bottom-0 inset-x-0 h-1 bg-white/20 z-30 pointer-events-none">
+      <div className="absolute bottom-0 inset-x-0 h-1 bg-white/25 z-30 pointer-events-none">
         <div 
           className="h-full bg-white transition-all duration-100"
           style={{ width: `${progress}%` }}
@@ -224,8 +222,9 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
 };
 
 export const ViralSlider: React.FC = () => {
-  const [api, setApi] = useState<CarouselApi>();
-  const [current, setCurrent] = useState(0);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const tiktokVideos: TikTokVideoItem[] = [
     { 
@@ -270,127 +269,96 @@ export const ViralSlider: React.FC = () => {
     },
   ];
 
+  // GSAP Horizontal Scroll Pinning on Desktop
   useEffect(() => {
-    if (!api) return;
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+    if (isMobile) return;
 
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap());
-    });
-  }, [api]);
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    if (!section || !track) return;
+
+    const scrollDistance = track.scrollWidth - track.clientWidth;
+
+    const ctx = gsap.context(() => {
+      gsap.to(track, {
+        x: -scrollDistance,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          pin: true,
+          scrub: 1,
+          start: 'top top',
+          end: () => `+=${scrollDistance}`,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const index = Math.min(
+              tiktokVideos.length - 1,
+              Math.floor(self.progress * tiktokVideos.length)
+            );
+            setActiveIndex(index);
+          },
+        },
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, [tiktokVideos.length]);
 
   return (
     <section 
+      ref={sectionRef}
       id="tiktok" 
-      className="w-full relative bg-[#DE4176] text-white py-20 sm:py-28 md:py-36 overflow-hidden select-none"
+      className="w-full relative bg-[#FBE3EC] text-[#B03366] py-16 sm:py-24 md:py-28 px-[6vw] overflow-hidden select-none border-b border-[rgba(224,69,123,0.14)]"
     >
-      {/* Editorial Header */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12 flex flex-col md:flex-row items-start md:items-end justify-between mb-12 sm:mb-16 z-10 relative">
-        <div>
-          {/* Pill 02 / CONTENIDO VIRAL 24/7 */}
-          <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-white border border-white bg-transparent px-3.5 py-1.5 rounded-full inline-flex items-center mb-5">
-            02 / CONTENIDO VIRAL 24/7
-          </span>
-          
-          {/* H2 Title: TikTok in white, Feed in serif-italic blush */}
-          <h2 className="editorial-h2 flex flex-col tracking-[-0.04em]">
-            <span className="font-display text-white uppercase">TikTok</span>
-            <span className="font-serif-italic text-[#FFF4F7] font-normal leading-none -mt-2">Feed</span>
-          </h2>
-        </div>
-
-        {/* Counter Info */}
-        <div className="flex flex-col md:items-end gap-1 mt-6 md:mt-0 font-mono">
-          <span className="text-xs font-bold tracking-widest text-[#FFF4F7] uppercase">
-            VIDEO 0{current + 1} / 0{tiktokVideos.length}
-          </span>
-          <span className="text-[11px] text-white/75 font-sans tracking-wide">
-            HAZ CLIC EN CUALQUIER VIDEO PARA REPRODUCIR
-          </span>
-        </div>
-      </div>
-
-      {/* Carousel Track with Left & Right Circular White Arrows */}
-      <div className="w-full relative px-2 sm:px-6 md:px-12 z-20">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-14">
         
-        {/* Left Arrow Button in White Circle with Pink Icon */}
-        <button
-          type="button"
-          onClick={() => api?.scrollPrev()}
-          aria-label="Video anterior"
-          className="absolute left-2 sm:left-4 md:left-8 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-[#DE4176] flex items-center justify-center shadow-editorial hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer haptic-press"
-        >
-          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
-        </button>
+        {/* Header Fijo a la Izquierda */}
+        <div className="w-full lg:w-[320px] shrink-0 flex flex-col justify-between py-2">
+          <div>
+            <div className="editorial-eyebrow mb-4">
+              <ButterflyIcon size={14} color="#DE4176" />
+              <span>02  Viral</span>
+            </div>
 
-        {/* Right Arrow Button in White Circle with Pink Icon */}
-        <button
-          type="button"
-          onClick={() => api?.scrollNext()}
-          aria-label="Video siguiente"
-          className="absolute right-2 sm:right-4 md:right-8 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white text-[#DE4176] flex items-center justify-center shadow-editorial hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer haptic-press"
-        >
-          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
-        </button>
+            <h2 className="editorial-title text-[#B03366] mb-5">
+              TikTok <span className="italic text-[#DE4176]">Feed</span>
+            </h2>
 
-        {/* Embla Carousel Container */}
-        <div className="w-full overflow-hidden px-4 sm:px-14">
-          <Carousel
-            setApi={setApi}
-            className="w-full"
-            opts={{
-              loop: true,
-              align: 'center',
-              slidesToScroll: 1,
-            }}
-            plugins={[
-              Autoplay({
-                delay: 4500,
-                stopOnInteraction: true,
-                stopOnMouseEnter: true,
-              }),
-            ]}
-          >
-            <CarouselContent className="flex h-[560px] sm:h-[600px] md:h-[640px] w-full items-center -ml-4 sm:-ml-6">
-              {tiktokVideos.map((video, index) => {
-                const isActive = current === index;
-                return (
-                  <CarouselItem
-                    key={index}
-                    className="relative flex flex-col items-center justify-center shrink-0 pl-4 sm:pl-6 basis-auto"
-                  >
-                    {/* Tarjetas de videos con radius 28px y borde 6px --white */}
-                    <div
-                      className={cn(
-                        'relative w-[85vw] sm:w-[320px] md:w-[340px] lg:w-[350px] h-[520px] sm:h-[560px] md:h-[600px] rounded-[28px] border-[6px] border-white overflow-hidden shadow-editorial transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] select-none',
-                        isActive
-                          ? 'scale-[1.08] opacity-100 z-20'
-                          : 'scale-95 opacity-60 z-10'
-                      )}
-                    >
-                      <CustomTikTokPlayer item={video} isActive={isActive} />
-                    </div>
-                  </CarouselItem>
-                );
-              })}
-            </CarouselContent>
-          </Carousel>
+            <p className="editorial-text text-[#B03366] mb-6">
+              Los momentos más virales de nuestras transmisiones y colaboraciones exclusivas.
+            </p>
+          </div>
+
+          <div className="hidden lg:flex flex-col gap-2 font-jost text-xs tracking-wider uppercase text-[#B03366]/70">
+            <span>Desplaza para explorar</span>
+            <div className="w-12 h-[1px] bg-[#DE4176]" />
+          </div>
         </div>
-      </div>
 
-      {/* Paginación en barras finas blancas */}
-      <div className="flex justify-center items-center gap-2 mt-12 z-20 relative">
-        {tiktokVideos.map((_, idx) => (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => api?.scrollTo(idx)}
-            aria-label={`Ir al video ${idx + 1}`}
-            className={cn(
-              'h-1 rounded-full transition-all duration-300 cursor-pointer',
-              current === idx ? 'w-10 bg-white' : 'w-4 bg-white/40 hover:bg-white/80'
-            )}
-          />
-        ))}
+        {/* Track de Tarjetas (Horizontal Pinned / Scroll-snap en móvil) */}
+        <div 
+          ref={trackRef}
+          className="flex-1 w-full flex items-center gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 snap-x snap-mandatory"
+        >
+          {tiktokVideos.map((video, idx) => {
+            const isActive = activeIndex === idx;
+
+            return (
+              <div
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={cn(
+                  "shrink-0 w-[270px] sm:w-[300px] h-[480px] sm:h-[530px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury snap-center transition-transform duration-500",
+                  isActive ? "scale-[1.05]" : "scale-100 opacity-90 hover:opacity-100"
+                )}
+              >
+                <CustomTikTokPlayer item={video} isActive={isActive} />
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );

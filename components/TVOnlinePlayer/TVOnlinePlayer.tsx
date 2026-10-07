@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { Maximize, Minimize, Volume2, VolumeX, Shuffle, Play, Pause, Plus, Minus } from 'lucide-react';
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
+import { ButterflyIcon } from '@/components/ButterflyIcon';
 
 export const PLAYLIST_ID = 'PLALJOp7e_srk';
 export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
@@ -41,12 +42,6 @@ export const TVOnlinePlayer: React.FC = () => {
       } catch {}
     }
   }, []);
-
-  const setMaxResolution = useCallback(() => {
-    sendCommand('setPlaybackQuality', ['hd2160']);
-    sendCommand('setPlaybackQualityRange', ['hd2160', 'hd2160']);
-    sendCommand('setPlaybackQuality', ['highres']);
-  }, [sendCommand]);
 
   const togglePlayPause = useCallback(() => {
     if (isPlaying) {
@@ -142,143 +137,154 @@ export const TVOnlinePlayer: React.FC = () => {
   return (
     <section
       id="tv"
-      className="w-full relative bg-white py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 select-none"
+      className="w-full relative bg-[#FFFFFF] py-16 sm:py-24 md:py-28 px-[6vw] select-none border-b border-[rgba(224,69,123,0.14)]"
     >
-      <div className="max-w-6xl mx-auto flex flex-col items-center">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         
-        {/* EDITORIAL HEADER */}
-        <div className="w-full flex flex-col items-center text-center mb-10 sm:mb-14">
-          <span className="editorial-pill mb-5">
-            01 / TRANSMISIÓN 24/7 EN DIRECTO
-          </span>
-
-          <h2 className="editorial-h2 flex flex-col items-center text-center tracking-[-0.04em]">
-            <span className="font-display text-[#3B0D22] uppercase">TV</span>
-            <span className="font-serif-italic text-[#DE4176] font-normal leading-none -mt-2">Online</span>
-          </h2>
-
-          <p className="mt-4 font-sans text-[17px] text-[#3B0D22]/75 max-w-xl text-center">
-            Emisión continua en alta definición 4K Ultra HD. Videos oficiales, directos y momentos virales exclusivos.
-          </p>
-        </div>
-
-        {/* CINEMA FRAME CON BISEL DE 14PX EN --BLUSH, RADIUS 32PX Y BORDE --PINK 25% */}
-        <div 
-          className="w-full p-[14px] bg-[#FFF4F7] rounded-[32px] border border-[#DE4176]/25 shadow-editorial"
-          data-cursor="PLAY"
-        >
-          {/* Inner Video Screen */}
-          <div
-            ref={screenWrapperRef}
-            className={`relative w-full aspect-video rounded-[20px] overflow-hidden bg-[#3B0D22] ${
-              isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !z-[9999] !rounded-none !max-w-none' : ''
-            }`}
-          >
-            <iframe
-              ref={iframeRef}
-              id="tv-online-original-yt-iframe"
-              src={youtubeEmbedUrl}
-              title="Thiago VSC TV Online Player"
-              className="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
-
-            {isFullscreen && (
-              <button
-                type="button"
-                onClick={handleToggleFullscreen}
-                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-white text-[#3B0D22] font-mono text-xs font-bold tracking-wider uppercase shadow-editorial cursor-pointer"
-              >
-                <span>SALIR</span>
-                <Minimize className="w-4 h-4" />
-              </button>
-            )}
+        {/* COLUMNA IZQUIERDA (Cols 1-4): Título, Párrafo corto e Info en vivo */}
+        <div className="lg:col-span-4 flex flex-col justify-center">
+          {/* Eyebrow con mariposa de línea sin borde ni fondo */}
+          <div className="editorial-eyebrow mb-4">
+            <ButterflyIcon size={14} color="#DE4176" />
+            <span>01  En directo</span>
           </div>
 
-          {/* BARRA DE CONTROLES INFERIOR EN --WHITE CON TEXTO --INK */}
-          <div className="mt-3.5 bg-white rounded-2xl p-3 sm:p-4 border border-[#3B0D22]/10 flex flex-wrap items-center justify-between text-[#3B0D22] font-mono text-xs gap-3">
-            
-            {/* Left Controls */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button
-                type="button"
-                onClick={togglePlayPause}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full font-bold uppercase transition-all shadow-sm text-[11px] bg-[#DE4176] text-white hover:bg-[#c22e61] cursor-pointer haptic-press"
-                title={isPlaying ? "Pausar emisión" : "Reanudar emisión"}
-              >
-                {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-                <span>{isPlaying ? 'PAUSA' : 'PLAY'}</span>
-              </button>
+          {/* Título Bodoni Moda: TV Online con Online en itálica */}
+          <h2 className="editorial-title text-[#B03366] mb-5">
+            TV <span className="italic text-[#DE4176]">Online</span>
+          </h2>
 
-              <button
-                type="button"
-                onClick={playNextRandomVideo}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-[#DE4176]/30 text-[#DE4176] hover:bg-[#FFF4F7] font-bold uppercase transition-all text-[11px] cursor-pointer haptic-press"
-                title="Siguiente video aleatorio"
-              >
-                <Shuffle className="w-3 h-3" />
-                <span>ALEATORIO</span>
-              </button>
+          <p className="editorial-text text-[#B03366] mb-6">
+            La emisión continua de Thiago VSC en 4K Ultra HD. Música urbana, sesiones exclusivas y videoclips de vanguardia transmitidos sin interrupción.
+          </p>
 
-              <span className="hidden md:inline-block font-sans text-xs text-[#3B0D22]/70 font-semibold truncate max-w-xs">
-                {currentVideo?.title}
-              </span>
+          {/* Info del programa en vivo */}
+          <div className="pt-4 border-t border-[rgba(224,69,123,0.14)] flex flex-col gap-2 font-jost text-[13px] text-[#B03366]">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse" />
+              <span className="tracking-[0.15em] uppercase font-medium">Transmisión 24/7 en alta definición</span>
+            </div>
+            <div className="text-[12px] opacity-80 pl-4">
+              {currentVideo?.title}
+            </div>
+          </div>
+        </div>
+
+        {/* COLUMNA DERECHA (Cols 5-12): Reproductor con bisel de 12px en --polvo, radius 24px y sombra permitida */}
+        <div className="lg:col-span-8 flex flex-col">
+          <div 
+            className="w-full p-[12px] bg-[#FBE3EC] rounded-[24px] border border-[rgba(224,69,123,0.14)] shadow-luxury"
+            data-cursor="Play"
+          >
+            {/* Pantalla 16:9 con radius 16px */}
+            <div
+              ref={screenWrapperRef}
+              className={`relative w-full aspect-video rounded-[16px] overflow-hidden bg-[#B03366] ${
+                isFullscreen ? '!fixed !inset-0 !w-screen !h-screen !z-[9999] !rounded-none !max-w-none' : ''
+              }`}
+            >
+              <iframe
+                ref={iframeRef}
+                id="tv-online-yt-iframe"
+                src={youtubeEmbedUrl}
+                title="Thiago VSC TV Online"
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+
+              {isFullscreen && (
+                <button
+                  type="button"
+                  onClick={handleToggleFullscreen}
+                  className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFFFFF] text-[#B03366] font-jost text-xs tracking-[0.2em] uppercase shadow-luxury cursor-pointer"
+                >
+                  <span>Salir</span>
+                  <Minimize className="w-4 h-4" />
+                </button>
+              )}
             </div>
 
-            {/* Right Controls */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Volume Slider / Buttons */}
-              <div className="flex items-center gap-1.5 bg-[#FFF4F7] px-2.5 py-1.5 rounded-full border border-[#DE4176]/20">
+            {/* Controles de abajo en --perla (#FFFFFF) con texto --frambuesa y botones en --rosa */}
+            <div className="mt-3 bg-[#FFFFFF] rounded-[16px] p-3 sm:p-3.5 border border-[rgba(224,69,123,0.14)] flex flex-wrap items-center justify-between text-[#B03366] font-jost text-xs gap-3">
+              
+              {/* Controles Izquierda */}
+              <div className="flex items-center gap-2.5">
                 <button
                   type="button"
-                  onClick={toggleMute}
-                  className="hover:text-[#DE4176] transition-colors cursor-pointer p-0.5"
-                  title={isMuted ? "Activar sonido" : "Silenciar"}
+                  onClick={togglePlayPause}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-medium tracking-[0.15em] uppercase text-[11px] bg-[#DE4176] text-white hover:bg-[#c22e61] cursor-pointer btn-luxury shadow-sm"
+                  title={isPlaying ? "Pausar emisión" : "Reanudar emisión"}
                 >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="w-3.5 h-3.5 text-[#DE4176]" />
-                  ) : (
-                    <Volume2 className="w-3.5 h-3.5 text-[#3B0D22]" />
-                  )}
+                  {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                  <span>{isPlaying ? 'Pausa' : 'Play'}</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={handleVolumeDown}
-                  className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#3B0D22] font-bold text-xs cursor-pointer"
-                  title="Bajar volumen"
+                  onClick={playNextRandomVideo}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[rgba(224,69,123,0.3)] text-[#DE4176] hover:bg-[#FFF6F9] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer btn-luxury"
+                  title="Reproducir siguiente video aleatorio"
                 >
-                  <Minus className="w-2.5 h-2.5" />
-                </button>
-
-                <span className="font-mono text-[10px] font-bold text-[#3B0D22] min-w-[28px] text-center">
-                  {isMuted ? 'MUT' : `${volume}%`}
-                </span>
-
-                <button
-                  type="button"
-                  onClick={handleVolumeUp}
-                  className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#3B0D22] font-bold text-xs cursor-pointer"
-                  title="Subir volumen"
-                >
-                  <Plus className="w-2.5 h-2.5" />
+                  <Shuffle className="w-3 h-3" />
+                  <span>Aleatorio</span>
                 </button>
               </div>
 
-              {/* Botón Pantalla Completa en --pink */}
-              <button
-                type="button"
-                onClick={handleToggleFullscreen}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-bold tracking-wider transition-all cursor-pointer shadow-editorial text-[11px] haptic-press"
-                title="Ver en pantalla completa"
-              >
-                <Maximize className="w-3.5 h-3.5" />
-                <span>PANTALLA COMPLETA</span>
-              </button>
-            </div>
+              {/* Controles Derecha */}
+              <div className="flex items-center gap-3">
+                {/* Control de Volumen */}
+                <div className="flex items-center gap-1.5 bg-[#FFF6F9] px-2.5 py-1 rounded-full border border-[rgba(224,69,123,0.2)]">
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="hover:text-[#DE4176] transition-colors cursor-pointer p-0.5"
+                    title={isMuted ? "Activar sonido" : "Silenciar"}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <VolumeX className="w-3.5 h-3.5 text-[#DE4176]" />
+                    ) : (
+                      <Volume2 className="w-3.5 h-3.5 text-[#B03366]" />
+                    )}
+                  </button>
 
+                  <button
+                    type="button"
+                    onClick={handleVolumeDown}
+                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#B03366] text-xs cursor-pointer"
+                    title="Bajar volumen"
+                  >
+                    <Minus className="w-2.5 h-2.5" />
+                  </button>
+
+                  <span className="font-jost text-[11px] text-[#B03366] min-w-[26px] text-center font-medium">
+                    {isMuted ? '0%' : `${volume}%`}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={handleVolumeUp}
+                    className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#B03366] text-xs cursor-pointer"
+                    title="Subir volumen"
+                  >
+                    <Plus className="w-2.5 h-2.5" />
+                  </button>
+                </div>
+
+                {/* Botón Pantalla Completa en --rosa */}
+                <button
+                  type="button"
+                  onClick={handleToggleFullscreen}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer shadow-luxury btn-luxury"
+                  title="Pantalla completa"
+                >
+                  <Maximize className="w-3.5 h-3.5" />
+                  <span>Pantalla Completa</span>
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
 
