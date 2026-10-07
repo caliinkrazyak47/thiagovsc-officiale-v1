@@ -399,7 +399,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={togglePlayPause}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black tracking-wider uppercase transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] ${
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-black tracking-wider uppercase transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press ${
                     isPlaying ? 'bg-white text-black hover:bg-white/90' : 'bg-[#10B981] text-white hover:bg-[#059669]'
                   }`}
                   title={isPlaying ? "Pausar vídeo" : "Reanudar vídeo"}
@@ -412,7 +412,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={playNextRandomVideo}
-                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black tracking-wider uppercase transition-all shadow-[0_2px_12px_rgba(222,65,118,0.4)] hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px]"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-black tracking-wider uppercase transition-all shadow-[0_2px_12px_rgba(222,65,118,0.4)] hover:scale-105 active:scale-95 cursor-pointer text-[9px] sm:text-[11px] haptic-press"
                   title="Reproducir Siguiente Vídeo Aleatorio"
                 >
                   <Shuffle className="w-3 h-3" />
@@ -468,7 +468,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={setMaxResolution}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#00ADEF]/20 hover:bg-[#00ADEF] text-[#00ADEF] hover:text-white border border-[#00ADEF]/40 font-bold tracking-wider transition-all cursor-pointer text-[9px] sm:text-[11px]"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#00ADEF]/20 hover:bg-[#00ADEF] text-[#00ADEF] hover:text-white border border-[#00ADEF]/40 font-bold tracking-wider transition-all cursor-pointer text-[9px] sm:text-[11px] haptic-press"
                   title="Forzar Calidad 4K / Ultra HD"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#00ADEF] animate-pulse" />
@@ -479,7 +479,7 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleToggleFullscreen}
-                  className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#00ADEF] hover:bg-[#0092ca] text-white font-black tracking-wider transition-all duration-200 cursor-pointer shadow-[0_4px_15px_rgba(0,173,239,0.4)] text-[9px] sm:text-[11px] hover:scale-105 active:scale-95"
+                  className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-[#00ADEF] hover:bg-[#0092ca] text-white font-black tracking-wider transition-all duration-200 cursor-pointer shadow-[0_4px_15px_rgba(0,173,239,0.4)] text-[9px] sm:text-[11px] hover:scale-105 active:scale-95 haptic-press"
                   title="Pantalla Completa"
                 >
                   <Maximize className="w-3 h-3 sm:w-3.5 sm:h-3.5" />

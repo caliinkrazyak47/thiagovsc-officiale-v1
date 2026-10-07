@@ -451,22 +451,22 @@ export const ViralSlider: React.FC = () => {
       {/* Carousel Track with Left & Right Visible Circle Arrows */}
       <div className="w-full relative px-2 sm:px-6 md:px-12 z-20">
         
-        {/* Left Screen Flank Arrow Button */}
+        {/* Left Screen Flank Arrow Button with Nested Bezel */}
         <button
           type="button"
           onClick={() => api?.scrollPrev()}
           aria-label="Video anterior"
-          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer group"
+          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.45)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
           <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:-translate-x-0.5 transition-transform" />
         </button>
 
-        {/* Right Screen Flank Arrow Button */}
+        {/* Right Screen Flank Arrow Button with Nested Bezel */}
         <button
           type="button"
           onClick={() => api?.scrollNext()}
           aria-label="Video siguiente"
-          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_10px_35px_rgba(0,0,0,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer group"
+          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.45)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
           <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:translate-x-0.5 transition-transform" />
         </button>
@@ -497,16 +497,19 @@ export const ViralSlider: React.FC = () => {
                     key={index}
                     className="relative flex flex-col items-center justify-center shrink-0 pl-3 sm:pl-5 basis-auto"
                   >
-                    {/* Smartphone Mockup Card Container */}
+                    {/* Double-Bezel Smartphone Chassis Container */}
                     <div
                       className={cn(
-                        'relative w-[85vw] sm:w-[320px] md:w-[345px] lg:w-[355px] h-[530px] sm:h-[570px] md:h-[610px] bg-black rounded-[2rem] sm:rounded-[2.25rem] overflow-hidden transition-all duration-300 ease-out shadow-[0_25px_60px_rgba(0,0,0,0.45)] border-2 opacity-100',
+                        'relative w-[85vw] sm:w-[320px] md:w-[345px] lg:w-[355px] h-[530px] sm:h-[570px] md:h-[610px] p-1.5 sm:p-2 rounded-[2.25rem] sm:rounded-[2.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] select-none',
                         isActive
-                          ? 'border-white scale-[1.01] shadow-[0_30px_70px_rgba(0,0,0,0.6)]'
-                          : 'border-white/30 hover:border-white/60 scale-95'
+                          ? 'bg-gradient-to-b from-white/35 via-white/10 to-white/25 ring-1 ring-white/40 shadow-[0_30px_80px_rgba(0,0,0,0.65)] scale-[1.02]'
+                          : 'bg-white/10 ring-1 ring-white/15 scale-[0.96] opacity-80 hover:opacity-100 hover:scale-[0.98]'
                       )}
                     >
-                      <CustomTikTokPlayer item={video} isActive={isActive} />
+                      {/* Inner OLED Display Core with Concentric Radius */}
+                      <div className="relative w-full h-full rounded-[calc(2.25rem-0.375rem)] sm:rounded-[calc(2.5rem-0.5rem)] overflow-hidden bg-black shadow-[inset_0_2px_10px_rgba(0,0,0,0.8)] border border-white/20">
+                        <CustomTikTokPlayer item={video} isActive={isActive} />
+                      </div>
                     </div>
                   </CarouselItem>
                 );

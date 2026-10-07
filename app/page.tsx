@@ -168,7 +168,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
               <button
                 type="button"
                 onClick={handleOpenRadioPopup}
-                className="group inline-flex items-center gap-3.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/25 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-left shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+                className="group inline-flex items-center gap-3.5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/25 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer text-left shadow-[0_12px_40px_rgba(0,0,0,0.6)] haptic-press"
                 title="Abrir Radio Live en ventana emergente"
               >
                 <div className="flex items-center gap-2">
@@ -398,14 +398,14 @@ export default function Home() {
             <a 
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
-              className="hidden xs:inline-block bg-white hover:bg-[#DE4176] text-[#DE4176] hover:text-white font-jakarta text-[10px] sm:text-xs font-black tracking-[0.14em] uppercase px-4 py-1.5 rounded-full transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(222,65,118,0.6)] cursor-pointer"
+              className="hidden xs:inline-block bg-white hover:bg-[#DE4176] text-[#DE4176] hover:text-white font-jakarta text-[10px] sm:text-xs font-black tracking-[0.14em] uppercase px-4 py-1.5 rounded-full transition-all duration-300 shadow-md hover:shadow-[0_0_20px_rgba(222,65,118,0.6)] cursor-pointer haptic-press"
             >
               Contacto
             </a>
             <button 
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
-              className="text-white hover:text-[#DE4176] bg-white/[0.08] hover:bg-white/20 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all border border-white/15 cursor-pointer"
+              className="text-white hover:text-[#DE4176] bg-white/[0.08] hover:bg-white/20 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all border border-white/15 cursor-pointer haptic-press"
             >
               <span className="font-bold text-xs sm:text-sm">☰</span>
             </button>
@@ -436,7 +436,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setMenuOpen(false)}
-                className="px-5 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-[#DE4176] hover:border-[#DE4176] text-white text-xs font-jakarta font-bold tracking-widest uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                className="px-5 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-[#DE4176] hover:border-[#DE4176] text-white text-xs font-jakarta font-bold tracking-widest uppercase transition-all duration-200 flex items-center gap-2 cursor-pointer haptic-press"
               >
                 <span>CERRAR</span>
                 <span className="text-sm">✕</span>
@@ -578,7 +578,7 @@ export default function Home() {
                 href="https://linktr.ee/chirifrancesca"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-white hover:bg-black text-[#DE4176] hover:text-white font-jakarta font-extrabold px-8 py-4 text-sm md:text-base tracking-wider rounded-full transition-all shadow-xl hover:shadow-[0_0_35px_rgba(255,255,255,0.45)] hover:scale-105 active:scale-95 uppercase cursor-pointer"
+                className="inline-flex items-center gap-3 bg-white hover:bg-black text-[#DE4176] hover:text-white font-jakarta font-extrabold px-8 py-4 text-sm md:text-base tracking-wider rounded-full transition-all shadow-xl hover:shadow-[0_0_35px_rgba(255,255,255,0.45)] hover:scale-105 active:scale-95 uppercase cursor-pointer haptic-press"
               >
                 <span>ACCEDER AL LINKTREE OFICIAL</span>
               </a>
@@ -629,35 +629,39 @@ export default function Home() {
                       <span className="text-[9px] bg-black/40 px-1.5 py-0.5 rounded ml-1 font-bold">AMPLIAR</span>
                     </div>
 
-
-                    {/* Card Container Frame */}
+                    {/* Double-Bezel Card Outer Chassis */}
                     <div 
-                      className={`w-full h-full rounded-[2.5rem] overflow-hidden border-2 transition-all duration-300 relative bg-[#120E18] ${
-                        isHovered ? 'border-white shadow-[0_0_45px_rgba(255,255,255,0.5)]' : 'border-white/35'
+                      className={`w-full h-full p-1.5 sm:p-2 rounded-[2.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative ${
+                        isHovered 
+                          ? 'bg-gradient-to-b from-white/35 via-white/10 to-white/25 ring-1 ring-white/50 shadow-[0_0_55px_rgba(255,255,255,0.45)]' 
+                          : 'bg-white/10 ring-1 ring-white/20'
                       }`}
                     >
-                      <img 
-                        src={card.img} 
-                        alt={card.title} 
-                        className={`w-full h-full object-cover transition-transform duration-700 ${
-                          isHovered ? 'scale-105' : 'scale-100'
-                        }`}
-                      />
-                      
-                      {/* Gradient Vignette Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-75" />
+                      {/* Inner Core with Concentric Radius */}
+                      <div className="w-full h-full rounded-[calc(2.5rem-0.375rem)] sm:rounded-[calc(2.5rem-0.5rem)] overflow-hidden border border-white/20 relative bg-[#120E18]">
+                        <img 
+                          src={card.img} 
+                          alt={card.title} 
+                          className={`w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                            isHovered ? 'scale-105' : 'scale-100'
+                          }`}
+                        />
+                        
+                        {/* Gradient Vignette Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent opacity-75" />
 
-                      {/* Bottom Meta Badge */}
-                      <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center z-10">
-                        <span 
-                          className="px-3.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase text-white border border-white/20 shadow-md"
-                          style={{ backgroundColor: card.pillColor }}
-                        >
-                          {card.pillBadge}
-                        </span>
-                        <span className="text-[10px] font-mono font-bold text-white/90 tracking-wider bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
-                          VER FOTO
-                        </span>
+                        {/* Bottom Meta Badge */}
+                        <div className="absolute bottom-5 sm:bottom-6 left-5 sm:left-6 right-5 sm:right-6 flex justify-between items-center z-10">
+                          <span 
+                            className="px-3.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase text-white border border-white/20 shadow-md"
+                            style={{ backgroundColor: card.pillColor }}
+                          >
+                            {card.pillBadge}
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-white/90 tracking-wider bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                            VER FOTO
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -696,7 +700,7 @@ export default function Home() {
                 href="https://shokomadrid.com/es/collections/eventos-shoko-madrid" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#DE4176] hover:bg-black text-white border border-[#DE4176] shadow-lg hover:shadow-2xl transition-all duration-300 text-xs font-jakarta font-extrabold tracking-wider uppercase group cursor-pointer hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#DE4176] hover:bg-black text-white border border-[#DE4176] shadow-lg hover:shadow-2xl transition-all duration-300 text-xs font-jakarta font-extrabold tracking-wider uppercase group cursor-pointer hover:scale-105 active:scale-95 haptic-press"
               >
                 <span>VER TODOS EN SHÔKO.COM</span>
               </a>
@@ -782,7 +786,7 @@ export default function Home() {
                       href={event.url} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="w-full bg-white group-hover:bg-[#DE4176] text-black group-hover:text-white text-[10px] font-jakarta font-black tracking-wider py-2.5 rounded-xl text-center transition-all duration-300 shadow-md group-hover:shadow-[0_0_18px_rgba(222,65,118,0.55)] flex items-center justify-center cursor-pointer uppercase"
+                      className="w-full bg-white group-hover:bg-[#DE4176] text-black group-hover:text-white text-[10px] font-jakarta font-black tracking-wider py-2.5 rounded-xl text-center transition-all duration-300 shadow-md group-hover:shadow-[0_0_18px_rgba(222,65,118,0.55)] flex items-center justify-center cursor-pointer uppercase haptic-press"
                     >
                       <span>COMPRAR ENTRADAS</span>
                     </a>
