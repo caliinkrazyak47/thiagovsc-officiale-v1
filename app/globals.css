@@ -5,18 +5,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&family=Roboto+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  /* EDITORIAL HIGH-FASHION PALETTE - EXACT MATCH TO MOCKUP */
-  --bg-color: #09070D;
+  /* LUXURY EDITORIAL LIGHT PALETTE - AWWWARDS & APPLE FLUID DESIGN */
+  --bg-color: #FAFAF9; /* Warm Alabaster / Porcelain */
   --bg-pink: #DE4176;
   --primary-pink: #DE4176; /* Signature Raspberry Pink */
-  --surface-color: #120E18;
-  --surface-card: #16111C;
-  --text-color: #F5F5F7;
-  --text-muted: #8E8E98;
+  --surface-color: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --text-color: #1A1622; /* Deep Luxury Ink */
+  --text-muted: #6B6575;
   --primary-red: #DE4176;
   --font-mono: 'Roboto Mono', monospace;
   --font-syne: 'Syne', sans-serif;
   --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --ease-agency: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html, body {
@@ -91,7 +94,7 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   transform: scale(1.05);
 }
 
-/* Film Grain Texture - Subtle and placed below cards to prevent white milky wash */
+/* Film Grain Texture - Subtle ambient texture with zero dark tint */
 .film-grain {
   position: fixed;
   inset: 0;
@@ -99,7 +102,8 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   height: 100vh;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.08;
+  opacity: 0.025;
+  mix-blend-mode: multiply;
   background-image: url('/grain.png');
   background-repeat: repeat;
 }
@@ -110,7 +114,7 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
 .reproductor-tv-max {
   position: relative;
   width: 100%;
-  max-width: 1920px; /* Tamaño crítico para activar resoluciones Ultra HD/4K */
+  max-width: 1920px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
 }
@@ -123,7 +127,7 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
 }
 
 /* ==========================================
-   CUTTING-EDGE CYBER-LUXE DESIGN UTILITIES
+   CUTTING-EDGE CYBER-LUXE & AWWWARDS LIGHT UTILITIES
 ========================================== */
 
 /* Animated Audio Equalizer Bars */
@@ -146,46 +150,53 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   background: linear-gradient(
     90deg, 
     rgba(255,255,255,0) 0%, 
-    rgba(255,255,255,0.18) 50%, 
+    rgba(222,65,118,0.12) 50%, 
     rgba(255,255,255,0) 100%
   );
   background-size: 200% 100%;
   animation: holoShimmer 3.5s infinite;
 }
 
-/* Metallic Chrome Text */
+/* Metallic Chrome Text for Light Themes */
 .chrome-text {
-  background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 45%, #94A3B8 70%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #1A1622 0%, #4A3E5C 45%, #8E7D9E 70%, #1A1622 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Neon Glow Utilities */
 .neon-glow-pink {
-  box-shadow: 0 0 25px rgba(222, 65, 118, 0.45), inset 0 0 15px rgba(222, 65, 118, 0.25);
+  box-shadow: 0 0 25px rgba(222, 65, 118, 0.25), inset 0 0 15px rgba(222, 65, 118, 0.15);
 }
 .neon-glow-cyan {
-  box-shadow: 0 0 25px rgba(0, 173, 239, 0.45), inset 0 0 15px rgba(0, 173, 239, 0.25);
+  box-shadow: 0 0 25px rgba(0, 173, 239, 0.25), inset 0 0 15px rgba(0, 173, 239, 0.15);
 }
 
-/* Luxury Glassmorphic Acrylic Panel */
-.glass-acrylic {
-  background: rgba(14, 11, 20, 0.65);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+/* Luxury Glassmorphic Light Panel (Apple Vision Liquid Glass) */
+.glass-acrylic-light {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(0, 0, 0, 0.07);
 }
 
-/* VIP Ticket Edge Notches (Seamlessly cut out against white section) */
+.glass-capsule-light {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* VIP Ticket Edge Notches (Cut out against light porcelain background #FAFAF9) */
 .ticket-notch-left {
   position: absolute;
   left: -9px;
   bottom: 82px;
   width: 18px;
   height: 18px;
-  background-color: #FFFFFF;
+  background-color: #FAFAF9;
   border-radius: 9999px;
-  box-shadow: inset -2px 0 3px rgba(0,0,0,0.15);
+  box-shadow: inset -1px 0 2px rgba(0,0,0,0.08);
   z-index: 25;
 }
 .ticket-notch-right {
@@ -194,9 +205,9 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   bottom: 82px;
   width: 18px;
   height: 18px;
-  background-color: #FFFFFF;
+  background-color: #FAFAF9;
   border-radius: 9999px;
-  box-shadow: inset 2px 0 3px rgba(0,0,0,0.15);
+  box-shadow: inset 1px 0 2px rgba(0,0,0,0.08);
   z-index: 25;
 }
 
@@ -207,7 +218,7 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   right: 9px;
   bottom: 90px;
   height: 1px;
-  border-top: 2px dashed rgba(255, 255, 255, 0.25);
+  border-top: 2px dashed rgba(0, 0, 0, 0.12);
   z-index: 24;
 }
 
@@ -221,44 +232,21 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
 
 /* Luxury Material Highlights */
 .glow-pink-sm {
-  box-shadow: 0 0 15px rgba(222, 65, 118, 0.4);
+  box-shadow: 0 0 15px rgba(222, 65, 118, 0.25);
 }
 .glow-pink-lg {
-  box-shadow: 0 0 40px rgba(222, 65, 118, 0.55);
-}
-.glass-capsule {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-.glass-capsule-dark {
-  background: rgba(8, 7, 11, 0.76);
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 40px rgba(222, 65, 118, 0.35);
 }
 
-/* ==========================================
-   AGENCY-TIER PHYSICS & DOUBLE-BEZEL ARCHITECTURE
-   (Emil Kowalski + Vanguard UI Architect Directives)
-========================================== */
-:root {
-  --ease-agency: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+/* Text Masking & Hank the Tank / GSAP Split-Text Mechanics */
+.char-mask {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
 }
-
-.transition-agency {
-  transition-property: transform, opacity, background-color, border-color, box-shadow;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  transition-duration: 450ms;
-}
-
-.transition-snap {
-  transition-property: transform, opacity, background-color, border-color;
-  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-  transition-duration: 250ms;
+.char-inner {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 /* Tactile button press feedback */
@@ -269,14 +257,15 @@ a, button, [role="button"], input, select, textarea, .cursor-pointer, [onclick] 
   transform: scale(0.97) !important;
 }
 
-/* Double-Bezel (Doppelrand) Nested Enclosures */
-.double-bezel-outer {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+/* Double-Bezel (Doppelrand) Light Enclosures */
+.double-bezel-outer-light {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 50px rgba(222, 65, 118, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9);
 }
 
-.double-bezel-inner {
-  background: #0D0B12;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.08);
+.double-bezel-inner-light {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
 }

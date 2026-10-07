@@ -38,7 +38,7 @@ export const DigitalClock: React.FC<DigitalClockProps> = ({
 
   if (!mounted || !timeStr) {
     return (
-      <div className={`inline-flex items-center gap-1.5 font-mono text-[11px] text-white/70 ${className}`}>
+      <div className={`inline-flex items-center gap-1.5 font-mono text-[11px] opacity-70 ${className}`}>
         <span className="w-1.5 h-1.5 rounded-full bg-[#DE4176] animate-pulse" />
         <span>--:--:--</span>
       </div>
@@ -47,7 +47,7 @@ export const DigitalClock: React.FC<DigitalClockProps> = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 font-mono text-[11px] md:text-xs text-white/90 select-none ${className}`}
+      className={`inline-flex items-center gap-1.5 font-mono text-[11px] md:text-xs select-none ${className}`}
       title="Hora Local / Local Time"
     >
       {/* Live Pulsing Dot */}
@@ -57,13 +57,13 @@ export const DigitalClock: React.FC<DigitalClockProps> = ({
       </span>
 
       {/* Clock Time */}
-      <span className="font-bold tracking-widest text-[#F5F5F7] tabular-nums">
+      <span className="font-bold tracking-widest tabular-nums">
         {timeStr}
       </span>
 
       {/* Timezone / Live Badge */}
       {showTimezone && (
-        <span className="text-[9px] font-bold tracking-wider text-white/60 border-l border-white/20 pl-1.5 uppercase hidden xs:inline">
+        <span className="text-[9px] font-bold tracking-wider opacity-60 border-l border-current/25 pl-1.5 uppercase hidden xs:inline">
           MADRID
         </span>
       )}
