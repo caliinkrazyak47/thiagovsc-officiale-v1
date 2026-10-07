@@ -6,13 +6,13 @@ import { ReactLenis, useLenis } from '@studio-freight/react-lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Play, X } from 'lucide-react';
+import { Play, X, Radio } from 'lucide-react';
 import { TVOnlinePlayer } from '@/components/TVOnlinePlayer/TVOnlinePlayer';
 import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio/CoverFlowRadio';
 import { CookieConsent } from '@/components/CookieConsent';
 import { CustomCursor } from '@/components/CustomCursor';
-import { SamuClimaPreloader } from '@/components/SamuClimaPreloader';
+import { ThiagoPreloader } from '@/components/ThiagoPreloader';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
 import { Marquee } from '@/components/Marquee';
@@ -239,40 +239,43 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           </motion.p>
         </div>
 
-        {/* Desktop Top Right: Botón ULTRA-PREMIUM RADIO EN VIVO (sin botón de puntitos) */}
+        {/* Desktop Top Right: Botón ULTRA-PREMIUM RADIO EN VIVO */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="hidden md:flex items-center absolute z-20 pointer-events-auto"
-          style={{ right: '5vw', top: 'calc(56px + 6vh)' }}
+          style={{ right: '5vw', top: 'calc(56px + 12vh)' }} // Bajado a 12vh para mejorar el encuadre visual
         >
           <motion.button
             type="button"
             onClick={onOpenRadio}
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="group relative inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B]/85 hover:bg-[#E0457B] text-[#FFE9D6] border border-[#FFE9D6]/40 shadow-[0_10px_30px_-5px_rgba(163,40,92,0.5),inset_0_1px_1px_rgba(255,233,214,0.35)] backdrop-blur-md transition-all duration-300 cursor-pointer overflow-hidden"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="group relative flex items-center h-[52px] rounded-full px-2 pr-6 bg-black/30 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-black/50 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-500 cursor-pointer overflow-hidden"
             title="Sintonizar Radio Live"
             data-cursor="Play"
           >
-            {/* Sheen sweep on hover */}
-            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-            
-            <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} className="transition-transform duration-300 group-hover:scale-110" />
-            
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE9D6] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFE9D6]" />
-            </span>
+            {/* Animación de luz que barre el botón (sheen) */}
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-[1500ms] ease-in-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none skew-x-12" />
 
-            <span className="font-satoshi text-xs font-semibold tracking-[0.22em] uppercase">
-              RADIO EN VIVO
-            </span>
+            {/* Glowing Icon Wrapper */}
+            <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full bg-gradient-to-br from-[#E0457B] to-[#A3285C] shadow-[0_0_20px_rgba(224,69,123,0.5)] mr-4 border border-white/20 relative">
+              <span className="absolute inset-0 rounded-full animate-ping bg-[#E0457B]/40" style={{ animationDuration: '3s' }} />
+              <Radio size={16} className="text-white drop-shadow-sm relative z-10" />
+            </div>
 
-            <span className="font-satoshi text-[10px] tracking-widest text-[#FFE9D6]/80 uppercase pl-1 border-l border-[#FFE9D6]/30">
-              24/7
+            {/* Texto Premium */}
+            <div className="flex flex-col items-start justify-center">
+              <span className="font-satoshi text-[9px] text-white/50 tracking-[0.3em] uppercase leading-none mb-1">Live Now</span>
+              <span className="font-satoshi text-xs font-semibold text-white tracking-[0.18em] uppercase leading-none">RADIO EN VIVO</span>
+            </div>
+            
+            {/* Live Dot */}
+            <span className="relative flex h-1.5 w-1.5 ml-4">
+              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
             </span>
           </motion.button>
         </motion.div>
@@ -479,8 +482,8 @@ export default function Home() {
 
       <div className="relative min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
         
-        {/* PRELOADER ESTILO SAMU CLIMA (FONTS SCRAMBLE + ROSA DEGRADÉ) */}
-        <SamuClimaPreloader />
+        {/* PRELOADER LUXURY GSAP (FONTS SCRAMBLE + ROSA DEGRADÉ) */}
+        <ThiagoPreloader />
 
         {/* EDITORIAL MAGNET CURSOR */}
         <CustomCursor />

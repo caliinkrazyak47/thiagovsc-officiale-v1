@@ -40,7 +40,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@jacklyn_roper5',
     videoUrl: 'https://www.tiktok.com/@jacklyn_roper5/video/7689201868798446862',
     videoId: '7689201868798446862',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7689201868798446862',
+    embedUrl: '/videos/tiktok/tt-1.mp4',
     poster: '/images/tiktok/cover-jacklyn_roper5.jpg',
     title: 'TikTok de @jacklyn_roper5',
   },
@@ -51,7 +51,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@pampeee_spam',
     videoUrl: 'https://www.tiktok.com/@pampeee_spam/video/7686615139176533270',
     videoId: '7686615139176533270',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7686615139176533270',
+    embedUrl: '/videos/tiktok/tt-2.mp4',
     poster: '/images/tiktok/cover-pampeee_spam.jpg',
     title: 'da repostare..',
   },
@@ -62,7 +62,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@kaitlynkrems',
     videoUrl: 'https://www.tiktok.com/@kaitlynkrems/video/7693923368629751053',
     videoId: '7693923368629751053',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7693923368629751053',
+    embedUrl: '/videos/tiktok/tt-3.mp4',
     poster: '/images/tiktok/cover-kaitlynkrems.jpg',
     title: 'New settt',
   },
@@ -73,7 +73,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@iamjumo',
     videoUrl: 'https://www.tiktok.com/@iamjumo/video/7673605900023762207',
     videoId: '7673605900023762207',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7673605900023762207',
+    embedUrl: '/videos/tiktok/tt-4.mp4',
     poster: '/images/tiktok/cover-iamjumo.jpg',
     title: 'Gorgeous Pizza by @iamjumo',
   },
@@ -84,7 +84,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@lauraalguaciiil',
     videoUrl: 'https://www.tiktok.com/@lauraalguaciiil/video/7594202399435214102',
     videoId: '7594202399435214102',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7594202399435214102',
+    embedUrl: '/videos/tiktok/tt-5.mp4',
     poster: '/images/tiktok/cover-lauraalguaciiil.jpg',
     title: 'Ig: lauraalguaciil',
   },
@@ -95,7 +95,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@rainbowglittergelpen6769',
     videoUrl: 'https://www.tiktok.com/@rainbowglittergelpen6769/video/7691804958206774550',
     videoId: '7691804958206774550',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7691804958206774550',
+    embedUrl: '/videos/tiktok/tt-6.mp4',
     poster: '/images/tiktok/cover-rainbowglittergelpen6769.jpg',
     title: 'Trending spam by @rainbowglittergelpen6769',
   },
@@ -106,7 +106,7 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     profileUrl: 'https://www.tiktok.com/@iriss.vallaranii',
     videoUrl: 'https://www.tiktok.com/@iriss.vallaranii/video/7404517500723023137',
     videoId: '7404517500723023137',
-    embedUrl: 'https://www.tiktok.com/embed/v2/7404517500723023137',
+    embedUrl: '/videos/tiktok/tt-7.mp4',
     poster: '/images/tiktok/cover-iriss.vallaranii.jpg',
     title: 'TikTok de @iriss.vallaranii',
   },
@@ -160,12 +160,13 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({
     >
       {/* Either display interactive embed when playing or high-res poster */}
       {isPlayingInline ? (
-        <iframe
-          src={`${item.embedUrl}?autoplay=1`}
-          title={`TikTok video por @${item.user}`}
-          className="w-full h-full border-0 pointer-events-auto"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
+        <video
+          src={item.embedUrl}
+          autoPlay
+          controls
+          controlsList="nodownload"
+          className="w-full h-full object-cover border-0 pointer-events-auto"
+          playsInline
         />
       ) : (
         <div className="relative w-full h-full">
@@ -451,15 +452,16 @@ export const ViralSlider: React.FC = () => {
           </button>
 
           <div 
-            className="relative w-full max-w-[420px] aspect-[9/16] max-h-[85vh] rounded-[24px] overflow-hidden border-[4px] border-[#FFE9D6] shadow-2xl flex flex-col bg-black"
+            className="relative w-[95vw] md:w-auto h-[80vh] md:h-[90vh] aspect-[9/16] rounded-[24px] overflow-hidden border-[4px] border-[#FFE9D6] shadow-2xl flex flex-col bg-black"
             onClick={(e) => e.stopPropagation()}
           >
-            <iframe
-              src={`${TIKTOK_VIDEOS[fullscreenIndex].embedUrl}?autoplay=1`}
-              title={`TikTok video por @${TIKTOK_VIDEOS[fullscreenIndex].user}`}
-              className="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+            <video
+              src={TIKTOK_VIDEOS[fullscreenIndex].embedUrl}
+              autoPlay
+              controls
+              controlsList="nodownload"
+              className="w-full h-full object-contain md:object-cover border-0"
+              playsInline
             />
 
             {/* Profile Bar in Fullscreen */}

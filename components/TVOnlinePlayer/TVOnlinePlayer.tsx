@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Maximize, Minimize, Volume2, VolumeX, Shuffle, Play, Pause, Plus, Minus, Tv } from 'lucide-react';
+import { Maximize, Minimize, Volume2, VolumeX, Play, Pause, Plus, Minus, Tv, SkipBack, SkipForward } from 'lucide-react';
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
@@ -24,8 +24,8 @@ export const TVOnlinePlayer: React.FC = () => {
   
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [volume, setVolumeState] = useState<number>(85);
-  const [isMuted, setIsMuted] = useState<boolean>(true);
+  const [volume, setVolumeState] = useState<number>(100);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
   const [clientOrigin, setClientOrigin] = useState<string>('');
 
   useEffect(() => {
@@ -42,11 +42,19 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, [activeMediaId, isPlaying]);
 
+  const [shuffledPlaylist, setShuffledPlaylist] = useState<TVVideo[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState<number>(0);
-  const currentVideoIndexRef = useRef<number>(currentVideoIndex);
-  currentVideoIndexRef.current = currentVideoIndex;
+  const currentVideoIndexRef = useRef<number>(0);
 
-  const currentVideo = PLAYLIST_VIDEOS[currentVideoIndex] || PLAYLIST_VIDEOS[0];
+  // Shuffle playlist on mount
+  useEffect(() => {
+    const shuffled = [...PLAYLIST_VIDEOS].sort(() => Math.random() - 0.5);
+    setShuffledPlaylist(shuffled);
+    setCurrentVideoIndex(0);
+    currentVideoIndexRef.current = 0;
+  }, []);
+
+  const currentVideo = shuffledPlaylist[currentVideoIndex] || PLAYLIST_VIDEOS[0];
 
   const sendCommand = useCallback((func: string, args: any[] = []) => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
@@ -59,11 +67,80 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, []);
 
+  const playNextVideo = useCallback(() => {
+    if (shuffledPlaylist.length === 0) return;
+    const total = shuffledPlaylist.length;
+    const nextIndex = (currentVideoIndexRef.current + 1) % total;
+    setCurrentVideoIndex(nextIndex);
+    currentVideoIndexRef.current = nextIndex;
+
+    const nextVideo = shuffledPlaylist[nextIndex];
+    if (nextVideo && iframeRef.current) {
+      const nextOriginParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
+      iframeRef.current.src = `https://www.youtube.com/embed/${nextVideo.id}?autoplay=1&mute=0&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${nextOriginParam}`;
+      setIsPlaying(true);
+      setIsMuted(false);
+      setVolumeState(100);
+      setActiveMedia('tv');
+    }
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist]);
+
+  const playPrevVideo = useCallback(() => {
+    if (shuffledPlaylist.length === 0) return;
+    const total = shuffledPlaylist.length;
+    const prevIndex = (currentVideoIndexRef.current - 1 + total) % total;
+    setCurrentVideoIndex(prevIndex);
+    currentVideoIndexRef.current = prevIndex;
+
+    const prevVideo = shuffledPlaylist[prevIndex];
+    if (prevVideo && iframeRef.current) {
+      const prevOriginParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
+      iframeRef.current.src = `https://www.youtube.com/embed/${prevVideo.id}?autoplay=1&mute=0&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${prevOriginParam}`;
+      setIsPlaying(true);
+      setIsMuted(false);
+      setVolumeState(100);
+      setActiveMedia('tv');
+    }
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist]);
+
+  // Listen for video end to auto-play next
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        // YouTube sends playerState either inside infoDelivery.info.playerState,
+        // or directly in data.info when event is 'onStateChange'
+        const isEnded = 
+          (data.event === 'infoDelivery' && data.info && data.info.playerState === 0) ||
+          (data.event === 'onStateChange' && data.info === 0);
+
+        if (isEnded) {
+          playNextVideo();
+        }
+      } catch (err) {}
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [playNextVideo]);
+
   const handleIframeLoaded = useCallback(() => {
+    // Send standard listening command to start receiving infoDelivery
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'listening', id: iframeRef.current.id }),
+          '*'
+        );
+      } catch {}
+    }
+
     // Force maximum 1080p HD quality and smooth playback
     setTimeout(() => {
+      sendCommand('addEventListener', ['onStateChange']);
       sendCommand('setPlaybackQuality', ['hd1080']);
       sendCommand('setSuggestedQuality', ['hd1080']);
+      sendCommand('setVolume', [100]);
+      sendCommand('unMute');
       if (isPlaying) {
         sendCommand('playVideo');
       }
@@ -82,30 +159,11 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, [isPlaying, sendCommand, setActiveMedia]);
 
-  const playNextRandomVideo = useCallback(() => {
-    const total = PLAYLIST_VIDEOS.length;
-    let nextIndex = Math.floor(Math.random() * total);
-    if (nextIndex === currentVideoIndexRef.current && total > 1) {
-      nextIndex = (nextIndex + 1) % total;
-    }
-    setCurrentVideoIndex(nextIndex);
-    currentVideoIndexRef.current = nextIndex;
-
-    const nextVideo = PLAYLIST_VIDEOS[nextIndex];
-    if (nextVideo && iframeRef.current) {
-      const nextOriginParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
-      const muteParam = isMuted ? '1' : '0';
-      iframeRef.current.src = `https://www.youtube.com/embed/${nextVideo.id}?autoplay=1&mute=${muteParam}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1${nextOriginParam}`;
-      setIsPlaying(true);
-      setActiveMedia('tv');
-    }
-  }, [clientOrigin, isMuted, setActiveMedia]);
-
   const toggleMute = useCallback(() => {
     if (isMuted) {
       setActiveMedia('tv');
       sendCommand('unMute');
-      sendCommand('setVolume', [volume || 85]);
+      sendCommand('setVolume', [volume || 100]);
       sendCommand('playVideo');
       setIsMuted(false);
     } else {
@@ -185,8 +243,9 @@ export const TVOnlinePlayer: React.FC = () => {
 
   const originParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
   const initialVideoId = currentVideo?.id || 'kPa7bsKwL-c';
-  // Autoplay=1 with mute=1 ensures zero browser autoplay blocking; enablejsapi=1 allows HD commands; no broken playlist ID
-  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?autoplay=1&mute=1&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1${originParam}`;
+  // Autoplay=1 with mute=0. Browsers might block unmuted autoplay without user interaction,
+  // but if the user requested it specifically, we set it. vq=hd1080 forces 1080p if possible.
+  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?autoplay=1&mute=0&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${originParam}`;
 
   return (
     <section
@@ -281,15 +340,24 @@ export const TVOnlinePlayer: React.FC = () => {
                 <span>{isPlaying ? 'Pausa' : 'Play'}</span>
               </button>
 
-              <button
-                type="button"
-                onClick={playNextRandomVideo}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer transition-all"
-                title="Reproducir siguiente video aleatorio"
-              >
-                <Shuffle className="w-3 h-3" />
-                <span>Aleatorio</span>
-              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={playPrevVideo}
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] cursor-pointer transition-all"
+                  title="Video anterior"
+                >
+                  <SkipBack className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={playNextVideo}
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] cursor-pointer transition-all"
+                  title="Siguiente video"
+                >
+                  <SkipForward className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
               <div className="hidden md:flex items-center gap-1.5 text-[11px] text-[var(--berry)]/70 pl-2 border-l border-[var(--line)] font-medium truncate max-w-[280px]">
                 <Tv className="w-3.5 h-3.5 text-[var(--brand)] shrink-0" />
