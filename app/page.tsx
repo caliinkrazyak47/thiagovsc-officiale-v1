@@ -420,12 +420,54 @@ export default function Home() {
   ];
 
   const shokoEvents = [
-    { date: '04 Oct', title: 'Puro Perreo', url: 'https://shokomadrid.com/es/products/04-oct-puro-perreo', img: '/images/cover1.jpg' },
-    { date: '01 Oct', title: 'Swag City', url: 'https://shokomadrid.com/es/products/01-oct-swag-city', img: '/images/cover2.jpg' },
-    { date: '02 Oct', title: 'Residencia', url: 'https://shokomadrid.com/es/products/02-oct-the-black-haute', img: '/images/cover3.jpg' },
-    { date: '03 Oct', title: 'Pure Shoko', url: 'https://shokomadrid.com/es/products/03-oct-pure-shoko', img: '/images/cover4.jpg' },
-    { date: '08 Oct', title: 'Halloween', url: 'https://shokomadrid.com/es/products/08-oct-halloween-special', img: '/images/cover5.jpg' },
-    { date: '09 Oct', title: 'Tardeo', url: 'https://shokomadrid.com/es/products/09-oct-tardeo-urbano', img: '/images/francesca-4.jpg' },
+    { 
+      date: '12 Oct', 
+      title: 'Shakira · Despedida', 
+      venue: 'Estadio Iberdrola Music', 
+      badge: 'Gira Mundial',
+      url: 'https://www.ticketmaster.es/event/shakira-las-mujeres-ya-no-lloran-gran-despedida-con-amigos-entradas/2065667696', 
+      img: '/images/events/shakira.webp' 
+    },
+    { 
+      date: '31 Oct', 
+      title: 'PerreoLab x Halloween', 
+      venue: 'Las Ventas Bullring', 
+      badge: 'Halloween',
+      url: 'https://perreolab.lema.club/#events/perreolab-x-halloween-las-ventas-31-10-2026-QDH0', 
+      img: '/images/events/perreolab.webp' 
+    },
+    { 
+      date: '13 Dic', 
+      title: 'Jay Wheeler · LVF Tour', 
+      venue: 'Movistar Arena', 
+      badge: 'World Tour',
+      url: 'https://www.movistararena.es/programacion/evento/jay-wheeler-la-voz-favorita-world-tour/13-12-2026/20:30', 
+      img: '/images/events/jay-wheeler.png' 
+    },
+    { 
+      date: '10 Dic', 
+      title: 'Jowell & Randy · 3D', 
+      venue: 'Movistar Arena', 
+      badge: '3D Experience',
+      url: 'https://www.movistararena.es/programacion/evento/jowell-y-randy-3d', 
+      img: '/images/events/jowell-randy.png' 
+    },
+    { 
+      date: '31 Oct', 
+      title: 'Halloween en VG', 
+      venue: 'Teatro Eslava // Madrid', 
+      badge: 'Fever Special',
+      url: 'https://feverup.com/m/787357', 
+      img: '/images/events/halloween-vg.jpg' 
+    },
+    { 
+      date: '31 Oct', 
+      title: 'Hallowfest 2026', 
+      venue: 'FABRIK // Madrid', 
+      badge: 'Macro Festival',
+      url: 'https://feverup.com/m/664041', 
+      img: '/images/events/hallowfest-fabrik.png' 
+    },
   ];
 
   return (
@@ -774,10 +816,10 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-xs font-satoshi font-medium text-[var(--brand)] hover:underline underline-offset-4 tracking-[0.15em] uppercase transition-all cursor-pointer whitespace-nowrap"
                 >
-                  <span>Ver todos en Shôko →</span>
+                  <span>Ver cartelera oficial →</span>
                 </a>
                 <span className="text-[11px] font-satoshi text-[var(--berry)]/70 uppercase tracking-wider hidden sm:inline">
-                  Madrid // Calle de Toledo, 86
+                  Madrid // Entradas oficiales
                 </span>
               </div>
             </div>
@@ -800,7 +842,7 @@ export default function Home() {
                     <div className="absolute inset-0 bg-[#E0457B]/20 mix-blend-multiply opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
                     <div className="absolute top-2.5 right-2.5 z-10">
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-satoshi font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
-                        + Hoy
+                        {event.badge}
                       </span>
                     </div>
                   </div>
@@ -814,8 +856,8 @@ export default function Home() {
                       <h4 className="font-satoshi text-[13px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
                         {event.title}
                       </h4>
-                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
-                        Madrid // Shôko
+                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide truncate">
+                        {event.venue}
                       </span>
                     </div>
 
@@ -847,7 +889,7 @@ export default function Home() {
                     />
                     <div className="absolute top-2.5 right-2.5 z-10">
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-satoshi font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
-                        + Hoy
+                        {event.badge}
                       </span>
                     </div>
                   </div>
@@ -860,8 +902,8 @@ export default function Home() {
                       <h4 className="font-satoshi text-[13px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
                         {event.title}
                       </h4>
-                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
-                        Madrid // Shôko
+                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide truncate">
+                        {event.venue}
                       </span>
                     </div>
 
