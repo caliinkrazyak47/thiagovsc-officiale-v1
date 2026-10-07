@@ -190,29 +190,21 @@ export const SamuClimaPreloader: React.FC<{ onComplete?: () => void }> = ({ onCo
       className="fixed inset-0 z-[10000] flex flex-col justify-between items-center overflow-hidden select-none pointer-events-auto"
     >
       {/* =========================================================
-          BACKGROUND: ROSÉ COUTURE GRADIENT (DEGRADÉ CON EL ROSA DE LA WEB)
-          Smooth diagonal blend: Bright Rose -> Signature Pink -> Velvety Plum
+          BACKGROUND: 100% PURE ROSA DEGRADÉ (SIN SOMBRAS NI COLORES OSCUROS)
+          Rosa pétalo radiante -> Rosa fucsia couture -> Rosa marca
       ========================================================= */}
       <div 
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(135deg, #FF6FA2 0%, #E0457B 38%, #A82054 74%, #3E0C23 100%)',
+          background: 'linear-gradient(135deg, #FFB2CE 0%, #FF7DA8 32%, #FF508D 68%, #E0457B 100%)',
         }}
       />
 
-      {/* Subtle radial ambient highlight */}
+      {/* Resplandor suave blanco/champagne luminoso sin oscuridad */}
       <div 
-        className="absolute inset-0 z-1 pointer-events-none opacity-40 mix-blend-soft-light"
+        className="absolute inset-0 z-1 pointer-events-none opacity-30 mix-blend-overlay"
         style={{
-          background: 'radial-gradient(ellipse at 50% 50%, #FFE9D6 0%, rgba(224, 69, 123, 0) 70%)',
-        }}
-      />
-
-      {/* Fine texture noise */}
-      <div 
-        className="absolute inset-0 z-1 pointer-events-none opacity-[0.035] mix-blend-overlay"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          background: 'radial-gradient(circle at 50% 45%, #FFFFFF 0%, rgba(255, 178, 206, 0) 75%)',
         }}
       />
 
@@ -221,13 +213,13 @@ export const SamuClimaPreloader: React.FC<{ onComplete?: () => void }> = ({ onCo
       ========================================================= */}
       <header className="relative z-10 w-full px-6 sm:px-12 pt-7 sm:pt-9 flex items-center justify-between text-[#FFE9D6] font-['DM_Sans'] text-[11px] sm:text-xs tracking-[0.25em] uppercase font-semibold">
         <div className="flex items-center gap-2.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FFE9D6] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           <span>THIAGO VSC</span>
         </div>
-        <div className="tracking-[0.28em] opacity-80 hidden sm:block">
+        <div className="tracking-[0.28em] text-white/90 hidden sm:block">
           MADRID // OFFICIAL BROADCAST
         </div>
-        <div className="font-mono text-[11px] tabular-nums">
+        <div className="font-mono text-[11px] tabular-nums text-white">
           {progress < 10 ? `0${progress}` : progress}%
         </div>
       </header>
@@ -238,8 +230,8 @@ export const SamuClimaPreloader: React.FC<{ onComplete?: () => void }> = ({ onCo
       ========================================================= */}
       <div className="relative z-10 my-auto flex flex-col items-center justify-center px-4 w-full max-w-5xl text-center">
         
-        {/* ROW 1: "THIAGO" */}
-        <div className="flex items-baseline justify-center leading-none text-[#FFE9D6] drop-shadow-[0_4px_30px_rgba(46,9,26,0.4)]">
+        {/* ROW 1: "THIAGO" (Sin sombras oscuras, resplandor limpio blanco/champagne) */}
+        <div className="flex items-baseline justify-center leading-none text-white drop-shadow-[0_2px_18px_rgba(255,255,255,0.45)]">
           {topRow.map((item, i) => {
             const style = FONT_STYLES[activeStyles[i]] || FONT_STYLES[item.restingStyleIndex];
             return (
@@ -278,7 +270,7 @@ export const SamuClimaPreloader: React.FC<{ onComplete?: () => void }> = ({ onCo
 
         {/* ROW 2: "V · S · C" (Tightly nested under Row 1, matching Samu Clima's -85px negative margin) */}
         <div 
-          className="flex items-baseline justify-center leading-none text-[#FFE9D6] drop-shadow-[0_4px_30px_rgba(46,9,26,0.4)] -mt-3 sm:-mt-8 md:-mt-12"
+          className="flex items-baseline justify-center leading-none text-white drop-shadow-[0_2px_18px_rgba(255,255,255,0.45)] -mt-3 sm:-mt-8 md:-mt-12"
         >
           {bottomRow.map((item, i) => {
             const globalIndex = topRow.length + i;
@@ -315,16 +307,16 @@ export const SamuClimaPreloader: React.FC<{ onComplete?: () => void }> = ({ onCo
           BOTTOM PROGRESS GAUGE (Identical to Samu Clima #intro-progress)
       ========================================================= */}
       <footer className="relative z-10 w-full pb-8 sm:pb-12 flex flex-col items-center justify-center gap-2.5">
-        {/* Minimalist 3px Progress Track */}
-        <div className="w-[min(260px,65vw)] h-[3px] bg-black/15 dark:bg-white/20 rounded-full overflow-hidden">
+        {/* Minimalist 3px Progress Track (blanco translúcido sobre fondo rosa) */}
+        <div className="w-[min(260px,65vw)] h-[3px] bg-white/30 rounded-full overflow-hidden">
           <div
             style={{ width: `${progress}%` }}
-            className="h-full bg-[#FFE9D6] rounded-full will-change-[width] transition-all duration-75 shadow-[0_0_8px_rgba(255,233,214,0.8)]"
+            className="h-full bg-white rounded-full will-change-[width] transition-all duration-75 shadow-[0_0_10px_rgba(255,255,255,0.9)]"
           />
         </div>
 
         {/* Percentage Counter in DM Sans bold, tracked out */}
-        <div className="text-[#FFE9D6] font-['DM_Sans'] text-[11px] sm:text-xs font-bold tracking-[3px] uppercase">
+        <div className="text-white font-['DM_Sans'] text-[11px] sm:text-xs font-bold tracking-[3px] uppercase">
           {progress}%
         </div>
       </footer>

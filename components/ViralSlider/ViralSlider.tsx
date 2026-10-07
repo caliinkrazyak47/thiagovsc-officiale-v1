@@ -6,13 +6,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { 
   Play, 
-  Pause,
-  Volume2, 
-  VolumeX, 
   Maximize2,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  ExternalLink
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -25,40 +23,92 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 interface TikTokVideoItem {
   id: string;
   user: string;
-  src: string;
+  authorName: string;
+  profileUrl: string;
+  videoUrl: string;
+  videoId: string;
+  embedUrl: string;
   poster: string;
+  title: string;
 }
 
 const TIKTOK_VIDEOS: TikTokVideoItem[] = [
-  { 
+  {
     id: 'tt-1',
-    user: '_ariannadiazv', 
-    src: '/videos/tiktok/video1.mp4', 
-    poster: '/images/cover1.jpg',
+    user: 'jacklyn_roper5',
+    authorName: 'thisisnotjropes',
+    profileUrl: 'https://www.tiktok.com/@jacklyn_roper5',
+    videoUrl: 'https://www.tiktok.com/@jacklyn_roper5/video/7689201868798446862',
+    videoId: '7689201868798446862',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7689201868798446862',
+    poster: '/images/tiktok/cover-jacklyn_roper5.jpg',
+    title: 'TikTok de @jacklyn_roper5',
   },
-  { 
+  {
     id: 'tt-2',
-    user: 'carmenbrads', 
-    src: '/videos/tiktok/video2.mp4', 
-    poster: '/images/cover2.jpg',
+    user: 'pampeee_spam',
+    authorName: 'pampee.spamm',
+    profileUrl: 'https://www.tiktok.com/@pampeee_spam',
+    videoUrl: 'https://www.tiktok.com/@pampeee_spam/video/7686615139176533270',
+    videoId: '7686615139176533270',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7686615139176533270',
+    poster: '/images/tiktok/cover-pampeee_spam.jpg',
+    title: 'da repostare..',
   },
-  { 
+  {
     id: 'tt-3',
-    user: 'ameliolivera', 
-    src: '/videos/tiktok/video3.mp4', 
-    poster: '/images/cover3.jpg',
+    user: 'kaitlynkrems',
+    authorName: 'Kaitlyn Krems',
+    profileUrl: 'https://www.tiktok.com/@kaitlynkrems',
+    videoUrl: 'https://www.tiktok.com/@kaitlynkrems/video/7693923368629751053',
+    videoId: '7693923368629751053',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7693923368629751053',
+    poster: '/images/tiktok/cover-kaitlynkrems.jpg',
+    title: 'New settt',
   },
-  { 
+  {
     id: 'tt-4',
-    user: 'iriss.vallaranii', 
-    src: '/videos/tiktok/video4.mp4', 
-    poster: '/images/cover4.jpg',
+    user: 'iamjumo',
+    authorName: 'Jumo',
+    profileUrl: 'https://www.tiktok.com/@iamjumo',
+    videoUrl: 'https://www.tiktok.com/@iamjumo/video/7673605900023762207',
+    videoId: '7673605900023762207',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7673605900023762207',
+    poster: '/images/tiktok/cover-iamjumo.jpg',
+    title: 'Gorgeous Pizza by @iamjumo',
   },
-  { 
+  {
     id: 'tt-5',
-    user: 'elisa.bernardonii__', 
-    src: '/videos/tiktok/video5.mp4', 
-    poster: '/images/cover5.jpg',
+    user: 'lauraalguaciiil',
+    authorName: 'lauraalguaciiil',
+    profileUrl: 'https://www.tiktok.com/@lauraalguaciiil',
+    videoUrl: 'https://www.tiktok.com/@lauraalguaciiil/video/7594202399435214102',
+    videoId: '7594202399435214102',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7594202399435214102',
+    poster: '/images/tiktok/cover-lauraalguaciiil.jpg',
+    title: 'Ig: lauraalguaciil',
+  },
+  {
+    id: 'tt-6',
+    user: 'rainbowglittergelpen6769',
+    authorName: 'Maya',
+    profileUrl: 'https://www.tiktok.com/@rainbowglittergelpen6769',
+    videoUrl: 'https://www.tiktok.com/@rainbowglittergelpen6769/video/7691804958206774550',
+    videoId: '7691804958206774550',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7691804958206774550',
+    poster: '/images/tiktok/cover-rainbowglittergelpen6769.jpg',
+    title: 'Trending spam by @rainbowglittergelpen6769',
+  },
+  {
+    id: 'tt-7',
+    user: 'iriss.vallaranii',
+    authorName: 'iris🌺',
+    profileUrl: 'https://www.tiktok.com/@iriss.vallaranii',
+    videoUrl: 'https://www.tiktok.com/@iriss.vallaranii/video/7404517500723023137',
+    videoId: '7404517500723023137',
+    embedUrl: 'https://www.tiktok.com/embed/v2/7404517500723023137',
+    poster: '/images/tiktok/cover-iriss.vallaranii.jpg',
+    title: 'TikTok de @iriss.vallaranii',
   },
 ];
 
@@ -75,62 +125,27 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({
   index, 
   onOpenFullscreen 
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-
+  const [isPlayingInline, setIsPlayingInline] = useState(false);
   const { activeMediaId, setActiveMedia } = useMediaStore();
   const mediaKey = `tiktok-${index}`;
 
-  // Pause if another media starts playing
+  // Reset if another media starts playing
   useEffect(() => {
-    if (activeMediaId && activeMediaId !== mediaKey && isPlaying) {
-      const vid = videoRef.current;
-      if (vid) {
-        vid.pause();
-        setIsPlaying(false);
-      }
+    if (activeMediaId && activeMediaId !== mediaKey && isPlayingInline) {
+      setIsPlayingInline(false);
     }
-  }, [activeMediaId, mediaKey, isPlaying]);
+  }, [activeMediaId, mediaKey, isPlayingInline]);
 
-  // Autoplay in muted when active/center, pause when out of center
-  useEffect(() => {
-    const vid = videoRef.current;
-    if (!vid) return;
-
-    if (isActive) {
-      vid.muted = isMuted;
-      vid.play().then(() => setIsPlaying(true)).catch(() => {});
-    } else {
-      vid.pause();
-      setIsPlaying(false);
-    }
-  }, [isActive, isMuted]);
-
-  const togglePlay = useCallback((e: React.MouseEvent) => {
+  const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const vid = videoRef.current;
-    if (!vid) return;
+    onOpenFullscreen(index);
+  };
 
-    if (vid.paused) {
-      setActiveMedia(mediaKey);
-      vid.play().then(() => setIsPlaying(true)).catch(() => {});
-    } else {
-      vid.pause();
-      setIsPlaying(false);
-    }
-  }, [mediaKey, setActiveMedia]);
-
-  const toggleMute = useCallback((e: React.MouseEvent) => {
+  const handlePlayInline = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const vid = videoRef.current;
-    if (!vid) return;
-    vid.muted = !vid.muted;
-    setIsMuted(vid.muted);
-    if (!vid.muted) {
-      setActiveMedia(mediaKey);
-    }
-  }, [mediaKey, setActiveMedia]);
+    setActiveMedia(mediaKey);
+    setIsPlayingInline(true);
+  };
 
   const handleFullscreenClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -140,25 +155,39 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({
   return (
     <div 
       className="relative w-full h-full bg-[#3A1528] select-none overflow-hidden cursor-pointer group"
-      onClick={togglePlay}
+      onClick={handleCardClick}
       data-cursor="Ver"
     >
-      <video
-        ref={videoRef}
-        src={item.src}
-        poster={item.poster}
-        loop
-        playsInline
-        preload="metadata"
-        muted={isMuted}
-        className="w-full h-full object-cover pointer-events-none"
-      />
+      {/* Either display interactive embed when playing or high-res poster */}
+      {isPlayingInline ? (
+        <iframe
+          src={`${item.embedUrl}?autoplay=1`}
+          title={`TikTok video por @${item.user}`}
+          className="w-full h-full border-0 pointer-events-auto"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        />
+      ) : (
+        <div className="relative w-full h-full">
+          <img
+            src={item.poster}
+            alt={`TikTok de @${item.user}`}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
 
-      {/* 1. Play/Pause Button in Center (glass, --champagne) */}
-      {!isPlaying && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#2B0F1E]/30 pointer-events-none transition-opacity">
-          <div className="w-16 h-16 rounded-full bg-[#FFE9D6]/90 backdrop-blur-md text-[#A3285C] flex items-center justify-center shadow-luxury">
-            <Play className="w-7 h-7 fill-current translate-x-0.5" />
+          {/* Gentle dark gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/25 pointer-events-none" />
+
+          {/* Center Play Button in Glass Champagne */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity">
+            <button
+              type="button"
+              onClick={handlePlayInline}
+              className="w-16 h-16 rounded-full bg-[#FFE9D6]/90 hover:bg-white text-[#A3285C] flex items-center justify-center shadow-luxury hover:scale-110 active:scale-95 transition-all pointer-events-auto cursor-pointer"
+              aria-label="Reproducir video de TikTok"
+            >
+              <Play className="w-7 h-7 fill-current translate-x-0.5" />
+            </button>
           </div>
         </div>
       )}
@@ -168,35 +197,32 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({
         <ButterflyIcon size={16} color="#FFE9D6" strokeWidth={1.5} />
       </div>
 
-      {/* 2. Pantalla Completa Button: Top Right */}
+      {/* Top Right: Fullscreen Expand Button */}
       <div className="absolute top-3.5 right-3.5 z-20 pointer-events-auto">
         <button
           type="button"
           onClick={handleFullscreenClick}
-          className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-sm transition-transform active:scale-90 cursor-pointer"
-          title="Pantalla completa"
+          className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] hover:bg-white flex items-center justify-center shadow-sm transition-transform active:scale-90 cursor-pointer"
+          title="Ver a pantalla completa"
           aria-label="Ver a pantalla completa"
         >
           <Maximize2 className="w-4 h-4" />
         </button>
       </div>
 
-      {/* 3. Mute Button: Bottom Left */}
-      <div className="absolute bottom-3.5 left-3.5 z-20 pointer-events-auto">
-        <button
-          type="button"
-          onClick={toggleMute}
-          className="w-9 h-9 rounded-full bg-[#FFE9D6]/90 text-[#A3285C] hover:bg-[#FFE9D6] flex items-center justify-center shadow-sm transition-transform active:scale-90 cursor-pointer"
-          title={isMuted ? 'Activar sonido' : 'Silenciar'}
-          aria-label="Silenciar / Activar sonido"
+      {/* Bottom: Creator Profile Badge Link (Clickeable a su perfil de TikTok) */}
+      <div className="absolute bottom-3.5 left-3.5 right-3.5 z-30 pointer-events-auto flex items-center justify-between gap-2">
+        <a
+          href={item.profileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="group/user inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2B0F1E]/80 hover:bg-[#E0457B] text-[#FFE9D6] hover:text-white backdrop-blur-md transition-all font-satoshi text-xs font-semibold shadow-md border border-[#FFE9D6]/20 cursor-pointer truncate max-w-[85%]"
+          title={`Abrir perfil de TikTok de @${item.user}`}
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-[#E0457B]" /> : <Volume2 className="w-4 h-4 text-[#A3285C]" />}
-        </button>
-      </div>
-
-      {/* Creator Handle at bottom (next to mute button) */}
-      <div className="absolute bottom-4 left-14 z-20 pointer-events-none font-satoshi text-xs font-medium text-[#FFE9D6] drop-shadow">
-        @{item.user}
+          <span className="truncate">@{item.user}</span>
+          <ExternalLink className="w-3 h-3 opacity-75 group-hover/user:opacity-100 group-hover/user:translate-x-0.5 transition-transform shrink-0" />
+        </a>
       </div>
     </div>
   );
@@ -385,7 +411,7 @@ export const ViralSlider: React.FC = () => {
         </div>
       </div>
 
-      {/* Fullscreen Flip Modal Viewer */}
+      {/* Fullscreen Modal Viewer con reproductor oficial de TikTok */}
       {fullscreenIndex !== null && (
         <div 
           className="fixed inset-0 z-[9999] bg-[#2B0F1E]/95 backdrop-blur-2xl flex items-center justify-center p-4 select-none animate-in fade-in duration-300"
@@ -425,17 +451,38 @@ export const ViralSlider: React.FC = () => {
           </button>
 
           <div 
-            className="relative w-full max-w-[420px] aspect-[9/16] max-h-[85vh] rounded-[24px] overflow-hidden border-[4px] border-[#FFE9D6] shadow-2xl"
+            className="relative w-full max-w-[420px] aspect-[9/16] max-h-[85vh] rounded-[24px] overflow-hidden border-[4px] border-[#FFE9D6] shadow-2xl flex flex-col bg-black"
             onClick={(e) => e.stopPropagation()}
           >
-            <video
-              src={TIKTOK_VIDEOS[fullscreenIndex].src}
-              autoPlay
-              loop
-              playsInline
-              controls
-              className="w-full h-full object-cover"
+            <iframe
+              src={`${TIKTOK_VIDEOS[fullscreenIndex].embedUrl}?autoplay=1`}
+              title={`TikTok video por @${TIKTOK_VIDEOS[fullscreenIndex].user}`}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
             />
+
+            {/* Profile Bar in Fullscreen */}
+            <div className="absolute bottom-3 left-3 right-3 z-30 pointer-events-auto flex items-center justify-between bg-black/60 backdrop-blur-md px-3.5 py-2 rounded-full border border-white/20">
+              <a
+                href={TIKTOK_VIDEOS[fullscreenIndex].profileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-satoshi font-semibold text-[#FFE9D6] hover:text-white hover:underline transition-colors"
+              >
+                <span>@{TIKTOK_VIDEOS[fullscreenIndex].user}</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+
+              <a
+                href={TIKTOK_VIDEOS[fullscreenIndex].videoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-satoshi text-[#FFE9D6]/80 hover:text-white uppercase tracking-wider underline-offset-2 hover:underline"
+              >
+                Ver en TikTok
+              </a>
+            </div>
           </div>
         </div>
       )}
