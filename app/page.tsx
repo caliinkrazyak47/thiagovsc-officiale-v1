@@ -155,11 +155,14 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] font-syne font-black tracking-[-0.04em] text-white leading-[0.88] uppercase drop-shadow-2xl">
                 EL RITMO
               </h1>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] font-syne font-black tracking-[-0.04em] bg-gradient-to-r from-[#FF5290] via-[#DE4176] to-[#FF75A9] bg-clip-text text-transparent leading-[0.88] uppercase mt-1 drop-shadow-[0_0_40px_rgba(222,65,118,0.55)]">
+              <h1 
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] font-syne font-black tracking-[-0.04em] text-transparent leading-[0.88] uppercase mt-1 drop-shadow-2xl"
+                style={{ WebkitTextStroke: '2px #FFFFFF' }}
+              >
                 DE TU MUNDO
               </h1>
               <p className="mt-3 sm:mt-4 text-[10px] sm:text-xs md:text-sm font-jakarta font-semibold tracking-[0.22em] text-white/90 uppercase drop-shadow">
-                01 // LA EMISORA OFICIAL DE THIAGO VSC • EN DIRECTO 24/7
+                LA EMISORA OFICIAL DE THIAGO VSC // EN DIRECTO 24/7
               </p>
             </div>
 
