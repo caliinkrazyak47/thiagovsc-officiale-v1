@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Maximize, Minimize, Volume2, Volume1, VolumeX, Shuffle, Tv, Play, Pause, Plus, Minus } from 'lucide-react';
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
@@ -230,42 +231,38 @@ export const TVOnlinePlayer: React.FC = () => {
   return (
     <section
       id="tv"
-      className="w-full relative bg-[#DE4176] overflow-hidden select-none py-12 sm:py-16 md:py-20 lg:py-24 px-3 sm:px-6 md:px-10 lg:px-16"
+      className="w-full relative bg-white overflow-hidden select-none py-16 sm:py-20 md:py-28 px-4 sm:px-6 md:px-10 lg:px-16 border-t border-b border-zinc-200/80"
     >
-      {/* Decorative hairline accents */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/20 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/20 pointer-events-none" />
+      {/* Precision hairline grid accent */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#DE4176]/30 to-transparent pointer-events-none" />
 
       {/* Main Content Container */}
       <div className="relative max-w-4xl lg:max-w-5xl mx-auto flex flex-col items-center z-10 w-full">
         
         {/* ==========================================
-            EDITORIAL HEADER SECTION
+            EDITORIAL HEADER SECTION (Awwwards Swiss Precision)
         ========================================== */}
         <div className="w-full flex flex-col items-center text-center mb-8 sm:mb-10 md:mb-12">
-          
           {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 shadow-md mb-3 sm:mb-4">
-            <span className="w-2 h-2 rounded-full bg-[#00ADEF] animate-pulse"></span>
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-white uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/25 shadow-sm mb-4">
+            <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse"></span>
+            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#DE4176] uppercase">
               24/7 BROADCAST // TRANSMISIÓN EN DIRECTO 4K
             </span>
           </div>
 
-          {/* Main Huge Typography */}
-          <h2 className="text-6xl sm:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-white uppercase text-center mb-2 drop-shadow-md">
+          {/* Main Huge Architectural Typography */}
+          <h2 className="text-6xl sm:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-[#0D0B12] uppercase text-center mb-3">
             TV<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #FFFFFF' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #DE4176' }}>
               ONLINE
             </span>
           </h2>
 
-          <p className="mt-3 text-[10px] sm:text-xs md:text-sm font-jakarta font-semibold text-white/95 uppercase tracking-[0.2em] max-w-xl px-2">
-            02 // THIAGO VSC OFFICIAL CHANNEL • MÁXIMA RESOLUCIÓN 4K EN DIRECTO
+          <p className="mt-2 text-[10px] sm:text-xs md:text-sm font-jakarta font-bold text-zinc-500 uppercase tracking-[0.22em] max-w-xl px-2">
+            THIAGO VSC OFFICIAL CHANNEL // MÁXIMA RESOLUCIÓN 4K ULTRA HD
           </p>
         </div>
-
-
 
         {/* ==========================================
             PREMIUM CINEMA FRAME (MARCO DE ALTA GAMA)

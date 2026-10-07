@@ -151,7 +151,12 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           <div className="w-full flex flex-col md:flex-row items-start justify-between gap-6 pt-1 sm:pt-3 md:pt-4">
             
             {/* Left Typography - Kept strictly in upper 35% of video to leave 3D logo completely clear */}
-            <div className="flex flex-col max-w-xl">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col max-w-xl"
+            >
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.6vw] font-syne font-black tracking-[-0.04em] text-white leading-[0.88] uppercase drop-shadow-2xl">
                 EL RITMO
               </h1>
@@ -164,10 +169,15 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
               <p className="mt-3 sm:mt-4 text-[10px] sm:text-xs md:text-sm font-jakarta font-semibold tracking-[0.22em] text-white/90 uppercase drop-shadow">
                 LA EMISORA OFICIAL DE THIAGO VSC // EN DIRECTO 24/7
               </p>
-            </div>
+            </motion.div>
 
             {/* Right: Radio Live Glass Pill Button */}
-            <div className="pointer-events-auto self-start md:self-start mt-2 md:mt-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="pointer-events-auto self-start md:self-start mt-2 md:mt-4"
+            >
               <button
                 type="button"
                 onClick={handleOpenRadioPopup}
@@ -185,7 +195,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
                   </span>
                 </div>
               </button>
-            </div>
+            </motion.div>
 
           </div>
         </div>
@@ -519,59 +529,59 @@ export default function Home() {
         ========================================== */}
         {/* ==========================================
             ZONA INFLUENCER (HALL OF FAME - FRANCESCA CHIRI)
-            Solid Pink #DE4176 Background, Bold White Typography, White Link Pill
+            Solid White Background, Architectural Editorial Typography & 3D Cards
         ========================================== */}
-        <section id="zona-influencer" className="w-full flex flex-col md:flex-row bg-[#DE4176] text-white relative overflow-hidden py-12 md:py-20">
+        <section id="zona-influencer" className="w-full flex flex-col md:flex-row bg-white text-[#0D0B12] relative overflow-hidden py-16 md:py-28 border-t border-zinc-200/80">
           
           {/* Subtle Ambient Background Watermark */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.04] text-[28vw] font-black tracking-tighter whitespace-nowrap z-0">
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 select-none pointer-events-none opacity-[0.03] text-[28vw] font-syne font-black tracking-tighter whitespace-nowrap z-0 text-zinc-900">
             CHIRI
           </div>
 
-          {/* Left Column */}
+          {/* Left Column: Editorial Portfolio Spread */}
           <div className="md:w-1/2 p-6 sm:p-12 md:p-16 lg:p-24 flex flex-col justify-center z-10">
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/20 mb-5 w-fit shadow-md">
-              <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-              <h4 className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.28em] text-white uppercase">
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/25 mb-5 w-fit shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse"></span>
+              <h4 className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.24em] text-[#DE4176] uppercase">
                 HALL OF FAME // TALENTO EXCLUSIVO
               </h4>
             </div>
             
-            <h2 className="text-5xl sm:text-7xl lg:text-[6.5vw] font-syne font-black tracking-[-0.04em] leading-[0.85] mb-6 text-white uppercase">
-              ZONA<br/><span className="text-transparent" style={{ WebkitTextStroke: '2px #FFFFFF' }}>INFLUENCER</span>
+            <h2 className="text-5xl sm:text-7xl lg:text-[6.5vw] font-syne font-black tracking-[-0.04em] leading-[0.85] mb-6 text-[#0D0B12] uppercase">
+              ZONA<br/><span className="text-transparent" style={{ WebkitTextStroke: '2.5px #DE4176' }}>INFLUENCER</span>
             </h2>
 
             {/* Influencer Name & Verified Username */}
             <div className="mb-5 flex flex-wrap items-center gap-3">
-              <h3 className="text-2xl sm:text-3xl font-syne font-black text-white tracking-tight uppercase">
+              <h3 className="text-2xl sm:text-3xl font-syne font-black text-[#0D0B12] tracking-tight uppercase">
                 FRANCESCA CHIRI
               </h3>
               <a
                 href="https://www.tiktok.com/@chiri_francesca"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs bg-white hover:bg-black text-[#DE4176] hover:text-white font-jakarta px-3.5 py-1.5 rounded-full font-bold shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                className="text-xs bg-[#DE4176] hover:bg-black text-white font-jakarta px-3.5 py-1.5 rounded-full font-bold shadow-md transition-all flex items-center gap-1.5 cursor-pointer haptic-press"
               >
                 <span>@chiri_francesca</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DE4176] group-hover:bg-white animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               </a>
             </div>
 
             {/* Key Telemetry Badges */}
             <div className="flex flex-wrap gap-2.5 mb-6 font-jakarta text-xs">
-              <span className="px-3.5 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-white/95">
+              <span className="px-3.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-zinc-800">
                 1.8M+ AUDIENCIA
               </span>
-              <span className="px-3.5 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-white/95">
+              <span className="px-3.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-zinc-800">
                 MODA & EDITORIAL
               </span>
-              <span className="px-3.5 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-white/95">
+              <span className="px-3.5 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-[10px] sm:text-[11px] font-bold tracking-wider uppercase text-zinc-800">
                 VERIFICADA OFICIAL
               </span>
             </div>
 
             {/* Influencer Bio */}
-            <p className="text-xs sm:text-sm font-jakarta text-white/95 max-w-lg mb-8 leading-relaxed normal-case font-medium">
+            <p className="text-xs sm:text-sm font-jakarta text-zinc-600 max-w-lg mb-8 leading-relaxed normal-case font-medium">
               Nacida en Italia en 2006 y con raíces rumanas, Francesca Chiri comenzó su andadura en el contenido digital a los 13 años. Hoy, bajo el usuario @chiri_francesca, inspira a millones de seguidores con sus looks de moda, rutinas de beauty y vlogs de viajes. Es una de las creadoras de contenido curvy y de estilo de vida con mayor proyección en la escena europea.
             </p>
 
@@ -581,14 +591,13 @@ export default function Home() {
                 href="https://linktr.ee/chirifrancesca"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-white hover:bg-black text-[#DE4176] hover:text-white font-jakarta font-extrabold px-8 py-4 text-sm md:text-base tracking-wider rounded-full transition-all shadow-xl hover:shadow-[0_0_35px_rgba(255,255,255,0.45)] hover:scale-105 active:scale-95 uppercase cursor-pointer haptic-press"
+                className="inline-flex items-center gap-3 bg-[#DE4176] hover:bg-black text-white font-jakarta font-extrabold px-8 py-4 text-sm md:text-base tracking-wider rounded-full transition-all shadow-xl hover:shadow-[0_10px_30px_rgba(222,65,118,0.35)] hover:scale-105 active:scale-95 uppercase cursor-pointer haptic-press"
               >
                 <span>ACCEDER AL LINKTREE OFICIAL</span>
               </a>
             </div>
           </div>
 
-          
           {/* Right Column: Generous 3D Fan Stage */}
           <div className="md:w-1/2 p-3 sm:p-8 md:p-10 lg:p-12 flex items-center justify-center relative z-10 min-h-[480px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[780px]" style={{ perspective: '1400px' }}>
             <div className="relative w-full max-w-[560px] lg:max-w-[620px] aspect-[4/5] flex items-center justify-center">
@@ -613,8 +622,8 @@ export default function Home() {
                     }}
                     className={`absolute w-[260px] xs:w-[290px] sm:w-[380px] md:w-[420px] lg:w-[460px] aspect-[4/5] rounded-[2.5rem] overflow-visible cursor-pointer select-none ${
                       isHovered
-                        ? 'shadow-[0_35px_80px_rgba(0,0,0,0.65)]'
-                        : 'shadow-[0_25px_50px_rgba(0,0,0,0.35)]'
+                        ? 'shadow-[0_35px_80px_rgba(222,65,118,0.3)]'
+                        : 'shadow-[0_20px_50px_rgba(0,0,0,0.12)]'
                     }`}
                   >
                     {/* Floating Colored Pill with Title */}
@@ -636,12 +645,12 @@ export default function Home() {
                     <div 
                       className={`w-full h-full p-1.5 sm:p-2 rounded-[2.5rem] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] relative ${
                         isHovered 
-                          ? 'bg-gradient-to-b from-white/35 via-white/10 to-white/25 ring-1 ring-white/50 shadow-[0_0_55px_rgba(255,255,255,0.45)]' 
-                          : 'bg-white/10 ring-1 ring-white/20'
+                          ? 'bg-white ring-2 ring-[#DE4176] shadow-[0_0_55px_rgba(222,65,118,0.25)]' 
+                          : 'bg-white ring-1 ring-zinc-200 shadow-md'
                       }`}
                     >
                       {/* Inner Core with Concentric Radius */}
-                      <div className="w-full h-full rounded-[calc(2.5rem-0.375rem)] sm:rounded-[calc(2.5rem-0.5rem)] overflow-hidden border border-white/20 relative bg-[#120E18]">
+                      <div className="w-full h-full rounded-[calc(2.5rem-0.375rem)] sm:rounded-[calc(2.5rem-0.5rem)] overflow-hidden border border-zinc-200 relative bg-[#0D0B12]">
                         <img 
                           src={card.img} 
                           alt={card.title} 
@@ -678,21 +687,21 @@ export default function Home() {
             CLUB EVENTS (SHOKO MADRID - Pure White Background matching Mockup)
             VIP Holographic Passes with Ticket Notches, Barcodes & Live Booking
         ========================================== */}
-        <section id="events" className="w-full bg-white flex flex-col py-16 md:py-24 relative overflow-hidden select-none">
+        <section id="events" className="w-full bg-white flex flex-col py-16 md:py-24 relative overflow-hidden select-none border-t border-zinc-200/80">
           <div className="px-6 md:px-14 flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6 relative z-10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/30 shadow-sm mb-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/25 shadow-sm mb-4">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DE4176] opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DE4176]"></span>
                 </span>
-                <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#DE4176] uppercase">
-                  05 // PRÓXIMOS EVENTOS • SHÔKO MADRID
+                <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.24em] text-[#DE4176] uppercase">
+                  EVENTOS EXCLUSIVOS // SHÔKO MADRID
                 </span>
               </div>
-              <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-[#DE4176] uppercase">
+              <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-[#0D0B12] uppercase">
                 PRÓXIMOS<br />
-                <span className="text-transparent" style={{ WebkitTextStroke: '2px #DE4176' }}>
+                <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #DE4176' }}>
                   EVENTOS
                 </span>
               </h2>
@@ -806,19 +815,19 @@ export default function Home() {
         {/* ==========================================
             EDITORIAL BRANDS MARQUEE (White Background matching Mockup)
         ========================================== */}
-        <section className="py-7 bg-white border-t border-b border-[#DE4176]/20 overflow-hidden">
+        <section className="py-8 bg-white border-t border-b border-zinc-200 overflow-hidden">
           <div className="marquee-wrapper">
-            <div className="marquee-content text-2xl md:text-3xl font-black tracking-tighter text-[#DE4176] gap-16 flex items-center" style={{ fontFamily: 'Arial Black, Impact, sans-serif' }}>
-              <span>FORBES</span><span className="text-[#DE4176]/40">//</span>
-              <span>DIELINE</span><span className="text-[#DE4176]/40">//</span>
-              <span>FAMOUSE</span><span className="text-[#DE4176]/40">//</span>
-              <span>ROLLING STONE</span><span className="text-[#DE4176]/40">//</span>
-              <span>VANITY FAIR</span><span className="text-[#DE4176]/40">//</span>
-              <span>FORBES</span><span className="text-[#DE4176]/40">//</span>
-              <span>DIELINE</span><span className="text-[#DE4176]/40">//</span>
-              <span>FAMOUSE</span><span className="text-[#DE4176]/40">//</span>
-              <span>ROLLING STONE</span><span className="text-[#DE4176]/40">//</span>
-              <span>VANITY FAIR</span><span className="text-[#DE4176]/40">//</span>
+            <div className="marquee-content text-2xl md:text-3xl font-syne font-black tracking-tighter text-zinc-400 gap-16 flex items-center">
+              <span>FORBES</span><span className="text-[#DE4176]/50">//</span>
+              <span>DIELINE</span><span className="text-[#DE4176]/50">//</span>
+              <span>FAMOUSE</span><span className="text-[#DE4176]/50">//</span>
+              <span>ROLLING STONE</span><span className="text-[#DE4176]/50">//</span>
+              <span>VANITY FAIR</span><span className="text-[#DE4176]/50">//</span>
+              <span>FORBES</span><span className="text-[#DE4176]/50">//</span>
+              <span>DIELINE</span><span className="text-[#DE4176]/50">//</span>
+              <span>FAMOUSE</span><span className="text-[#DE4176]/50">//</span>
+              <span>ROLLING STONE</span><span className="text-[#DE4176]/50">//</span>
+              <span>VANITY FAIR</span><span className="text-[#DE4176]/50">//</span>
             </div>
           </div>
         </section>

@@ -410,26 +410,27 @@ export const ViralSlider: React.FC = () => {
   return (
     <section 
       id="tiktok" 
-      className="w-full relative bg-white pt-14 md:pt-20 pb-16 md:pb-24 overflow-hidden select-none"
+      className="w-full relative bg-[#DE4176] text-white pt-16 md:pt-24 pb-20 md:pb-28 overflow-hidden select-none"
     >
-      {/* Bottom half background in #DE4176 to seamlessly transition into Zona Influencer */}
-      <div className="absolute bottom-0 left-0 right-0 h-[48%] md:h-[46%] bg-[#DE4176] pointer-events-none" />
+      {/* Precision hairline grid accent */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[1px] bg-white/20 pointer-events-none" />
 
       {/* Section Header */}
       <div className="px-6 md:px-14 flex flex-col md:flex-row items-start md:items-end justify-between mb-8 md:mb-12 z-10 relative">
         <div>
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DE4176]/10 border border-[#DE4176]/30 shadow-sm mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/25 border border-white/20 shadow-sm mb-4">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DE4176] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DE4176]"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
-            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.22em] text-[#DE4176] uppercase">
-              03 // TIKTOK FEED • CONTENIDO VIRAL 24/7
+            <span className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.24em] text-white uppercase">
+              TIKTOK FEED // TRANSMISIÓN VIRAL 24/7
             </span>
           </div>
-          <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-[#DE4176] uppercase">
+          <h2 className="text-6xl md:text-7xl lg:text-[7vw] font-syne font-black tracking-[-0.04em] leading-[0.85] text-white uppercase">
             TIKTOK<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '2px #DE4176' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '2.5px #FFFFFF' }}>
               FEED
             </span>
           </h2>
@@ -437,16 +438,15 @@ export const ViralSlider: React.FC = () => {
 
         {/* Right Info: Live Counter & Interactive Hint */}
         <div className="flex flex-col md:items-end gap-1 mt-4 md:mt-0">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-md border border-[#DE4176]/25 text-[#DE4176] text-xs font-jakarta font-bold tracking-widest uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-lg text-[#DE4176] text-xs font-jakarta font-extrabold tracking-widest uppercase">
             <span className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse" />
             <span>VIDEO 0{current + 1} DE 0{tiktokVideos.length}</span>
           </div>
-          <span className="text-[10px] font-jakarta font-semibold text-zinc-500 tracking-wider uppercase mt-1">
+          <span className="text-[10px] font-jakarta font-semibold text-white/80 tracking-wider uppercase mt-1">
             HAZ CLIC EN CUALQUIER VIDEO PARA REPRODUCIR / PAUSAR
           </span>
         </div>
       </div>
-
 
       {/* Carousel Track with Left & Right Visible Circle Arrows */}
       <div className="w-full relative px-2 sm:px-6 md:px-12 z-20">
@@ -456,9 +456,9 @@ export const ViralSlider: React.FC = () => {
           type="button"
           onClick={() => api?.scrollPrev()}
           aria-label="Video anterior"
-          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.45)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
+          className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-black text-[#DE4176] hover:text-white flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
-          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:-translate-x-0.5 transition-transform" />
+          <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5] group-hover:-translate-x-0.5 transition-transform" />
         </button>
 
         {/* Right Screen Flank Arrow Button with Nested Bezel */}
@@ -466,9 +466,9 @@ export const ViralSlider: React.FC = () => {
           type="button"
           onClick={() => api?.scrollNext()}
           aria-label="Video siguiente"
-          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#DE4176] hover:bg-[#c42e61] border-2 border-white text-white flex items-center justify-center shadow-[0_12px_35px_rgba(0,0,0,0.45)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
+          className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white hover:bg-black text-[#DE4176] hover:text-white flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.5)] hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer group haptic-press"
         >
-          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 text-white group-hover:translate-x-0.5 transition-transform" />
+          <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5] group-hover:translate-x-0.5 transition-transform" />
         </button>
 
         {/* Embla Carousel Container */}
