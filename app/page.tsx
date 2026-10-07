@@ -12,7 +12,6 @@ import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio/CoverFlowRadio';
 import { CookieConsent } from '@/components/CookieConsent';
 import { CustomCursor } from '@/components/CustomCursor';
-import { LuxuryPreloader } from '@/components/LuxuryPreloader';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
 import { Marquee } from '@/components/Marquee';
@@ -479,9 +478,6 @@ export default function Home() {
 
       <div className="relative min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
         
-        {/* PRELOADER CINEMATOGRÁFICO DE LIQUIDO CON LOGO SCRIPT SOBRE FONDO ROSA */}
-        <LuxuryPreloader />
-
         {/* EDITORIAL MAGNET CURSOR */}
         <CustomCursor />
 
