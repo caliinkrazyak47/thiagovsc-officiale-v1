@@ -23,13 +23,24 @@ export const CookieConsent: React.FC = () => {
       } catch {}
     }
 
-    // Aparece 800ms después de que carga la web (sin preloader) si no hay consentimiento previo
-    let timer: NodeJS.Timeout | null = null;
-    if (!saved) {
-      timer = setTimeout(() => {
+    // Aparece exactamente 800ms después de que salga el preloader
+    const handlePreloaderDone = () => {
+      const existing = localStorage.getItem(STORAGE_KEY);
+      if (!existing) {
+        setTimeout(() => {
+          setIsVisible(true);
+        }, 800);
+      }
+    };
+    window.addEventListener('preloader-finished', handlePreloaderDone);
+
+    // Temporizador de respaldo por si el preloader no emite
+    const fallbackTimer = setTimeout(() => {
+      const existing = localStorage.getItem(STORAGE_KEY);
+      if (!existing) {
         setIsVisible(true);
-      }, 800);
-    }
+      }
+    }, 4500);
 
     // Reabrir desde el enlace "Cookies" del footer
     const handleReopen = () => {
@@ -39,8 +50,9 @@ export const CookieConsent: React.FC = () => {
     window.addEventListener('open-cookie-settings', handleReopen);
 
     return () => {
-      if (timer) clearTimeout(timer);
+      window.removeEventListener('preloader-finished', handlePreloaderDone);
       window.removeEventListener('open-cookie-settings', handleReopen);
+      clearTimeout(fallbackTimer);
     };
   }, []);
 
