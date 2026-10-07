@@ -16,6 +16,7 @@ const config: Config = {
         luxury: "0 24px 48px -24px rgba(176, 51, 102, 0.25)",
       },
       fontFamily: {
+        clash: ["'Clash Display'", "var(--font-clash)", "sans-serif"],
         bodoni: ["'Bodoni Moda'", "serif"],
         jost: ["'Jost'", "sans-serif"],
       },

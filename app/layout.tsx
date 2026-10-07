@@ -1,7 +1,15 @@
 import "./globals.css";
 import { Teko, Inter, Space_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import type { Viewport, Metadata } from "next";
 import { Analytics } from "@/components/Analytics";
+
+const clashDisplay = localFont({
+  src: "../public/fonts/ClashDisplay-Medium.woff2",
+  weight: "500",
+  variable: "--font-clash",
+  display: "swap",
+});
 
 const teko = Teko({ 
   subsets: ["latin"], 
@@ -99,7 +107,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#09070D",
+  themeColor: "#DE4176",
 };
 
 export default function RootLayout({
@@ -144,7 +152,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es" className={`${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
+    <html lang="es" className={`${clashDisplay.variable} ${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
       <head>
         {/* Performance Preconnects for Ultra Fast Streaming */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -161,7 +169,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="overflow-x-hidden w-full min-h-screen bg-[#09070D] antialiased">
+      <body className="overflow-x-hidden w-full min-h-screen bg-white text-[#B03366] antialiased">
         <Analytics />
         {children}
       </body>

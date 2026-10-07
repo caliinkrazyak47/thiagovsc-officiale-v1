@@ -3,9 +3,8 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Play, 
   Volume2, 
   VolumeX, 
@@ -18,8 +17,9 @@ import {
 
 import { cn } from '@/lib/utils';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
+import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 interface TikTokVideoItem {
   user: string;
@@ -43,15 +43,18 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
   const [hasLiked, setHasLiked] = useState(false);
   const [hasBookmarked, setHasBookmarked] = useState(false);
 
+  // Lazy loading: solo se reproduce el vídeo que está activo/en el centro
   useEffect(() => {
     const vid = videoRef.current;
     if (!vid) return;
 
-    if (!isActive && isPlaying) {
+    if (isActive) {
+      vid.play().then(() => setIsPlaying(true)).catch(() => {});
+    } else {
       vid.pause();
       setIsPlaying(false);
     }
-  }, [isActive, isPlaying]);
+  }, [isActive]);
 
   const togglePlay = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -222,9 +225,10 @@ const CustomTikTokPlayer: React.FC<CustomTikTokPlayerProps> = ({ item, isActive 
 };
 
 export const ViralSlider: React.FC = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [progressPercent, setProgressPercent] = useState(0);
 
   const tiktokVideos: TikTokVideoItem[] = [
     { 
@@ -269,96 +273,158 @@ export const ViralSlider: React.FC = () => {
     },
   ];
 
-  // GSAP Horizontal Scroll Pinning on Desktop
-  useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
-    if (isMobile) return;
+  // GSAP Horizontal Scroll Pinning on Desktop (usando useGSAP con scope y anticipación)
+  useGSAP(() => {
+    if (window.matchMedia('(max-width: 1024px)').matches) return;
 
     const section = sectionRef.current;
     const track = trackRef.current;
     if (!section || !track) return;
 
-    const scrollDistance = track.scrollWidth - track.clientWidth;
+    // Distancia exacta con paddingLateral para centrar la última tarjeta
+    const paddingLateral = window.innerWidth * 0.5 - 150;
+    const getDistance = () => track.scrollWidth - window.innerWidth + paddingLateral;
 
-    const ctx = gsap.context(() => {
-      gsap.to(track, {
-        x: -scrollDistance,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          pin: true,
-          scrub: 1,
-          start: 'top top',
-          end: () => `+=${scrollDistance}`,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const index = Math.min(
-              tiktokVideos.length - 1,
-              Math.floor(self.progress * tiktokVideos.length)
-            );
-            setActiveIndex(index);
-          },
+    const tween = gsap.to(track, {
+      x: () => -getDistance(),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        pin: true,
+        scrub: 1,
+        start: 'top top',
+        end: () => '+=' + getDistance(),
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          setProgressPercent(self.progress * 100);
+
+          const total = tiktokVideos.length;
+          const idx = Math.min(
+            total - 1,
+            Math.max(0, Math.round(self.progress * (total - 1)))
+          );
+          setActiveIndex(idx);
+
+          // Leve inclinación según la velocidad del scroll
+          const velocity = self.getVelocity();
+          const tilt = Math.max(-5, Math.min(5, velocity / 380));
+          gsap.to('.tiktok-card', {
+            rotation: tilt,
+            duration: 0.18,
+            ease: 'power1.out',
+            overwrite: 'auto',
+          });
         },
-      });
-    }, section);
+      },
+    });
 
-    return () => ctx.revert();
-  }, [tiktokVideos.length]);
+    // Refrescar ScrollTrigger cuando terminen de cargar las fuentes y media
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+
+    const handleLoad = () => ScrollTrigger.refresh();
+    window.addEventListener('load', handleLoad);
+    return () => window.removeEventListener('load', handleLoad);
+  }, { scope: sectionRef, dependencies: [tiktokVideos.length] });
 
   return (
     <section 
       ref={sectionRef}
       id="tiktok" 
-      className="w-full relative bg-[#FBE3EC] text-[#B03366] py-16 sm:py-24 md:py-28 px-[6vw] overflow-hidden select-none border-b border-[rgba(224,69,123,0.14)]"
+      className="tiktok w-full relative bg-[#FBE3EC] text-[#B03366] select-none border-b border-[rgba(224,69,123,0.14)]"
     >
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-14">
+      {/* DESKTOP PINNED WRAPPER (>= 1024px) */}
+      <div className="pin-wrap hidden lg:flex w-full h-screen flex-col justify-between py-10 px-[6vw] overflow-hidden">
         
-        {/* Header Fijo a la Izquierda */}
-        <div className="w-full lg:w-[320px] shrink-0 flex flex-col justify-between py-2">
+        {/* Top Header con título y contador dinámico */}
+        <div className="w-full flex items-end justify-between border-b border-[rgba(224,69,123,0.14)] pb-4">
           <div>
-            <div className="editorial-eyebrow mb-4">
+            <div className="editorial-eyebrow mb-2">
               <ButterflyIcon size={14} color="#DE4176" />
               <span>02  Viral</span>
             </div>
-
-            <h2 className="editorial-title text-[#B03366] mb-5">
-              TikTok <span className="italic text-[#DE4176]">Feed</span>
-            </h2>
-
-            <p className="editorial-text text-[#B03366] mb-6">
-              Los momentos más virales de nuestras transmisiones y colaboraciones exclusivas.
-            </p>
+            <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" />
           </div>
 
-          <div className="hidden lg:flex flex-col gap-2 font-jost text-xs tracking-wider uppercase text-[#B03366]/70">
-            <span>Desplaza para explorar</span>
-            <div className="w-12 h-[1px] bg-[#DE4176]" />
+          {/* Contador 0X / 05 en Jost */}
+          <div className="flex items-center gap-3">
+            <span className="font-jost text-sm font-medium tracking-[0.25em] text-[#B03366] uppercase">
+              {`0${activeIndex + 1} / 0${tiktokVideos.length}`}
+            </span>
+            <div className="w-2 h-2 rounded-full bg-[#DE4176] animate-pulse" />
           </div>
         </div>
 
-        {/* Track de Tarjetas (Horizontal Pinned / Scroll-snap en móvil) */}
-        <div 
-          ref={trackRef}
-          className="flex-1 w-full flex items-center gap-6 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 snap-x snap-mandatory"
-        >
-          {tiktokVideos.map((video, idx) => {
-            const isActive = activeIndex === idx;
+        {/* Track Horizontal de Tarjetas */}
+        <div className="w-full my-auto overflow-visible py-4">
+          <div 
+            ref={trackRef}
+            style={{ paddingRight: 'calc(50vw - 150px)' }}
+            className="track flex items-center gap-[24px]"
+          >
+            {tiktokVideos.map((video, idx) => {
+              const isCenter = activeIndex === idx;
 
-            return (
-              <div
-                key={idx}
-                onClick={() => setActiveIndex(idx)}
-                className={cn(
-                  "shrink-0 w-[270px] sm:w-[300px] h-[480px] sm:h-[530px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury snap-center transition-transform duration-500",
-                  isActive ? "scale-[1.05]" : "scale-100 opacity-90 hover:opacity-100"
-                )}
-              >
-                <CustomTikTokPlayer item={video} isActive={isActive} />
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  style={{
+                    transform: isCenter ? 'scale(1.06)' : 'scale(0.92)',
+                    opacity: isCenter ? 1 : 0.7,
+                  }}
+                  className={cn(
+                    "tiktok-card shrink-0 w-[290px] h-[510px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury transition-all duration-500 ease-out",
+                    isCenter ? "z-20 shadow-luxury" : "z-10"
+                  )}
+                >
+                  <CustomTikTokPlayer item={video} isActive={isCenter} />
+                </div>
+              );
+            })}
+          </div>
         </div>
 
+        {/* Bottom Progress Bar en --rosa */}
+        <div className="w-full max-w-xl mx-auto flex items-center gap-4">
+          <div className="flex-1 h-1 bg-[#DE4176]/20 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#DE4176] transition-all duration-75"
+              style={{ width: `${Math.max(5, Math.min(100, progressPercent))}%` }}
+            />
+          </div>
+          <span className="font-jost text-xs font-medium text-[#B03366] tracking-widest uppercase">
+            {`0${activeIndex + 1} / 0${tiktokVideos.length}`}
+          </span>
+        </div>
+
+      </div>
+
+      {/* MOBILE NATIVE SLIDER (< 1024px) - Sin pin, scroll-snap horizontal */}
+      <div className="lg:hidden w-full py-12 px-6">
+        <div className="mb-6">
+          <div className="editorial-eyebrow mb-2">
+            <ButterflyIcon size={14} color="#DE4176" />
+            <span>02  Viral</span>
+          </div>
+          <BicolorSectionTitle firstWord="TikTok" secondWord="Feed" />
+          <p className="editorial-text text-sm mt-2 text-[#B03366]/80">
+            Desplaza horizontalmente para explorar los directos y momentos virales.
+          </p>
+        </div>
+
+        <div className="w-full overflow-x-auto snap-x snap-mandatory flex gap-5 pb-6">
+          {tiktokVideos.map((video, idx) => (
+            <div
+              key={idx}
+              className="shrink-0 w-[270px] h-[480px] rounded-[20px] border-[4px] border-white overflow-hidden shadow-luxury snap-center"
+            >
+              <CustomTikTokPlayer item={video} isActive={true} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

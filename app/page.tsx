@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ReactLenis } from '@studio-freight/react-lenis';
+import { ReactLenis, useLenis } from '@studio-freight/react-lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { DigitalClock } from '@/components/DigitalClock';
 import { TVOnlinePlayer } from '@/components/TVOnlinePlayer/TVOnlinePlayer';
 import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
@@ -11,9 +13,27 @@ import { CookieConsent } from '@/components/CookieConsent';
 import { CustomCursor } from '@/components/CustomCursor';
 import { InitialLoader } from '@/components/InitialLoader';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
+import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const LenisScrollTriggerSync: React.FC = () => {
+  useLenis(() => {
+    ScrollTrigger.update();
+  });
+
+  useEffect(() => {
+    gsap.ticker.lagSmoothing(0);
+    document.fonts.ready.then(() => {
+      ScrollTrigger.refresh();
+    });
+  }, []);
+
+  return null;
+};
 
 // ==========================================
-// HERO VIDEO COMPONENT (Sin logo duplicado sobre el vídeo)
+// HERO VIDEO COMPONENT (Zona segura de la cara respetada al 100%)
 // ==========================================
 interface HeroVideoProps {
   onOpenRadio: () => void;
@@ -32,19 +52,10 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
     });
   }, []);
 
-  // Split title animation words
-  const titleWords = [
-    { text: "El", italic: false },
-    { text: "ritmo", italic: false },
-    { text: "de", italic: false },
-    { text: "tu", italic: false },
-    { text: "mundo", italic: true },
-  ];
-
   return (
     <div className="relative w-full overflow-hidden select-none">
       {/* 16:9 Responsive Video Viewport */}
-      <section className="relative w-full aspect-video min-h-[560px] sm:min-h-[640px] md:min-h-[720px] lg:min-h-[820px] max-h-[1080px] overflow-hidden bg-[#FFF6F9]">
+      <section className="relative w-full aspect-video min-h-[500px] sm:min-h-[580px] md:min-h-[680px] lg:min-h-[780px] max-h-[1080px] overflow-hidden bg-[#FFF6F9]">
         
         {/* Background Fallback Poster */}
         <div 
@@ -71,80 +82,108 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
         />
 
         {/* Hero Vignette / Ambient tint */}
-        <div className="absolute inset-0 bg-[rgba(176,51,102,0.18)] mix-blend-multiply pointer-events-none" />
+        <div className="absolute inset-0 bg-[rgba(176,51,102,0.14)] mix-blend-multiply pointer-events-none" />
 
-        {/* Upper Hero Stage: Typography + Live Radio Trigger */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-start p-6 sm:p-10 md:p-14 lg:p-20 pointer-events-none">
-          {/* Top spacer below floating navbar */}
-          <div className="w-full h-14 sm:h-20" />
+        {/* 
+          DESKTOP HERO STAGE (>= 768px):
+          Zona segura de la cara (28%-72% ancho, 8%-70% alto) 100% limpia.
+          Título arriba a la izquierda sobre el cielo: left 6vw, top 18vh, max-width 24vw.
+        */}
+        <div className="hidden md:flex absolute left-[6vw] top-[18vh] max-w-[24vw] z-20 flex-col items-start pointer-events-none">
+          {/* Eyebrow con mariposa */}
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="inline-flex items-center gap-2 mb-2.5 font-jost text-xs tracking-[0.3em] uppercase text-white drop-shadow-sm"
+          >
+            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
+            <span>00  Plataforma oficial</span>
+          </motion.div>
 
-          <div className="w-full flex flex-col md:flex-row items-start justify-between gap-6 pt-2 sm:pt-4">
-            
-            {/* Left Typography: "El ritmo de tu mundo" en Bodoni Moda blanco, 'mundo' en itálica, revelado desde abajo */}
-            <div className="flex flex-col max-w-2xl overflow-hidden">
-              {/* Eyebrow con mariposa */}
-              <motion.div 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="inline-flex items-center gap-2 mb-3 font-jost text-xs tracking-[0.3em] uppercase text-white drop-shadow-sm"
-              >
-                <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
-                <span>00  Plataforma oficial</span>
-              </motion.div>
+          {/* Título en Clash Display blanco, clamp(1.75rem, 2.8vw, 2.75rem) */}
+          <h1 className="font-clash font-medium text-white text-[clamp(1.75rem,2.8vw,2.75rem)] leading-[1.05] tracking-[-0.035em] drop-shadow-md">
+            {"El ritmo de tu mundo".split(" ").map((word, wIdx) => (
+              <span key={wIdx} className="inline-block overflow-hidden py-0.5 mr-[0.25em]">
+                <motion.span
+                  initial={{ y: "115%" }}
+                  animate={{ y: "0%" }}
+                  transition={{ 
+                    duration: 0.8, 
+                    delay: 0.15 + wIdx * 0.08, 
+                    ease: [0.22, 1, 0.36, 1] 
+                  }}
+                  className="inline-block"
+                >
+                  {word}
+                </motion.span>
+              </span>
+            ))}
+          </h1>
 
-              <h1 className="font-bodoni text-white text-[clamp(2.5rem,5.2vw,4.75rem)] font-normal leading-[1.02] tracking-[-0.02em] drop-shadow-md flex flex-wrap gap-x-3.5">
-                {titleWords.map((word, i) => (
-                  <span key={i} className="inline-block overflow-hidden py-1">
-                    <motion.span
-                      initial={{ y: "115%", opacity: 0 }}
-                      animate={{ y: "0%", opacity: 1 }}
-                      transition={{ 
-                        duration: 1.1, 
-                        delay: 0.15 + i * 0.08, 
-                        ease: [0.22, 1, 0.36, 1] 
-                      }}
-                      className={`inline-block ${word.italic ? 'italic font-normal' : ''}`}
-                    >
-                      {word.text}
-                    </motion.span>
-                  </span>
-                ))}
-              </h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-3 font-jost text-xs sm:text-sm tracking-[0.18em] text-white/90 uppercase drop-shadow-sm font-normal"
-              >
-                Emisión ininterrumpida 24/7 // Sonido de vanguardia
-              </motion.p>
-            </div>
-
-            {/* Right: Botón "EN VIVO RADIO" en --rosa sólido con mariposa y punto blanco parpadeante */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="pointer-events-auto self-start mt-2 md:mt-4"
-            >
-              <button
-                type="button"
-                onClick={onOpenRadio}
-                className="inline-flex items-center gap-3 px-6 sm:px-7 py-3 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white transition-all shadow-luxury cursor-pointer btn-luxury"
-                title="Sintonizar Radio Live"
-                data-cursor="Play"
-              >
-                <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
-              </button>
-            </motion.div>
-
-          </div>
+          {/* Subtítulo más pequeño sin superar 24vw */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-2.5 font-jost text-xs lg:text-[13px] tracking-[0.16em] text-white/90 uppercase drop-shadow-sm font-normal max-w-[24vw]"
+          >
+            Emisión ininterrumpida 24/7 // Sonido de vanguardia
+          </motion.p>
         </div>
+
+        {/* Desktop CTA Radio (Arriba a la derecha, fuera de la cara) */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="hidden md:block absolute right-[6vw] top-[18vh] z-20 pointer-events-auto"
+        >
+          <button
+            type="button"
+            onClick={onOpenRadio}
+            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white transition-all shadow-luxury cursor-pointer btn-luxury"
+            title="Sintonizar Radio Live"
+            data-cursor="Play"
+          >
+            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
+          </button>
+        </motion.div>
       </section>
+
+      {/* 
+        MOBILE HERO TYPOGRAPHY (< 768px):
+        En móvil el título se coloca debajo del hero, sobre fondo --porcelana,
+        dejando la foto 100% libre de texto sobre la cara.
+      */}
+      <div className="md:hidden w-full bg-[#FFF6F9] px-6 py-8 border-b border-[rgba(224,69,123,0.14)] select-none">
+        <div className="inline-flex items-center gap-2 mb-2 font-jost text-xs tracking-[0.3em] uppercase text-[#DE4176]">
+          <ButterflyIcon size={14} color="#DE4176" strokeWidth={1.5} />
+          <span>00  Plataforma oficial</span>
+        </div>
+
+        <h1 className="font-clash font-medium text-[#B03366] text-3xl leading-tight tracking-[-0.035em]">
+          El ritmo de tu <span className="text-[#DE4176]">mundo</span>
+        </h1>
+
+        <p className="mt-2 font-jost text-xs tracking-wider text-[#B03366]/75 uppercase">
+          Emisión ininterrumpida 24/7 // Sonido de vanguardia
+        </p>
+
+        <div className="mt-5">
+          <button
+            type="button"
+            onClick={onOpenRadio}
+            className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[#DE4176] text-white transition-all shadow-sm cursor-pointer btn-luxury"
+          >
+            <ButterflyIcon size={14} color="#FFFFFF" strokeWidth={1.5} />
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -274,7 +313,8 @@ export default function Home() {
 
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
-      <div id="home" className="min-h-screen bg-white text-[#B03366] font-jost overflow-hidden relative selection:bg-[#DE4176] selection:text-white">
+      <LenisScrollTriggerSync />
+      <div id="home" className="min-h-screen bg-white text-[#B03366] font-jost relative selection:bg-[#DE4176] selection:text-white">
 
         {/* 1.5S LUXURY CURTAIN INTRO LOADER */}
         <InitialLoader />
@@ -482,9 +522,7 @@ export default function Home() {
                 <span>03  Talento</span>
               </div>
               
-              <h2 className="editorial-title text-[#B03366] mb-2">
-                Zona <span className="italic text-[#DE4176]">Influencer</span>
-              </h2>
+              <BicolorSectionTitle firstWord="Zona" secondWord="Influencer" className="mb-3" />
 
               {/* Subtítulo Nombre en Bodoni Moda 28px + TikTok badge */}
               <div className="mb-6 flex flex-wrap items-center gap-3">
@@ -611,9 +649,7 @@ export default function Home() {
                 <ButterflyIcon size={14} color="#DE4176" />
                 <span>04  Agenda</span>
               </div>
-              <h2 className="editorial-title text-[#B03366]">
-                Próximos <span className="italic text-[#DE4176]">Eventos</span>
-              </h2>
+              <BicolorSectionTitle firstWord="Próximos" secondWord="Eventos" />
             </div>
             
             <div className="flex flex-col md:items-end gap-1.5">
