@@ -9,8 +9,11 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
   const nameRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const signaturePathRef = useRef<SVGPathElement>(null);
+  const enterButtonRef = useRef<HTMLButtonElement>(null);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
   
   const [isVisible, setIsVisible] = useState(true);
+  const [showEnter, setShowEnter] = useState(false);
 
   useEffect(() => {
     const tl = gsap.timeline({
@@ -22,6 +25,8 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
         if (onComplete) onComplete();
       }
     });
+    
+    tlRef.current = tl;
 
     // 1. Draw the signature T elegantly
     if (signaturePathRef.current) {
@@ -47,32 +52,23 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
       }
     }, 0);
 
-    // 3. Reveal Name and Subtitle (fade and slight scale)
-    tl.fromTo(nameRef.current, {
-      opacity: 0,
-      scale: 0.95
-    }, {
-      opacity: 1,
-      scale: 1,
-      duration: 1,
-      ease: 'power3.out'
-    }, 0.2);
-
-    tl.fromTo(subtitleRef.current, {
-      opacity: 0,
-      y: 10
-    }, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: 'power3.out'
-    }, 0.5);
+    // 3. Reveal Name and Subtitle
+    tl.fromTo(nameRef.current, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' }, 0.2);
+    tl.fromTo(subtitleRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, 0.5);
 
     // 4. Wait a bit at 100%
     tl.to({}, { duration: 0.4 });
 
-    // 5. Premium Reveal Exit (Split screen or Curtain up)
-    // We'll do a clip-path wipe up to reveal the site beneath
+    // 5. Pause the timeline and show the ENTER button
+    tl.add(() => {
+      setShowEnter(true);
+      if (enterButtonRef.current) {
+        gsap.to(enterButtonRef.current, { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
+      }
+      tl.pause();
+    });
+
+    // 6. Premium Reveal Exit (Split screen or Curtain up)
     tl.to(containerRef.current, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)', // Wipes UP
       duration: 1,
@@ -84,6 +80,15 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
     };
   }, [onComplete]);
 
+  const handleEnterClick = () => {
+    if (enterButtonRef.current) {
+      gsap.to(enterButtonRef.current, { opacity: 0, duration: 0.2 });
+    }
+    if (tlRef.current) {
+      tlRef.current.play(); // Resume the wipe animation
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -91,31 +96,20 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
       ref={containerRef}
       className="fixed inset-0 z-[10000] flex flex-col justify-center items-center pointer-events-auto"
       style={{ 
-        backgroundColor: '#E0457B', // Solid brand pink
-        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' // Full screen initially
+        backgroundColor: '#E0457B',
+        clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
       }}
     >
       <div className="relative z-10 flex flex-col items-center justify-center w-full px-4">
         
-        {/* MAIN TITLE: THIAGO VSC */}
-        <div 
-          ref={nameRef}
-          className="flex flex-row items-center justify-center font-['Anton'] tracking-normal select-none uppercase leading-[0.85]"
-          style={{ fontSize: 'clamp(4rem, 16vw, 12rem)' }}
-        >
-          <span className="text-white">
-            THIAGO
-          </span>
-          <span className="text-[#E4003E] ml-2 md:ml-4">
-            VSC
-          </span>
+        {/* MAIN TITLE */}
+        <div ref={nameRef} className="flex flex-row items-center justify-center font-['Anton'] tracking-normal select-none uppercase leading-[0.85]" style={{ fontSize: 'clamp(4rem, 16vw, 12rem)' }}>
+          <span className="text-white">THIAGO</span>
+          <span className="text-[#E4003E] ml-2 md:ml-4">VSC</span>
         </div>
 
-        {/* SUBTITLE: PAGE OFFICIELLE */}
-        <div 
-          ref={subtitleRef}
-          className="mt-4 md:mt-6 font-['Jost'] font-bold text-white tracking-[0.2em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm drop-shadow-sm z-20"
-        >
+        {/* SUBTITLE */}
+        <div ref={subtitleRef} className="mt-4 md:mt-6 font-['Jost'] font-bold text-white tracking-[0.2em] md:tracking-[0.3em] uppercase text-[10px] md:text-sm drop-shadow-sm z-20">
           PAGE OFFICIELLE
         </div>
 
@@ -135,11 +129,17 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
         </div>
       </div>
 
-      {/* Loading Percentage */}
-      <div 
-        ref={percentRef}
-        className="absolute bottom-8 right-8 text-white font-['Anton'] text-4xl sm:text-6xl opacity-40 mix-blend-overlay tracking-widest"
+      {/* ENTER BUTTON */}
+      <button
+        ref={enterButtonRef}
+        onClick={handleEnterClick}
+        className="absolute bottom-12 md:bottom-16 px-8 py-3 bg-white text-[#E0457B] font-['Jost'] font-bold tracking-widest text-xs uppercase rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:scale-105 transition-transform duration-300 opacity-0 pointer-events-none"
       >
+        Entrar a la web
+      </button>
+
+      {/* Loading Percentage */}
+      <div ref={percentRef} className="absolute bottom-8 right-8 text-white font-['Anton'] text-4xl sm:text-6xl opacity-40 mix-blend-overlay tracking-widest">
         0%
       </div>
     </div>
