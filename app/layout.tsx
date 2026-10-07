@@ -34,6 +34,23 @@ const panchang = localFont({
   display: "swap",
 });
 
+const satoshi = localFont({
+  src: [
+    {
+      path: "../public/fonts/Satoshi-Medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/Satoshi-Bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+  ],
+  variable: "--font-satoshi",
+  display: "swap",
+});
+
 const teko = Teko({ 
   subsets: ["latin"], 
   weight: ["300", "400", "500", "600", "700"],
@@ -175,7 +192,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es" suppressHydrationWarning className={`${clashDisplay.variable} ${panchang.variable} ${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
+    <html lang="es" suppressHydrationWarning className={`${clashDisplay.variable} ${panchang.variable} ${satoshi.variable} ${teko.variable} ${inter.variable} ${spaceMono.variable} overflow-x-hidden`}>
       <head>
         {/* Performance Preconnects for Ultra Fast Streaming */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

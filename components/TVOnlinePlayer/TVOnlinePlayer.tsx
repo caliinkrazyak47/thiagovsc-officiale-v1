@@ -21,7 +21,7 @@ export const TVOnlinePlayer: React.FC = () => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const screenWrapperRef = useRef<HTMLDivElement>(null);
 
-  const { activeMediaId, setActiveMedia } = useMediaStore();
+  const { activeMediaId } = useMediaStore();
   
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -148,16 +148,15 @@ export const TVOnlinePlayer: React.FC = () => {
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // GSAP ScrollTrigger Scrub: entra desde scale 0.85 y radius 48px hasta scale 1 y radius 24px
+  // GSAP ScrollTrigger Scrub: smooth scale into view
   useGSAP(() => {
     if (!sectionRef.current || !chassisRef.current) return;
 
     gsap.fromTo(
       chassisRef.current,
-      { scale: 0.85, borderRadius: '48px' },
+      { scale: 0.88 },
       {
         scale: 1,
-        borderRadius: '24px',
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -177,23 +176,28 @@ export const TVOnlinePlayer: React.FC = () => {
     <section
       ref={sectionRef}
       id="tv"
-      className="w-full min-h-screen lg:h-screen flex flex-col justify-center items-center relative bg-[var(--blush)] py-12 lg:py-16 px-4 sm:px-6 select-none border-b border-[var(--line)] overflow-hidden"
+      className="w-full min-h-screen flex flex-col justify-center items-center relative bg-[var(--blush)] border-b border-[var(--line)] overflow-hidden select-none"
+      style={{
+        paddingTop: 'clamp(4rem, 9vh, 7rem)',
+        paddingBottom: 'clamp(4rem, 9vh, 7rem)',
+      }}
     >
-      <div className="w-full max-w-6xl mx-auto flex flex-col items-center justify-center my-auto">
-        
-        {/* Título minimalista centrado: TV frambuesa + Online rosa */}
+      <div 
+        className="w-full flex flex-col items-center justify-center my-auto px-4 sm:px-6"
+        style={{ gap: 'clamp(2rem, 4vh, 3.5rem)' }}
+      >
+        {/* En la sección solo va el título "TV Online", sin más texto */}
         <BicolorSectionTitle 
           firstWord="TV" 
           secondWord="Online" 
           align="center" 
-          className="mb-6 lg:mb-8"
         />
 
-        {/* Reproductor centrado con bisel de 12px en --petal y radius 24px */}
+        {/* UN solo contenedor: width min(1100px, 88vw), con bisel de 12px en --petal y radius 24px */}
         <div 
           ref={chassisRef}
           style={{ width: 'min(1100px, 88vw)' }}
-          className="p-[12px] bg-[var(--petal)] rounded-[24px] border border-[var(--line)] shadow-luxury mx-auto transition-transform"
+          className="p-[12px] bg-[var(--petal)] rounded-[24px] border border-[var(--line)] shadow-luxury flex flex-col gap-3 mx-auto transition-transform"
           data-cursor="Play"
         >
           {/* Pantalla 16:9 con radius 16px */}
@@ -218,7 +222,7 @@ export const TVOnlinePlayer: React.FC = () => {
               <button
                 type="button"
                 onClick={handleToggleFullscreen}
-                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface)] text-[var(--berry)] font-jost text-xs tracking-[0.2em] uppercase shadow-luxury cursor-pointer"
+                className="absolute top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface)] text-[var(--berry)] font-satoshi text-xs tracking-[0.2em] uppercase shadow-luxury cursor-pointer"
               >
                 <span>Salir</span>
                 <Minimize className="w-4 h-4" />
@@ -226,15 +230,15 @@ export const TVOnlinePlayer: React.FC = () => {
             )}
           </div>
 
-          {/* Controles de abajo en --surface con texto --berry y botones en --brand */}
-          <div className="mt-3 bg-[var(--surface)] rounded-[16px] p-3 sm:p-3.5 border border-[var(--line)] flex flex-wrap items-center justify-between text-[var(--berry)] font-jost text-xs gap-3">
+          {/* Barra de controles con EXACTAMENTE el mismo ancho (w-full dentro del mismo padding de 12px) */}
+          <div className="w-full bg-[var(--surface)] rounded-[16px] p-3 sm:p-3.5 border border-[var(--line)] flex flex-wrap items-center justify-between text-[var(--berry)] font-satoshi text-xs gap-3">
             
             {/* Controles Izquierda */}
             <div className="flex items-center gap-2.5">
               <button
                 type="button"
                 onClick={togglePlayPause}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-medium tracking-[0.15em] uppercase text-[11px] bg-[var(--brand)] text-[var(--champagne)] hover:opacity-90 cursor-pointer btn-luxury shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-medium tracking-[0.15em] uppercase text-[11px] bg-[var(--brand)] text-[var(--champagne)] hover:opacity-90 cursor-pointer shadow-sm transition-all"
                 title={isPlaying ? "Pausar emisión" : "Reanudar emisión"}
               >
                 {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
@@ -244,7 +248,7 @@ export const TVOnlinePlayer: React.FC = () => {
               <button
                 type="button"
                 onClick={playNextRandomVideo}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer btn-luxury"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer transition-all"
                 title="Reproducir siguiente video aleatorio"
               >
                 <Shuffle className="w-3 h-3" />
@@ -259,54 +263,45 @@ export const TVOnlinePlayer: React.FC = () => {
                 <button
                   type="button"
                   onClick={toggleMute}
-                  className="hover:text-[#DE4176] transition-colors cursor-pointer p-0.5"
-                  title={isMuted ? "Activar sonido" : "Silenciar"}
+                  className="p-1 hover:text-[var(--brand)] transition-colors cursor-pointer"
+                  title={isMuted ? 'Activar sonido' : 'Silenciar'}
                 >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="w-3.5 h-3.5 text-[#DE4176]" />
-                  ) : (
-                    <Volume2 className="w-3.5 h-3.5 text-[#B03366]" />
-                  )}
+                  {isMuted ? <VolumeX className="w-3.5 h-3.5 text-[var(--brand)]" /> : <Volume2 className="w-3.5 h-3.5 text-[var(--berry)]" />}
                 </button>
-
                 <button
                   type="button"
                   onClick={handleVolumeDown}
-                  className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#B03366] text-xs cursor-pointer"
+                  className="p-0.5 hover:text-[var(--brand)] transition-colors cursor-pointer"
                   title="Bajar volumen"
                 >
-                  <Minus className="w-2.5 h-2.5" />
+                  <Minus className="w-3 h-3" />
                 </button>
-
-                <span className="font-jost text-[11px] text-[#B03366] min-w-[26px] text-center font-medium">
+                <span className="text-[10px] font-mono w-7 text-center">
                   {isMuted ? '0%' : `${volume}%`}
                 </span>
-
                 <button
                   type="button"
                   onClick={handleVolumeUp}
-                  className="w-5 h-5 flex items-center justify-center rounded-full hover:bg-white text-[#B03366] text-xs cursor-pointer"
+                  className="p-0.5 hover:text-[var(--brand)] transition-colors cursor-pointer"
                   title="Subir volumen"
                 >
-                  <Plus className="w-2.5 h-2.5" />
+                  <Plus className="w-3 h-3" />
                 </button>
               </div>
 
-              {/* Botón Pantalla Completa en --rosa */}
+              {/* Pantalla Completa */}
               <button
                 type="button"
                 onClick={handleToggleFullscreen}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#DE4176] hover:bg-[#c22e61] text-white font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer shadow-luxury btn-luxury"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer transition-all"
                 title="Pantalla completa"
               >
                 <Maximize className="w-3.5 h-3.5" />
-                <span>Pantalla Completa</span>
+                <span className="hidden sm:inline">Pantalla completa</span>
               </button>
             </div>
-
           </div>
         </div>
-
       </div>
     </section>
   );

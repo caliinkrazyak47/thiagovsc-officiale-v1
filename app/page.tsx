@@ -6,8 +6,7 @@ import { ReactLenis, useLenis } from '@studio-freight/react-lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Play } from 'lucide-react';
-import { DigitalClock } from '@/components/DigitalClock';
+import { Play, X } from 'lucide-react';
 import { TVOnlinePlayer } from '@/components/TVOnlinePlayer/TVOnlinePlayer';
 import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio/CoverFlowRadio';
@@ -16,7 +15,7 @@ import { CustomCursor } from '@/components/CustomCursor';
 import { LuxuryPreloader } from '@/components/LuxuryPreloader';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
-import { KineticMarquee } from '@/components/KineticMarquee';
+import { Marquee } from '@/components/Marquee';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { SoundToggle } from '@/components/SoundToggle';
 import { SectionColorMorph } from '@/components/SectionColorMorph';
@@ -40,7 +39,7 @@ const LenisScrollTriggerSync: React.FC = () => {
 };
 
 // ==========================================
-// HERO VIDEO COMPONENT (Motionsites Cinematic Level)
+// 1. HERO VIDEO COMPONENT (Motionsites Level)
 // ==========================================
 interface HeroVideoProps {
   onOpenRadio: () => void;
@@ -55,7 +54,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
 
   const { isSoundEnabled, activeMediaId, setActiveMedia } = useMediaStore();
 
-  // Autoplay management & Audio unlock sync
+  // Autoplay management
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -65,7 +64,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
     });
   }, []);
 
-  // Sync sound with global media store
+  // Sync sound: only mute hero when another media plays or sound is disabled; NEVER pause hero
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -73,12 +72,12 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
     if (isSoundEnabled && activeMediaId === 'hero') {
       video.muted = false;
       gsap.to(video, { volume: 0.6, duration: 1.2, ease: 'power2.out' });
-    } else if (!isSoundEnabled || (activeMediaId && activeMediaId !== 'hero')) {
+    } else {
       video.muted = true;
     }
   }, [isSoundEnabled, activeMediaId]);
 
-  // Pause video when out of viewport via IntersectionObserver
+  // Pause video only when out of viewport via IntersectionObserver
   useEffect(() => {
     const video = videoRef.current;
     const hero = heroRef.current;
@@ -101,7 +100,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
     return () => observer.disconnect();
   }, []);
 
-  // GSAP ScrollTrigger: Video scale from 1 to 1.12 + Title parallax
+  // GSAP ScrollTrigger: Video scale from 1 to 1.12 + Title parallax (transform only)
   useGSAP(
     () => {
       if (!heroRef.current || !videoRef.current) return;
@@ -119,7 +118,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
 
       if (titleRef.current) {
         gsap.to(titleRef.current, {
-          y: -60,
+          y: -40,
           ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
@@ -137,7 +136,7 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
 
   return (
     <div ref={heroRef} className="relative w-full overflow-hidden select-none">
-      {/* 16:9 Responsive Video Viewport */}
+      {/* 16:9 Responsive Video Viewport SIN NINGÚN FILTRO NI TINTES NI OVERLAYS */}
       <section className="relative w-full aspect-video min-h-[520px] sm:min-h-[600px] md:min-h-[700px] lg:min-h-[820px] max-h-[1080px] overflow-hidden bg-[#E0457B]">
         {/* Background Fallback Poster */}
         <div
@@ -148,18 +147,24 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           }}
         />
 
-        {/* Hero Background Video */}
+        {/* Hero Background Video - Sin tintes, sin overlay, idéntico al original */}
         <video
           ref={videoRef}
           src="/videos/hero.mp4"
           poster="/hero-poster.jpg"
           autoPlay
           loop
-          muted={!isSoundEnabled}
+          muted={!isSoundEnabled || (activeMediaId !== null && activeMediaId !== 'hero')}
           playsInline
-          preload="metadata"
+          preload="auto"
           onLoadedData={() => setIsVideoLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 will-change-transform ${
+          onEnded={() => {
+            if (videoRef.current) {
+              videoRef.current.currentTime = 0;
+              videoRef.current.play().catch(() => {});
+            }
+          }}
+          className={`absolute inset-0 w-full h-full object-cover will-change-transform ${
             isVideoLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ objectPosition: 'center 35%' }}
@@ -182,31 +187,39 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           </div>
         )}
 
-        {/* Ambient Warm Tint */}
-        <div className="absolute inset-0 bg-[rgba(163,40,92,0.14)] mix-blend-multiply pointer-events-none" />
-
         {/* 
           DESKTOP HERO STAGE (>= 768px):
-          Zona segura de la cara (28%-72% ancho, 8%-70% alto) 100% limpia.
-          Título arriba a la izquierda sobre el cielo: left 6vw, top 18vh, max-width 24vw.
+          left: 5vw, top: calc(56px + 6vh), max-width: 22vw
+          tamaño clamp(1.4rem, 2.2vw, 2.2rem)
+          text-shadow: 0 2px 18px rgba(163,40,92,.35)
+          Verificado: nunca toca la cara ni el gorro.
         */}
         <div
           ref={titleRef}
-          className="hidden md:flex absolute left-[6vw] top-[18vh] max-w-[24vw] z-20 flex-col items-start pointer-events-none"
+          className="hidden md:flex absolute z-20 flex-col items-start pointer-events-none"
+          style={{
+            left: '5vw',
+            top: 'calc(56px + 6vh)',
+            maxWidth: '22vw',
+          }}
         >
           {/* Eyebrow con mariposa */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="inline-flex items-center gap-2 mb-3 font-jost text-xs tracking-[0.3em] uppercase text-[#FFE9D6] drop-shadow-sm"
+            className="inline-flex items-center gap-2 mb-3 font-satoshi text-xs tracking-[0.28em] uppercase text-[#FFE9D6]"
+            style={{ textShadow: '0 2px 18px rgba(163,40,92,0.35)' }}
           >
             <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
-            <span>00  Plataforma oficial</span>
+            <span>00 · PLATAFORMA OFICIAL</span>
           </motion.div>
 
-          {/* Título en Panchang 700 color --champagne, clamp(1.6rem, 2.6vw, 2.6rem) con SplitText máscara */}
-          <h1 className="font-panchang font-bold text-[#FFE9D6] text-[clamp(1.6rem,2.6vw,2.6rem)] leading-[1.08] tracking-tight drop-shadow-md">
+          {/* Título en Panchang 700 color --champagne */}
+          <h1 
+            className="font-panchang font-bold text-[#FFE9D6] text-[clamp(1.4rem,2.2vw,2.2rem)] leading-[1.12] tracking-tight"
+            style={{ textShadow: '0 2px 18px rgba(163,40,92,0.35)' }}
+          >
             {heroHeadline.split('').map((char, i) => (
               <span key={i} className="inline-block overflow-hidden py-0.5">
                 <motion.span
@@ -225,66 +238,65 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
             ))}
           </h1>
 
-          {/* Subtítulo max-width 24vw */}
+          {/* Subtítulo max-width 22vw */}
           <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 font-jost text-xs lg:text-[13px] tracking-[0.16em] text-[#FFE9D6]/90 uppercase drop-shadow-sm font-normal max-w-[24vw]"
+            className="mt-3 font-satoshi text-xs tracking-[0.14em] text-[#FFE9D6]/90 uppercase font-normal"
+            style={{ textShadow: '0 2px 18px rgba(163,40,92,0.35)' }}
           >
             Emisión ininterrumpida 24/7 // Sonido de vanguardia
           </motion.p>
         </div>
 
-        {/* Desktop CTA Radio */}
+        {/* Desktop Top Right: Ecualizador a la izquierda + Botón EN VIVO RADIO en la misma línea */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="hidden md:block absolute right-[6vw] top-[18vh] z-20 pointer-events-auto"
+          className="hidden md:flex items-center gap-3 absolute z-20 pointer-events-auto"
+          style={{ right: '5vw', top: 'calc(56px + 6vh)' }}
         >
+          <SoundToggle compact />
           <button
             type="button"
             onClick={onOpenRadio}
-            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B] hover:opacity-95 text-[#FFE9D6] transition-all shadow-luxury cursor-pointer btn-luxury"
+            className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-[#E0457B] hover:opacity-95 text-[#FFE9D6] transition-all shadow-luxury cursor-pointer"
             title="Sintonizar Radio Live"
             data-cursor="Play"
           >
             <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
             <span className="w-2 h-2 rounded-full bg-[#FFE9D6] animate-pulse" />
-            <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
+            <span className="font-satoshi text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
           </button>
         </motion.div>
       </section>
 
-      {/* 
-        MOBILE HERO TYPOGRAPHY (< 768px):
-        En móvil el título se coloca debajo del hero, sobre fondo --brand,
-        dejando la foto 100% libre de texto sobre la cara.
-      */}
+      {/* MOBILE HERO TYPOGRAPHY (< 768px): Rostro 100% libre */}
       <div className="md:hidden w-full bg-[#E0457B] text-[#FFE9D6] px-6 py-8 border-b border-[rgba(255,233,214,0.18)] select-none">
-        <div className="inline-flex items-center gap-2 mb-2 font-jost text-xs tracking-[0.3em] uppercase text-[#FFE9D6]">
+        <div className="inline-flex items-center gap-2 mb-2 font-satoshi text-xs tracking-[0.28em] uppercase text-[#FFE9D6]">
           <ButterflyIcon size={14} color="#FFE9D6" strokeWidth={1.5} />
-          <span>00  Plataforma oficial</span>
+          <span>00 · PLATAFORMA OFICIAL</span>
         </div>
 
         <h1 className="font-panchang font-bold text-white text-2xl sm:text-3xl leading-tight tracking-tight">
           El ritmo de tu <span className="text-[#FFE9D6]">mundo</span>
         </h1>
 
-        <p className="mt-2 font-jost text-xs tracking-wider text-[#FFE9D6]/85 uppercase">
+        <p className="mt-2 font-satoshi text-xs tracking-wider text-[#FFE9D6]/85 uppercase">
           Emisión ininterrumpida 24/7 // Sonido de vanguardia
         </p>
 
-        <div className="mt-5">
+        <div className="mt-5 flex items-center gap-3">
+          <SoundToggle compact />
           <button
             type="button"
             onClick={onOpenRadio}
-            className="w-full inline-flex items-center justify-center gap-3 px-6 py-3 rounded-full bg-[#FFE9D6] text-[#A3285C] transition-all shadow-luxury cursor-pointer btn-luxury font-medium"
+            className="inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[var(--surface)] text-[var(--berry)] font-satoshi text-xs font-medium tracking-[0.16em] uppercase shadow-sm cursor-pointer"
           >
-            <ButterflyIcon size={14} color="#A3285C" strokeWidth={1.5} />
-            <span className="w-2 h-2 rounded-full bg-[#A3285C] animate-pulse" />
-            <span className="font-jost text-xs font-medium tracking-[0.2em] uppercase">EN VIVO RADIO</span>
+            <ButterflyIcon size={12} color="#E0457B" strokeWidth={1.5} />
+            <span>EN VIVO RADIO</span>
           </button>
         </div>
       </div>
@@ -296,165 +308,164 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
 // MAIN PAGE COMPONENT
 // ==========================================
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [lightboxCard, setLightboxCard] = useState<any>(null);
   const [radioModalOpen, setRadioModalOpen] = useState(false);
   const [hoveredGalleryCard, setHoveredGalleryCard] = useState<number | null>(null);
-  const [activeSection, setActiveSection] = useState('home');
-  const [lightboxCard, setLightboxCard] = useState<{ id: number; img: string; title: string; category: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [navVisible, setNavVisible] = useState(true);
 
+  const lastScrollY = useRef(0);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Hide navbar on scroll down, show on scroll up
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setLightboxCard(null);
-        setMenuOpen(false);
-        setRadioModalOpen(false);
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY > 100 && currentY > lastScrollY.current) {
+        setNavVisible(false);
+      } else {
+        setNavVisible(true);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Close dropdown menu on Escape key
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [menuOpen]);
+
+  // Section Observer for active links
+  useEffect(() => {
+    const sections = ['home', 'tv', 'tiktok', 'zona-influencer', 'events', 'press'];
+    const handleScroll = () => {
+      const scrollY = window.scrollY + 200;
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollY >= top && scrollY < top + height) {
+            setActiveSection(section);
+            break;
+          }
+        }
       }
     };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     setMenuOpen(false);
-    setActiveSection(targetId.replace('#', ''));
-    const elem = document.querySelector(targetId);
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
+    const targetEl = document.querySelector(targetId);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  const shokoEvents = [
-    {
-      title: "PURO PERREO",
-      url: "https://shokomadrid.com/es/products/puro-perreo-sunday-30-8-2026",
-      img: "/images/cover1.jpg",
-      date: "04 Oct"
-    },
-    {
-      title: "SWAG CITY",
-      url: "https://shokomadrid.com/es/products/swag-city-thursday-1-10-2026",
-      img: "/images/cover2.jpg",
-      date: "01 Oct"
-    },
-    {
-      title: "RESIDENCIA",
-      url: "https://shokomadrid.com/es/products/residencia-de-los-domingos-sunday-4-10-2026",
-      img: "/images/cover3.jpg",
-      date: "02 Oct"
-    },
-    {
-      title: "PURE SHOKO",
-      url: "https://shokomadrid.com/es/products/pure-shoko-friday-2-10-2026",
-      img: "/images/cover4.jpg",
-      date: "03 Oct"
-    },
-    {
-      title: "HALLOWEEN",
-      url: "https://shokomadrid.com/es/products/halloween-edition-friday-30-10-2026",
-      img: "/images/cover5.jpg",
-      date: "08 Oct"
-    },
-    {
-      title: "TARDEO",
-      url: "https://shokomadrid.com/es/products/tardeo-tropical-saturday-3-10-2026",
-      img: "/images/francesca-4.jpg",
-      date: "09 Oct"
-    }
+  const navMenuItems = [
+    { num: '01', label: 'Inicio', target: '#home' },
+    { num: '02', label: 'En Vivo', target: '#tv' },
+    { num: '03', label: 'TikTok', target: '#tiktok' },
+    { num: '04', label: 'Influencer', target: '#zona-influencer' },
+    { num: '05', label: 'Eventos', target: '#events' },
   ];
 
   const influencerCards = [
     {
-      id: 0,
-      img: "/images/francesca-1.jpg",
-      title: "Editorial Haute Couture",
-      category: "Vanguardia & Glamour",
-      rotation: -6,
-      translateX: -30,
-    },
-    {
       id: 1,
-      img: "/images/francesca-2.jpg",
-      title: "Pink Bistro // Lookbook",
-      category: "Beauty & Lifestyle",
-      rotation: 3,
-      translateX: 0,
+      title: 'Alta Definición',
+      subtitle: 'Sesión Beauty',
+      category: 'Moda & Curvy',
+      desc: 'Rutinas de belleza exclusiva y estilismos contemporáneos en Madrid y Milán.',
+      img: '/images/francesca-1.jpg',
     },
     {
       id: 2,
-      img: "/images/francesca-3.jpg",
-      title: "Winter Glam // Alta Montaña",
-      category: "Colección Exclusiva",
-      rotation: 8,
-      translateX: 30,
+      title: 'Vanguardia Urbana',
+      subtitle: 'Editorial Exclusivo',
+      category: 'Lifestyle',
+      desc: 'Tendencias urbanas europeas presentadas con elegancia natural y fuerza visual.',
+      img: '/images/francesca-2.jpg',
+    },
+    {
+      id: 3,
+      title: 'Colección Exclusiva',
+      subtitle: 'Gorro Ruso & Cromo',
+      category: 'Haute Couture',
+      desc: 'Iconografía visual de Francesca Chiri para la campaña oficial Thiago VSC.',
+      img: '/images/francesca-3.jpg',
     },
   ];
 
-  const navMenuItems = [
-    { num: "01", label: "Inicio", target: "#home" },
-    { num: "02", label: "TV Online", target: "#tv" },
-    { num: "03", label: "TikTok Feed", target: "#tiktok" },
-    { num: "04", label: "Zona Influencer", target: "#zona-influencer" },
-    { num: "05", label: "Próximos Eventos", target: "#events" },
-    { num: "06", label: "Contacto", target: "#footer" },
-  ];
-
-  const pressLogos = [
-    "VOGUE",
-    "VANITY FAIR",
-    "ROLLING STONE",
-    "GLAMOUR",
-    "FORBES",
-    "BILLBOARD",
-    "VOGUE",
-    "VANITY FAIR",
-    "ROLLING STONE",
-    "GLAMOUR",
-    "FORBES",
-    "BILLBOARD",
+  const shokoEvents = [
+    { date: '04 Oct', title: 'Puro Perreo', url: 'https://shokomadrid.com/es/products/04-oct-puro-perreo', img: '/images/cover1.jpg' },
+    { date: '01 Oct', title: 'Swag City', url: 'https://shokomadrid.com/es/products/01-oct-swag-city', img: '/images/cover2.jpg' },
+    { date: '02 Oct', title: 'Residencia', url: 'https://shokomadrid.com/es/products/02-oct-the-black-haute', img: '/images/cover3.jpg' },
+    { date: '03 Oct', title: 'Pure Shoko', url: 'https://shokomadrid.com/es/products/03-oct-pure-shoko', img: '/images/cover4.jpg' },
+    { date: '08 Oct', title: 'Halloween', url: 'https://shokomadrid.com/es/products/08-oct-halloween-special', img: '/images/cover5.jpg' },
+    { date: '09 Oct', title: 'Tardeo', url: 'https://shokomadrid.com/es/products/09-oct-tardeo-urbano', img: '/images/francesca-4.jpg' },
   ];
 
   return (
     <ReactLenis root options={{ lerp: 0.08, smoothWheel: true }}>
       <LenisScrollTriggerSync />
+      
+      {/* Morphing color plano dinámico de fondo del body */}
       <SectionColorMorph />
 
-      <div id="home" className="min-h-screen text-[var(--berry)] font-jost relative selection:bg-[var(--brand)] selection:text-[var(--champagne)]">
-        {/* LUXURY PRELOADER CON LOGO ORIGINAL Y TELÓN */}
-        <LuxuryPreloader
-          onComplete={() => {
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('preloader-finished'));
-            }
-          }}
-        />
+      <div className="relative min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
+        
+        {/* PRELOADER CINEMATOGRÁFICO DE LIQUIDO CON LOGO SCRIPT SOBRE FONDO ROSA */}
+        <LuxuryPreloader />
 
         {/* EDITORIAL MAGNET CURSOR */}
         <CustomCursor />
 
         {/* ==========================================
-            FLOATING NAVBAR (Superficie de cristal, borde nacarado)
+            2. NAVBAR (CSS Grid auto 1fr auto, cristal Apple, sin MUTE ni RADIO)
         ========================================== */}
-        <nav className="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl px-5 sm:px-7 py-3 rounded-full bg-[var(--surface)]/85 backdrop-blur-xl border border-[var(--line)] shadow-luxury flex items-center justify-between select-none">
-          {/* Logo THIAGO VSC con Mariposa de Línea */}
-          <div className="flex items-center gap-3">
+        <nav 
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-5xl px-6 py-2.5 rounded-full border-b border-[var(--line)] shadow-luxury transition-transform duration-300 select-none ${
+            navVisible ? 'translate-y-0' : '-translate-y-[150%]'
+          } grid grid-cols-[auto_1fr_auto] items-center`}
+          style={{
+            background: 'color-mix(in srgb, var(--petal) 65%, transparent)',
+            backdropFilter: 'saturate(180%) blur(20px)',
+            WebkitBackdropFilter: 'saturate(180%) blur(20px)',
+          }}
+        >
+          {/* Columna 1: El logo con altura de 22px sin solaparse */}
+          <div className="flex items-center">
             <a
               href="#home"
               onClick={(e) => handleNavClick(e, '#home')}
-              className="flex items-center gap-2 tracking-tight text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer group"
+              className="h-[22px] flex items-center gap-2 text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer group"
             >
-              <span className="font-bodoni font-normal text-xl tracking-tight">THIAGO</span>
-              <ButterflyIcon size={14} color="#E0457B" strokeWidth={1.5} className="group-hover:rotate-12 transition-transform duration-300" />
+              <span className="font-bodoni font-normal text-xl leading-none tracking-tight">THIAGO</span>
+              <ButterflyIcon size={12} color="#E0457B" strokeWidth={1.5} className="group-hover:rotate-12 transition-transform duration-300" />
               <span className="font-bodoni italic text-xl leading-none text-[var(--brand)]">Vsc</span>
             </a>
           </div>
 
-          {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-7 lg:gap-8 font-jost text-xs uppercase tracking-[0.18em] font-medium text-[var(--berry)]">
+          {/* Columna 2: Los links centrados (Inicio, En Vivo, TikTok, Influencer, Eventos) con gap de 32px */}
+          <div className="justify-self-center hidden min-[1100px]:flex items-center gap-8 font-satoshi font-medium text-[13px] tracking-[0.04em] text-[var(--berry)] whitespace-nowrap">
             <a
               href="#home"
               onClick={(e) => handleNavClick(e, '#home')}
-              className={`relative transition-colors py-1 cursor-pointer ${
+              className={`relative py-1 transition-colors cursor-pointer ${
                 activeSection === 'home' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
@@ -463,16 +474,16 @@ export default function Home() {
             <a
               href="#tv"
               onClick={(e) => handleNavClick(e, '#tv')}
-              className={`relative transition-colors py-1 cursor-pointer ${
+              className={`relative py-1 transition-colors cursor-pointer ${
                 activeSection === 'tv' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
-              TV Online
+              En Vivo
             </a>
             <a
               href="#tiktok"
               onClick={(e) => handleNavClick(e, '#tiktok')}
-              className={`relative transition-colors py-1 cursor-pointer ${
+              className={`relative py-1 transition-colors cursor-pointer ${
                 activeSection === 'tiktok' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
@@ -481,7 +492,7 @@ export default function Home() {
             <a
               href="#zona-influencer"
               onClick={(e) => handleNavClick(e, '#zona-influencer')}
-              className={`relative transition-colors py-1 cursor-pointer ${
+              className={`relative py-1 transition-colors cursor-pointer ${
                 activeSection === 'zona-influencer' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
@@ -490,7 +501,7 @@ export default function Home() {
             <a
               href="#events"
               onClick={(e) => handleNavClick(e, '#events')}
-              className={`relative transition-colors py-1 cursor-pointer ${
+              className={`relative py-1 transition-colors cursor-pointer ${
                 activeSection === 'events' ? 'text-[var(--brand)] after:absolute after:bottom-0 after:inset-x-0 after:h-[1.5px] after:bg-[var(--brand)]' : 'hover:text-[var(--brand)]'
               }`}
             >
@@ -498,65 +509,66 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Right Controls: Clock, Sound Toggle, Theme Toggle, Radio Button */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden lg:block">
-              <DigitalClock />
+          {/* Columna 3: El botón de modo oscuro (círculo 32px) y el botón 'Menú' (píldora 32px) */}
+          <div className="justify-self-end flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center">
+              <ThemeToggle />
             </div>
 
-            {/* Sound Equalizer Button */}
-            <SoundToggle />
-
-            {/* Dark Mode Toggle with GSAP Morph */}
-            <ThemeToggle />
-
-            {/* Radio FM Modal Trigger */}
-            <button
-              type="button"
-              onClick={() => setRadioModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--brand)] hover:opacity-95 text-[var(--champagne)] font-jost text-xs tracking-[0.16em] uppercase font-medium shadow-sm transition-all cursor-pointer btn-luxury"
-              title="Abrir Sintonizador de Radio FM"
-              data-cursor="Play"
-            >
-              <ButterflyIcon size={12} color="#FFE9D6" strokeWidth={1.5} />
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--champagne)] animate-pulse" />
-              <span className="hidden sm:inline">Radio</span>
-            </button>
-
-            {/* Mobile Hamburger */}
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden w-8 h-8 rounded-full border border-[var(--line)] flex items-center justify-center text-[var(--berry)] hover:text-[var(--brand)] transition-colors cursor-pointer"
+              aria-expanded={menuOpen}
               aria-label="Abrir menú de navegación"
+              className="h-8 px-4 rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--berry)] hover:text-[var(--brand)] font-satoshi text-xs tracking-[0.04em] font-medium flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
             >
-              <span className="text-sm font-bold">☰</span>
+              <span>Menú</span>
             </button>
           </div>
         </nav>
 
-        {/* Mobile Fullscreen Menu Drawer */}
+        {/* Dropdown Menu estilo Apple (baja desde arriba, cierra con Esc o clic fuera) */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
+              ref={dropdownRef}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-40 bg-[var(--surface)]/95 backdrop-blur-2xl flex flex-col justify-center px-8 md:hidden select-none"
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed top-20 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] max-w-md p-6 rounded-3xl border border-[var(--line)] shadow-2xl select-none"
+              style={{
+                background: 'color-mix(in srgb, var(--surface) 92%, transparent)',
+                backdropFilter: 'saturate(180%) blur(24px)',
+                WebkitBackdropFilter: 'saturate(180%) blur(24px)',
+              }}
             >
-              <div className="flex flex-col gap-6">
+              <div className="flex justify-between items-center pb-4 border-b border-[var(--line)] mb-4">
+                <span className="font-satoshi text-xs uppercase tracking-[0.2em] text-[var(--berry)]/70">
+                  Navegación
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[var(--berry)] hover:text-[var(--brand)] transition-colors"
+                  aria-label="Cerrar menú"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3.5">
                 {navMenuItems.map((item) => (
                   <a
                     key={item.num}
                     href={item.target}
                     onClick={(e) => handleNavClick(e, item.target)}
-                    className="flex items-center gap-4 text-2xl font-panchang font-bold text-[var(--berry)] hover:text-[var(--brand)] transition-colors"
+                    className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[var(--petal)] text-[var(--berry)] hover:text-[var(--brand)] transition-colors font-satoshi text-base font-medium"
                   >
-                    <span className="text-xs font-jost tracking-[0.2em] text-[var(--brand)] opacity-70">
+                    <span>{item.label}</span>
+                    <span className="text-xs font-mono text-[var(--brand)] opacity-80">
                       {item.num}
                     </span>
-                    <span>{item.label}</span>
                   </a>
                 ))}
               </div>
@@ -565,38 +577,53 @@ export default function Home() {
         </AnimatePresence>
 
         {/* ==========================================
-            1. HERO VIDEO (Rostro despejado al 100%)
+            1. HERO VIDEO (Sin filtros, sin tintes, color original)
         ========================================== */}
-        <HeroVideo onOpenRadio={() => setRadioModalOpen(true)} />
+        <div id="home">
+          <HeroVideo onOpenRadio={() => setRadioModalOpen(true)} />
+        </div>
 
         {/* ==========================================
-            2. MARQUEE CINÉTICO (Panchang 800 sobre --brand)
+            3. MARQUEE DE ARRIBA (Satoshi 500 mayúsculas, 56px de alto, hacia la izquierda)
         ========================================== */}
-        <KineticMarquee id="marquee-top" />
+        <Marquee
+          id="marquee-top"
+          direction="left"
+          speed={1.1}
+          items={[
+            'EMISIÓN CONTINUA 24/7',
+            'LIVE 24/7',
+            'MÚSICA URBANA & VANGUARDIA',
+            'HALL OF FAME',
+            'SESIONES EXCLUSIVAS',
+            'PLATAFORMA OFICIAL THIAGO VSC',
+          ]}
+          bgClassName="bg-[#E0457B] text-[#FFE9D6]"
+        />
 
         {/* ==========================================
-            3. TV ONLINE (Fondo --blush #F8C8D8)
+            5. TV ONLINE (Fondo --blush #F8C8D8, un solo bloque alineado)
         ========================================== */}
         <TVOnlinePlayer />
 
         {/* ==========================================
-            4. TIKTOK FEED (Fondo --brand #E0457B)
+            6. TIKTOK FEED (Fondo --brand #E0457B, tarjetas rectas con borde champán)
         ========================================== */}
         <ViralSlider />
 
         {/* ==========================================
-            5. ZONA INFLUENCER (Fondo --petal #FDE4EC)
+            8. ZONA INFLUENCER (Fondo --petal #FDE4EC, centrado vertical)
         ========================================== */}
         <section
           id="zona-influencer"
           className="w-full bg-[var(--petal)] text-[var(--berry)] relative overflow-hidden py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 select-none border-b border-[var(--line)]"
         >
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
-            {/* Columnas 1-6: Texto Editorial */}
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
+            {/* Columnas 1-6: Texto Editorial alineado verticalmente al centro */}
             <div className="lg:col-span-6 flex flex-col justify-center">
-              <div className="editorial-eyebrow mb-4">
-                <ButterflyIcon size={14} color="#E0457B" />
-                <span>03  Talento</span>
+              <div className="inline-flex items-center gap-2 font-satoshi text-[12px] font-medium tracking-[0.28em] uppercase text-[var(--berry)] mb-3">
+                <ButterflyIcon size={14} color="#E0457B" strokeWidth={1.5} />
+                <span>03 · TALENTO</span>
               </div>
 
               <BicolorSectionTitle firstWord="Zona" secondWord="Influencer" className="mb-3" />
@@ -610,7 +637,7 @@ export default function Home() {
                   href="https://www.tiktok.com/@chiri_francesca"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-jost text-xs bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] px-3.5 py-1.5 rounded-full font-medium shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer btn-luxury"
+                  className="font-satoshi text-xs bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] px-3.5 py-1.5 rounded-full font-medium shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <span>@chiri_francesca</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[var(--champagne)] animate-pulse" />
@@ -623,7 +650,7 @@ export default function Home() {
                   <div className="font-bodoni text-2xl sm:text-3xl text-[var(--berry)] font-normal leading-tight">
                     1.8M+
                   </div>
-                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
+                  <div className="font-satoshi text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Audiencia activa
                   </div>
                 </div>
@@ -631,7 +658,7 @@ export default function Home() {
                   <div className="font-bodoni text-2xl sm:text-3xl text-[var(--berry)] font-normal leading-tight">
                     94%
                   </div>
-                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
+                  <div className="font-satoshi text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Engagement femenino
                   </div>
                 </div>
@@ -639,14 +666,14 @@ export default function Home() {
                   <div className="font-bodoni text-xl sm:text-2xl text-[var(--berry)] font-normal leading-tight">
                     Europa & Latam
                   </div>
-                  <div className="font-jost text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
+                  <div className="font-satoshi text-[11px] text-[var(--berry)]/70 uppercase tracking-wider mt-1">
                     Alcance global
                   </div>
                 </div>
               </div>
 
               {/* Biografía concisa */}
-              <p className="editorial-text text-[var(--berry)] max-w-lg my-6">
+              <p className="font-jost text-sm sm:text-base leading-relaxed text-[var(--berry)]/85 max-w-lg my-6">
                 Referente indiscutible del lifestyle y la moda curvy europea, Francesca Chiri conecta con millones de seguidores a través de rutinas de belleza, estilo vanguardista y una autenticidad magnética.
               </p>
 
@@ -656,7 +683,7 @@ export default function Home() {
                   href="https://linktr.ee/chirifrancesca"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] font-jost font-medium px-8 py-3.5 text-xs tracking-[0.2em] rounded-full transition-all shadow-luxury cursor-pointer btn-luxury uppercase"
+                  className="group inline-flex items-center gap-3 bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] font-satoshi font-medium px-8 py-3.5 text-xs tracking-[0.2em] rounded-full transition-all shadow-luxury cursor-pointer uppercase"
                 >
                   <span>Descubrir a Francesca</span>
                   <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
@@ -664,16 +691,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Columnas 7-12: Montaje editorial */}
-            <div className="lg:col-span-6 flex items-center justify-center relative min-h-[460px] sm:min-h-[520px]" data-cursor="Ver">
-              <div className="relative w-full max-w-[420px] aspect-[4/5] flex items-center justify-center">
+            {/* Columnas 7-12: Montaje editorial - Las cartas no pueden salirse del contenedor */}
+            <div className="lg:col-span-6 flex items-center justify-center relative min-h-[460px] sm:min-h-[520px] overflow-visible" data-cursor="Ver">
+              <div className="relative w-full max-w-[380px] sm:max-w-[420px] aspect-[4/5] flex items-center justify-center">
                 {influencerCards.map((card, idx) => {
                   const isHovered = hoveredGalleryCard === idx;
                   const isAnotherHovered = hoveredGalleryCard !== null && !isHovered;
 
-                  const baseRotations = [-6, 3, 8];
+                  const baseRotations = [-4, 2, 6];
                   const baseRotation = baseRotations[idx] || 0;
-                  const baseTranslateX = (idx - 1) * 32;
+                  const baseTranslateX = (idx - 1) * 20;
 
                   return (
                     <div
@@ -683,13 +710,13 @@ export default function Home() {
                       onClick={() => setLightboxCard(card)}
                       style={{
                         transform: isHovered
-                          ? 'translateY(-20px) rotate(0deg) scale(1.06)'
+                          ? 'translateY(-14px) rotate(0deg) scale(1.04)'
                           : `translateX(${baseTranslateX}px) rotate(${baseRotation}deg)`,
                         zIndex: isHovered ? 40 : 10 + idx,
                         opacity: isAnotherHovered ? 0.65 : 1,
                         transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
                       }}
-                      className="absolute w-[260px] sm:w-[310px] md:w-[340px] aspect-[4/5] rounded-[20px] border-[6px] border-white shadow-luxury overflow-hidden cursor-pointer select-none bg-[var(--surface)]"
+                      className="absolute w-[240px] sm:w-[290px] md:w-[320px] aspect-[4/5] rounded-[20px] border-[5px] border-white shadow-luxury overflow-hidden cursor-pointer select-none bg-[var(--surface)]"
                     >
                       <img
                         src={card.img}
@@ -697,12 +724,11 @@ export default function Home() {
                         className="w-full h-full object-cover"
                       />
 
-                      {/* Subtle Bottom Plate */}
                       <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
-                        <span className="px-3 py-1 rounded-full text-[10px] font-jost font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
+                        <span className="px-3 py-1 rounded-full text-[10px] font-satoshi font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
                           {card.category}
                         </span>
-                        <span className="text-[10px] font-jost font-medium text-[var(--berry)] bg-[var(--surface)]/95 px-2.5 py-1 rounded-full shadow-sm">
+                        <span className="text-[10px] font-satoshi font-medium text-[var(--berry)] bg-[var(--surface)]/95 px-2.5 py-1 rounded-full shadow-sm">
                           Ver detalle
                         </span>
                       </div>
@@ -715,112 +741,154 @@ export default function Home() {
         </section>
 
         {/* ==========================================
-            6. PRÓXIMOS EVENTOS (Fondo --rose #F29BB8)
+            7. PRÓXIMOS EVENTOS (Fondo --rose #F29BB8, grid repeat(6, 1fr) sin hueco)
         ========================================== */}
         <section
           id="events"
-          className="w-full bg-[var(--rose)] text-[var(--berry)] py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-14 relative overflow-hidden select-none border-b border-[var(--line)]"
+          className="w-full bg-[var(--rose)] text-[var(--berry)] py-20 sm:py-28 md:py-36 px-6 sm:px-10 relative overflow-hidden select-none border-b border-[var(--line)]"
         >
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end mb-12 sm:mb-16 gap-6">
-            <div>
-              <div className="editorial-eyebrow mb-4">
-                <ButterflyIcon size={14} color="#E0457B" />
-                <span>04  Agenda</span>
-              </div>
-              <BicolorSectionTitle firstWord="Próximos" secondWord="Eventos" />
-            </div>
-
-            <div className="flex flex-col md:items-end gap-1.5">
-              <a
-                href="https://shokomadrid.com/es/collections/eventos-shoko-madrid"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-xs font-jost font-medium text-[var(--brand)] hover:underline underline-offset-4 tracking-[0.15em] uppercase transition-all cursor-pointer"
-              >
-                <span>Ver todos en Shôko →</span>
-              </a>
-              <span className="text-[11px] font-jost text-[var(--berry)]/70 uppercase tracking-wider">
-                Madrid // Calle de Toledo, 86
-              </span>
-            </div>
-          </div>
-
-          {/* Cards Grid 3x2 en desktop / Snap en móvil */}
-          <div className="max-w-6xl mx-auto overflow-x-auto snap-x snap-mandatory flex md:grid md:grid-cols-3 lg:grid-cols-6 gap-5 pb-4">
-            {shokoEvents.map((event, i) => (
-              <div
-                key={i}
-                className="min-w-[240px] md:min-w-0 snap-center bg-[var(--surface)] p-2.5 rounded-[22px] border border-[var(--line)] shadow-luxury transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between group cursor-pointer"
-                data-cursor="Ver"
-              >
-                {/* Poster Container con duotone rosa en multiply */}
-                <div className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-[var(--petal)]">
-                  <img
-                    src={event.img}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    alt={event.title}
-                  />
-
-                  {/* Duotone Overlay en multiply suave */}
-                  <div className="absolute inset-0 bg-[#E0457B]/20 mix-blend-multiply opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
-
-                  {/* Badge + HOY */}
-                  <div className="absolute top-2.5 right-2.5 z-10">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-jost font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
-                      + Hoy
-                    </span>
-                  </div>
-                </div>
-
-                {/* Info Deck */}
-                <div className="pt-3 pb-1 flex flex-col flex-grow justify-between">
-                  <div>
-                    <div className="font-bodoni text-[22px] text-[var(--berry)] font-normal leading-tight">
-                      {event.date}
-                    </div>
-                    <h4 className="font-jost text-[14px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
-                      {event.title}
-                    </h4>
-                    <span className="font-jost text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
-                      Madrid // Shôko
-                    </span>
-                  </div>
-
-                  {/* Botón Comprar Entradas */}
-                  <a
-                    href={event.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3.5 w-full py-2.5 rounded-full border border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-[var(--champagne)] font-jost text-[11px] font-medium tracking-[0.18em] text-center block transition-all shadow-sm uppercase btn-luxury"
-                  >
-                    Comprar entradas
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ==========================================
-            7. MARQUEE DE PRENSA (Fondo --blush #F8C8D8, logos en --berry al 60% -> 100% hover)
-        ========================================== */}
-        <section
-          id="press"
-          className="py-7 bg-[var(--blush)] border-y border-[var(--line)] overflow-hidden select-none"
-        >
-          <div className="marquee-wrapper">
-            <div className="marquee-content font-bodoni text-xl md:text-2xl text-[var(--berry)]/60 gap-14 flex items-center whitespace-nowrap">
-              {pressLogos.map((logo, idx) => (
-                <React.Fragment key={idx}>
-                  <span className="hover:text-[var(--berry)] transition-colors cursor-pointer tracking-wider font-normal">
-                    {logo}
-                  </span>
+          <div className="w-full max-w-7xl mx-auto">
+            {/* Header con título y 'Ver todos' alineado a la derecha en la misma línea base */}
+            <div className="w-full flex items-baseline justify-between mb-10 sm:mb-14">
+              <div>
+                <div className="inline-flex items-center gap-2 font-satoshi text-[12px] font-medium tracking-[0.28em] uppercase text-[var(--berry)] mb-3">
                   <ButterflyIcon size={14} color="#E0457B" strokeWidth={1.5} />
-                </React.Fragment>
+                  <span>04 · AGENDA</span>
+                </div>
+                <BicolorSectionTitle firstWord="Próximos" secondWord="Eventos" />
+              </div>
+
+              <div className="flex flex-col items-end gap-1">
+                <a
+                  href="https://shokomadrid.com/es/collections/eventos-shoko-madrid"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs font-satoshi font-medium text-[var(--brand)] hover:underline underline-offset-4 tracking-[0.15em] uppercase transition-all cursor-pointer whitespace-nowrap"
+                >
+                  <span>Ver todos en Shôko →</span>
+                </a>
+                <span className="text-[11px] font-satoshi text-[var(--berry)]/70 uppercase tracking-wider hidden sm:inline">
+                  Madrid // Calle de Toledo, 86
+                </span>
+              </div>
+            </div>
+
+            {/* Grid 6 columnas completas en desktop, 3 en tablet */}
+            <div className="w-full hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {shokoEvents.map((event, i) => (
+                <div
+                  key={i}
+                  className="bg-[var(--surface)] p-2.5 rounded-[22px] border border-[var(--line)] shadow-luxury transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between group cursor-pointer"
+                  data-cursor="Ver"
+                >
+                  {/* Poster Container con duotone rosa */}
+                  <div className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-[var(--petal)]">
+                    <img
+                      src={event.img}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      alt={event.title}
+                    />
+                    <div className="absolute inset-0 bg-[#E0457B]/20 mix-blend-multiply opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
+                    <div className="absolute top-2.5 right-2.5 z-10">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-satoshi font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
+                        + Hoy
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Info Deck */}
+                  <div className="pt-3 pb-1 flex flex-col flex-grow justify-between">
+                    <div>
+                      <div className="font-bodoni text-[20px] text-[var(--berry)] font-normal leading-tight">
+                        {event.date}
+                      </div>
+                      <h4 className="font-satoshi text-[13px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
+                        {event.title}
+                      </h4>
+                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
+                        Madrid // Shôko
+                      </span>
+                    </div>
+
+                    <a
+                      href={event.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3.5 w-full py-2.5 rounded-full border border-[var(--brand)] text-[var(--brand)] hover:bg-[var(--brand)] hover:text-[var(--champagne)] font-satoshi text-[11px] font-medium tracking-[0.18em] text-center block transition-all shadow-sm uppercase"
+                    >
+                      Comprar entradas
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Mobile Snap Slider */}
+            <div className="w-full md:hidden flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4">
+              {shokoEvents.map((event, i) => (
+                <div
+                  key={i}
+                  className="min-w-[260px] snap-center bg-[var(--surface)] p-2.5 rounded-[22px] border border-[var(--line)] shadow-luxury flex flex-col justify-between"
+                >
+                  <div className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden bg-[var(--petal)]">
+                    <img
+                      src={event.img}
+                      className="w-full h-full object-cover"
+                      alt={event.title}
+                    />
+                    <div className="absolute top-2.5 right-2.5 z-10">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-satoshi font-medium bg-[var(--brand)] text-[var(--champagne)] shadow-sm">
+                        + Hoy
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 pb-1 flex flex-col flex-grow justify-between">
+                    <div>
+                      <div className="font-bodoni text-[20px] text-[var(--berry)] font-normal leading-tight">
+                        {event.date}
+                      </div>
+                      <h4 className="font-satoshi text-[13px] font-medium text-[var(--berry)] uppercase tracking-wider truncate mt-1">
+                        {event.title}
+                      </h4>
+                      <span className="font-satoshi text-[11px] text-[var(--berry)]/65 block mt-0.5 uppercase tracking-wide">
+                        Madrid // Shôko
+                      </span>
+                    </div>
+
+                    <a
+                      href={event.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3.5 w-full py-2.5 rounded-full border border-[var(--brand)] text-[var(--brand)] bg-transparent font-satoshi text-[11px] font-medium tracking-[0.18em] text-center block shadow-sm uppercase"
+                    >
+                      Comprar entradas
+                    </a>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* ==========================================
+            3. MARQUEE DE PRENSA (Hacia la derecha, logos al 60% -> 100% hover)
+        ========================================== */}
+        <Marquee
+          id="press"
+          direction="right"
+          speed={0.9}
+          isPress
+          items={[
+            'VOGUE',
+            'VANITY FAIR',
+            'ROLLING STONE',
+            'GLAMOUR',
+            'FORBES',
+            'BILLBOARD',
+          ]}
+          bgClassName="bg-[var(--blush)] text-[var(--berry)]"
+        />
 
         {/* ==========================================
             8. FOOTER (Fondo --brand #E0457B, THIAGO gigante en Bodoni blanco)
@@ -829,14 +897,13 @@ export default function Home() {
           id="footer"
           className="bg-[#E0457B] text-[#FFE9D6] pt-20 pb-16 flex flex-col items-center relative overflow-hidden select-none"
         >
-          {/* Giant THIAGO in Bodoni Moda white with letter-by-letter reveal */}
-          <div className="w-full text-center overflow-hidden py-2">
-            <h2 className="w-full font-bodoni text-white text-[19vw] leading-[0.72] tracking-[-0.04em] font-normal flex justify-center items-center select-none">
-              {"THIAGO".split("").map((letter, i) => (
+          <div className="w-full flex justify-center items-center overflow-hidden px-4">
+            <h2 className="font-bodoni font-normal tracking-tight text-[clamp(4.5rem,15vw,14rem)] leading-none text-white select-none whitespace-nowrap text-center">
+              {'THIAGO'.split('').map((letter, i) => (
                 <motion.span
                   key={i}
-                  initial={{ opacity: 1, y: 0 }}
-                  whileInView={{ y: [20, 0] }}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   className="inline-block"
@@ -848,7 +915,7 @@ export default function Home() {
           </div>
 
           {/* Social Links */}
-          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 sm:gap-12 font-jost text-xs sm:text-[13px] font-medium uppercase tracking-[0.2em] text-[#FFE9D6]">
+          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 sm:gap-12 font-satoshi text-xs sm:text-[13px] font-medium uppercase tracking-[0.2em] text-[#FFE9D6]">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="relative group py-1">
               <span>Instagram</span>
               <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-[1px] bg-[#FFE9D6] transition-all duration-300" />
@@ -877,7 +944,7 @@ export default function Home() {
           </div>
 
           {/* Legal Links */}
-          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 font-jost text-[11px] uppercase tracking-wider text-[#FFE9D6]/80">
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 font-satoshi text-[11px] uppercase tracking-wider text-[#FFE9D6]/80">
             <a href="/aviso-legal" className="hover:text-white transition-colors underline-offset-4 hover:underline">
               Aviso Legal
             </a>
@@ -897,20 +964,18 @@ export default function Home() {
                   window.dispatchEvent(new CustomEvent('open-cookie-settings'));
                 }
               }}
-              className="hover:text-white transition-colors underline-offset-4 hover:underline cursor-pointer font-jost uppercase"
+              className="hover:text-white transition-colors underline-offset-4 hover:underline cursor-pointer font-satoshi uppercase"
             >
               Cookies
             </button>
           </div>
 
-          <div className="mt-4 text-[11px] font-jost text-[#FFE9D6]/60 tracking-widest uppercase">
+          <div className="mt-4 text-[11px] font-satoshi text-[#FFE9D6]/60 tracking-widest uppercase">
             © 2026 THIAGO VSC • ALL RIGHTS RESERVED
           </div>
         </footer>
 
-        {/* ==========================================
-            FULL-SIZE LIGHTBOX MODAL
-        ========================================== */}
+        {/* Full-size Lightbox Modal */}
         {lightboxCard && (
           <div
             className="fixed inset-0 z-[200] flex flex-col justify-between p-4 sm:p-8 animate-in fade-in duration-200 select-none overflow-hidden"
@@ -924,17 +989,17 @@ export default function Home() {
 
             <div className="w-full max-w-5xl mx-auto flex justify-between items-center z-10 relative" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center gap-3">
-                <span className="px-4 py-1.5 rounded-full text-xs font-jost font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
+                <span className="px-4 py-1.5 rounded-full text-xs font-satoshi font-medium uppercase text-[var(--champagne)] bg-[var(--brand)] shadow-sm">
                   {lightboxCard.title}
                 </span>
-                <span className="hidden sm:inline-block text-xs font-jost text-[var(--champagne)] font-medium bg-[#3A1528]/60 px-3 py-1 rounded-full border border-[var(--line)]">
+                <span className="hidden sm:inline-block text-xs font-satoshi text-[var(--champagne)] font-medium bg-[#3A1528]/60 px-3 py-1 rounded-full border border-[var(--line)]">
                   Francesca Chiri
                 </span>
               </div>
 
               <button
                 onClick={() => setLightboxCard(null)}
-                className="px-5 py-2 rounded-full border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--brand)] hover:text-white text-[var(--berry)] text-xs font-jost font-medium tracking-widest uppercase transition-all flex items-center gap-2 shadow-luxury cursor-pointer btn-luxury"
+                className="px-5 py-2 rounded-full border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--brand)] hover:text-white text-[var(--berry)] text-xs font-satoshi font-medium tracking-widest uppercase transition-all flex items-center gap-2 shadow-luxury cursor-pointer"
               >
                 <span>Cerrar</span>
                 <span className="text-sm">✕</span>
@@ -949,7 +1014,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-jost text-[#FFE9D6] z-10 pt-2 relative" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-satoshi text-[#FFE9D6] z-10 pt-2 relative" onClick={(e) => e.stopPropagation()}>
               <span className="tracking-wider font-medium">FRANCESCA CHIRI // ZONA INFLUENCER</span>
               <div className="flex gap-2">
                 {influencerCards.map((c, i) => (
@@ -970,9 +1035,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* ==========================================
-            STANDALONE TUNER FM RADIO MODAL
-        ========================================== */}
+        {/* Standalone Tuner FM Radio Modal */}
         {radioModalOpen && (
           <div
             className="fixed inset-0 z-[250] flex items-center justify-center p-3 sm:p-6 md:p-10 animate-in fade-in duration-200 select-none"
@@ -989,7 +1052,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* COOKIE CONSENT BANNER (Premium RGPD) */}
+        {/* Cookie Consent Banner */}
         <CookieConsent />
       </div>
     </ReactLenis>
