@@ -5,17 +5,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          dark: "#050505", // Negro profundo (Studio Linear vibe)
-          neon: "#DBFF00", // Amarillo/Verde Neón
-          pink: "#FF0055", // Acento rosa neón
-          light: "#F4F4F4",
+        pink: {
+          DEFAULT: "var(--pink)",
+          solid: "#DE4176",
+        },
+        white: {
+          DEFAULT: "#FFFFFF",
+        },
+        blush: {
+          DEFAULT: "#FFF4F7",
+        },
+        ink: {
+          DEFAULT: "#3B0D22",
         },
       },
+      boxShadow: {
+        editorial: "0 30px 60px -20px rgba(59, 13, 34, 0.18)",
+      },
       fontFamily: {
-        display: ["var(--font-revoltosa-serif)", "Impact", "sans-serif"],
-        sans: ["var(--font-revoltosa-sans)", "Inter", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "monospace"],
+        display: ["'Archivo Black'", "sans-serif"],
+        serif: ["'Instrument Serif'", "serif"],
+        mono: ["'JetBrains Mono'", "monospace"],
+        sans: ["'Inter'", "sans-serif"],
+      },
+      transitionTimingFunction: {
+        editorial: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     },
   },
