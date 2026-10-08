@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import type { Viewport, Metadata } from "next";
 import { Analytics } from "@/components/Analytics";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { PremiumHalloween } from "@/components/PremiumHalloween";
 
 const clashDisplay = localFont({
   src: "../public/fonts/ClashDisplay-Medium.woff2",
@@ -212,7 +213,10 @@ export default function RootLayout({
       <body className="overflow-x-hidden w-full min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
         <ThemeProvider attribute="data-theme" defaultTheme="light" enableSystem={false}>
           <Analytics />
-          {children}
+          <PremiumHalloween />
+          <div className="relative z-10">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>
