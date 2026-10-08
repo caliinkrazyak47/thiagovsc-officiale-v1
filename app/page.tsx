@@ -688,7 +688,7 @@ export default function Home() {
                   FRANCESCA CHIRI
                 </h3>
                 <a
-                  href="https://www.tiktok.com/@chiri_francesca"
+                  href="https://www.instagram.com/chiri_francesca/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-satoshi text-xs bg-[var(--brand)] hover:opacity-90 text-[var(--champagne)] px-3.5 py-1.5 rounded-full font-medium shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer"
