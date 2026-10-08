@@ -110,6 +110,28 @@ const TIKTOK_VIDEOS: TikTokVideoItem[] = [
     poster: '/images/tiktok/cover-iriss.vallaranii.jpg',
     title: 'TikTok de @iriss.vallaranii',
   },
+  {
+    id: 'tt-8',
+    user: 'eloisenever',
+    authorName: 'eloisenever',
+    profileUrl: 'https://www.tiktok.com/@eloisenever',
+    videoUrl: 'https://www.tiktok.com/@eloisenever/video/7692602572665785630',
+    videoId: '7692602572665785630',
+    embedUrl: '/videos/tiktok/tt-8.mp4',
+    poster: '/images/tiktok/cover-eloisenever.jpg',
+    title: 'TikTok de @eloisenever',
+  },
+  {
+    id: 'tt-9',
+    user: 'emidaisey',
+    authorName: 'emidaisey',
+    profileUrl: 'https://www.tiktok.com/@emidaisey',
+    videoUrl: 'https://www.tiktok.com/@emidaisey/video/7692781151311695111',
+    videoId: '7692781151311695111',
+    embedUrl: '/videos/tiktok/tt-9.mp4',
+    poster: '/images/tiktok/cover-emidaisey.jpg',
+    title: 'TikTok de @emidaisey',
+  },
 ];
 
 interface CustomTikTokPlayerProps {
