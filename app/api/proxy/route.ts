@@ -12,7 +12,8 @@ export async function GET(request: NextRequest) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': '*/*',
-        'Connection': 'keep-alive'
+        'Connection': 'keep-alive',
+        'Referer': 'http://cloudtvserviceplatinum.site:8080/'
       }
     });
 
@@ -63,7 +64,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Para segmentos de video (.ts) u otros archivos, streamear directo
-    return new NextResponse(response.body, {
+    const buffer = await response.arrayBuffer();
+    return new NextResponse(buffer, {
       headers: {
         'Content-Type': contentType || 'video/MP2T',
         'Access-Control-Allow-Origin': '*',
