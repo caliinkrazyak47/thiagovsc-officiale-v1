@@ -224,6 +224,8 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
     const initPlayer = () => {
       setIsLoading(true);
       setHasError(false);
+      
+      const proxyUrl = `/api/proxy?url=${encodeURIComponent(activeChannel.url)}`;
 
       if (Hls.isSupported()) {
         if (hlsRef.current) {
@@ -237,7 +239,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
         
         hlsRef.current = hls;
         
-        hls.loadSource(activeChannel.url);
+        hls.loadSource(proxyUrl);
         hls.attachMedia(video);
         
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -253,7 +255,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         // For Safari
-        video.src = activeChannel.url;
+        video.src = proxyUrl;
         video.addEventListener('loadedmetadata', () => {
           setIsLoading(false);
           video.play().catch(() => setIsPlaying(false));
