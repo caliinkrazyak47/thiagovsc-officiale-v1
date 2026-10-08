@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     // Si es un playlist m3u8, reescribimos las URLs internas
     if (contentType.includes('mpegurl') || url.includes('.m3u8')) {
       let text = await response.text();
-      const baseUrl = new URL(url);
+      const baseUrl = new URL(response.url);
 
       text = text.split('\n').map(line => {
         const trimmed = line.trim();
