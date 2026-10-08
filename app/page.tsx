@@ -480,7 +480,7 @@ export default function Home() {
       {/* Morphing color plano dinámico de fondo del body */}
       <SectionColorMorph />
 
-      <div className="relative min-h-screen text-[var(--berry)] antialiased transition-colors duration-400">
+      <div className="relative min-h-screen bg-[var(--bg-current)] text-[var(--berry)] antialiased transition-colors duration-400">
         
         {/* PRELOADER LUXURY GSAP (FONTS SCRAMBLE + ROSA DEGRADÉ) */}
         <ThiagoPreloader />
