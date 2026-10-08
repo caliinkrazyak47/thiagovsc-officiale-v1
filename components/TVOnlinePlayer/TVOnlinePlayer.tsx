@@ -139,13 +139,39 @@ export const TVOnlinePlayer: React.FC = () => {
       sendCommand('addEventListener', ['onStateChange']);
       sendCommand('setPlaybackQuality', ['hd1080']);
       sendCommand('setSuggestedQuality', ['hd1080']);
-      sendCommand('setVolume', [100]);
-      sendCommand('unMute');
+      sendCommand('setVolume', [volume]);
+      if (!isMuted) {
+        sendCommand('unMute');
+      } else {
+        sendCommand('mute');
+      }
       if (isPlaying) {
         sendCommand('playVideo');
       }
     }, 500);
-  }, [isPlaying, sendCommand]);
+  }, [isPlaying, isMuted, volume, sendCommand]);
+
+  useEffect(() => {
+    const handlePreloaderFinished = (e: any) => {
+      const withSound = e.detail?.sound;
+      setActiveMedia('tv');
+      if (withSound) {
+        setIsMuted(false);
+        setVolumeState(100);
+        sendCommand('unMute');
+        sendCommand('setVolume', [100]);
+      } else {
+        setIsMuted(true);
+        setVolumeState(0);
+        sendCommand('mute');
+      }
+      setIsPlaying(true);
+      sendCommand('playVideo');
+    };
+
+    window.addEventListener('preloader-finished', handlePreloaderFinished);
+    return () => window.removeEventListener('preloader-finished', handlePreloaderFinished);
+  }, [sendCommand, setActiveMedia]);
 
   const togglePlayPause = useCallback(() => {
     if (isPlaying) {
@@ -326,10 +352,10 @@ export const TVOnlinePlayer: React.FC = () => {
           </div>
 
           {/* Barra de controles con EXACTAMENTE el mismo ancho (w-full dentro del mismo padding de 12px) */}
-          <div className="w-full bg-[var(--surface)] rounded-[16px] p-3 sm:p-3.5 border border-[var(--line)] flex flex-wrap items-center justify-between text-[var(--berry)] font-satoshi text-xs gap-3">
+          <div className="w-full bg-[var(--surface)] rounded-[16px] p-3 sm:p-3.5 border border-[var(--line)] flex flex-col sm:flex-row items-center justify-center sm:justify-between text-[var(--berry)] font-satoshi text-xs gap-3">
             
             {/* Controles Izquierda */}
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-row items-center justify-center sm:justify-start gap-2.5 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={togglePlayPause}
@@ -366,7 +392,7 @@ export const TVOnlinePlayer: React.FC = () => {
             </div>
 
             {/* Controles Derecha */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-row items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">
               {/* Control de Volumen */}
               <div className="flex items-center gap-1.5 bg-[var(--petal)] px-2.5 py-1 rounded-full border border-[var(--line)]">
                 <button

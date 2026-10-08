@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onComplete }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -9,16 +10,19 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
   const nameRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const signaturePathRef = useRef<SVGPathElement>(null);
+  const choicesRef = useRef<HTMLDivElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   
   const [isVisible, setIsVisible] = useState(true);
+  const [showChoices, setShowChoices] = useState(false);
+  const soundChoiceRef = useRef<boolean>(false);
 
   useEffect(() => {
     const tl = gsap.timeline({
       onComplete: () => {
         setIsVisible(false);
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('preloader-finished'));
+          window.dispatchEvent(new CustomEvent('preloader-finished', { detail: { sound: soundChoiceRef.current } }));
         }
         if (onComplete) onComplete();
       }
@@ -55,9 +59,18 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
     tl.fromTo(subtitleRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, 0.5);
 
     // 4. Wait a bit at 100% so the user can see the signature
-    tl.to({}, { duration: 1.0 });
+    tl.to({}, { duration: 0.5 });
 
-    // 5. Premium Reveal Exit (Split screen or Curtain up)
+    // 5. Show choices and pause
+    tl.add(() => {
+      setShowChoices(true);
+      if (choicesRef.current) {
+        gsap.to(choicesRef.current, { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
+      }
+      tl.pause();
+    });
+
+    // 6. Premium Reveal Exit (Split screen or Curtain up)
     tl.to(containerRef.current, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)', // Wipes UP
       duration: 1,
@@ -68,6 +81,16 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
       tl.kill();
     };
   }, [onComplete]);
+
+  const handleChoice = (withSound: boolean) => {
+    soundChoiceRef.current = withSound;
+    if (choicesRef.current) {
+      gsap.to(choicesRef.current, { opacity: 0, duration: 0.3 });
+    }
+    if (tlRef.current) {
+      tlRef.current.play(); // Resume the wipe animation
+    }
+  };
 
   if (!isVisible) return null;
 
@@ -107,6 +130,27 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
             />
           </svg>
         </div>
+      </div>
+
+      {/* SOUND CHOICES */}
+      <div 
+        ref={choicesRef} 
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-row items-center justify-center gap-4 opacity-0 pointer-events-none z-30"
+      >
+        <button
+          onClick={() => handleChoice(true)}
+          className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-['Jost'] font-bold tracking-widest text-[10px] md:text-xs uppercase rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/20 hover:scale-105 transition-all duration-300"
+        >
+          <Volume2 size={16} strokeWidth={2.5} />
+          Entrar con sonido
+        </button>
+        <button
+          onClick={() => handleChoice(false)}
+          className="flex items-center gap-2 px-6 py-3 bg-black/10 backdrop-blur-md border border-white/10 text-white/80 font-['Jost'] font-bold tracking-widest text-[10px] md:text-xs uppercase rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/10 hover:text-white hover:scale-105 transition-all duration-300"
+        >
+          <VolumeX size={16} strokeWidth={2.5} />
+          Sin sonido
+        </button>
       </div>
 
       {/* Loading Percentage */}
