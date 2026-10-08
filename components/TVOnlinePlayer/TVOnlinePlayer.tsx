@@ -25,7 +25,7 @@ export const TVOnlinePlayer: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [volume, setVolumeState] = useState<number>(100);
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(true); // Start muted to allow initial autoplay
   const [clientOrigin, setClientOrigin] = useState<string>('');
 
   useEffect(() => {
@@ -269,9 +269,8 @@ export const TVOnlinePlayer: React.FC = () => {
 
   const originParam = clientOrigin ? `&origin=${encodeURIComponent(clientOrigin)}` : '';
   const initialVideoId = currentVideo?.id || 'kPa7bsKwL-c';
-  // Autoplay=1 with mute=0. Browsers might block unmuted autoplay without user interaction,
-  // but if the user requested it specifically, we set it. vq=hd1080 forces 1080p if possible.
-  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?autoplay=1&mute=0&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${originParam}`;
+  // If user hasn't chosen yet, it loads as muted so browser doesn't block autoplay
+  const youtubeEmbedUrl = `https://www.youtube.com/embed/${initialVideoId}?autoplay=1&mute=${isMuted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${originParam}`;
 
   return (
     <section
