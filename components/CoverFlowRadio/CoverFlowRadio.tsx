@@ -139,23 +139,23 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
 
   // THEME COLORS
   const theme = isNightMode ? {
-    bgApp: 'bg-[#51132B]', // Frambuesa oscura
-    textMain: 'text-[#FFE9D6]',
-    textSub: 'text-[#FFE9D6]/70',
-    headerBg: 'bg-[#3A0D1E]/95',
-    borderColor: 'border-[#E0457B]/40',
-    cardInner: 'bg-[#731A3D]',
-    cardOuter: 'bg-[#3A0D1E]/90',
-    cardCenterOuter: 'bg-[#E0457B]/20',
-    btnBg: 'bg-[#731A3D]',
+    bgApp: 'bg-[#140A0E]', // Ultra-dark sleek charcoal with a hint of pink
+    textMain: 'text-white',
+    textSub: 'text-white/60',
+    headerBg: 'bg-[#0A0507]/95',
+    borderColor: 'border-[#E0457B]/20',
+    cardInner: 'bg-[#1E0F15]',
+    cardOuter: 'bg-[#0A0507]/90',
+    cardCenterOuter: 'bg-[#E0457B]/15',
+    btnBg: 'bg-[#211117]',
     btnHover: 'hover:bg-[#E0457B]',
-    btnTextHover: 'hover:text-[#FFE9D6]',
+    btnTextHover: 'hover:text-white',
     accent: 'text-[#E0457B]',
     accentBg: 'bg-[#E0457B]',
-    rulerBg: 'bg-[#3A0D1E]',
-    footerBg: 'bg-[#3A0D1E]',
-    sliderTrack: 'bg-[#731A3D]',
-    iconColor: '#FFE9D6'
+    rulerBg: 'bg-[#0A0507]',
+    footerBg: 'bg-[#0A0507]',
+    sliderTrack: 'bg-[#211117]',
+    iconColor: '#FFFFFF'
   } : {
     bgApp: 'bg-[#FDE4EC]', // Rosa suave (como la web)
     textMain: 'text-[#3B0D22]',
