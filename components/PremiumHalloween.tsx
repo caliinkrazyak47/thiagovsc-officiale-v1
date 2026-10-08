@@ -67,7 +67,7 @@ export const PremiumHalloween: React.FC = () => {
   }, []); // Run once on mount
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[50] overflow-hidden">
       {/* GIANT FAINT BLOOD MOON */}
       <div 
         ref={moonRef}
