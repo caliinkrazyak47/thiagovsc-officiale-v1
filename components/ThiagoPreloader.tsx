@@ -9,11 +9,9 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
   const nameRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const signaturePathRef = useRef<SVGPathElement>(null);
-  const enterButtonRef = useRef<HTMLButtonElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   
   const [isVisible, setIsVisible] = useState(true);
-  const [showEnter, setShowEnter] = useState(false);
 
   useEffect(() => {
     const tl = gsap.timeline({
@@ -56,19 +54,10 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
     tl.fromTo(nameRef.current, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 1, ease: 'power3.out' }, 0.2);
     tl.fromTo(subtitleRef.current, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, 0.5);
 
-    // 4. Wait a bit at 100%
-    tl.to({}, { duration: 0.4 });
+    // 4. Wait a bit at 100% so the user can see the signature
+    tl.to({}, { duration: 1.0 });
 
-    // 5. Pause the timeline and show the ENTER button
-    tl.add(() => {
-      setShowEnter(true);
-      if (enterButtonRef.current) {
-        gsap.to(enterButtonRef.current, { opacity: 1, pointerEvents: 'auto', duration: 0.5 });
-      }
-      tl.pause();
-    });
-
-    // 6. Premium Reveal Exit (Split screen or Curtain up)
+    // 5. Premium Reveal Exit (Split screen or Curtain up)
     tl.to(containerRef.current, {
       clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)', // Wipes UP
       duration: 1,
@@ -79,15 +68,6 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
       tl.kill();
     };
   }, [onComplete]);
-
-  const handleEnterClick = () => {
-    if (enterButtonRef.current) {
-      gsap.to(enterButtonRef.current, { opacity: 0, duration: 0.2 });
-    }
-    if (tlRef.current) {
-      tlRef.current.play(); // Resume the wipe animation
-    }
-  };
 
   if (!isVisible) return null;
 
@@ -128,15 +108,6 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
           </svg>
         </div>
       </div>
-
-      {/* ENTER BUTTON */}
-      <button
-        ref={enterButtonRef}
-        onClick={handleEnterClick}
-        className="absolute bottom-12 md:bottom-16 px-8 py-3 bg-white text-[#E0457B] font-['Jost'] font-bold tracking-widest text-xs uppercase rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.15)] hover:scale-105 transition-transform duration-300 opacity-0 pointer-events-none"
-      >
-        Entrar a la web
-      </button>
 
       {/* Loading Percentage */}
       <div ref={percentRef} className="absolute bottom-8 right-8 text-white font-['Anton'] text-4xl sm:text-6xl opacity-40 mix-blend-overlay tracking-widest">
