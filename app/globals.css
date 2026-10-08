@@ -22,16 +22,16 @@
 }
 
 [data-theme="dark"] {
-  /* TEMA NOCHE ROSA (SIN NEGRO PURO, CONTRASTE AA) */
-  --petal: #2B0F1E;
-  --blush: #341224;
-  --rose: #42162E;
+  /* TEMA NOCHE PREMIUM (CARBONO ULTRA OSCURO CON ACENTOS ROSAS) */
+  --petal: #140A0E;
+  --blush: #211117;
+  --rose: #2D1822;
   --brand: #E0457B;
-  --berry: #FFE4EE;
+  --berry: #FFFFFF;
   --champagne: #FFE9D6;
-  --line: rgba(255, 228, 238, 0.15);
-  --surface: #3A1528;
-  --bg-current: #2B0F1E;
+  --line: rgba(224, 69, 123, 0.2);
+  --surface: #0A0507;
+  --bg-current: #140A0E;
 }
 
 html, body {
