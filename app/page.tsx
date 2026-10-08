@@ -10,6 +10,7 @@ import { Play, X, Radio } from 'lucide-react';
 import { TVOnlinePlayer } from '@/components/TVOnlinePlayer/TVOnlinePlayer';
 import { ViralSlider } from '@/components/ViralSlider/ViralSlider';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio/CoverFlowRadio';
+import { IPTVPlayer } from '@/components/IPTVPlayer/IPTVPlayer';
 import { CookieConsent } from '@/components/CookieConsent';
 import { CustomCursor } from '@/components/CustomCursor';
 import { ThiagoPreloader } from '@/components/ThiagoPreloader';
@@ -43,9 +44,10 @@ const LenisScrollTriggerSync: React.FC = () => {
 // ==========================================
 interface HeroVideoProps {
   onOpenRadio: () => void;
+  onOpenIPTV: () => void;
 }
 
-const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
+const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio, onOpenIPTV }) => {
   const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
@@ -239,41 +241,69 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           </motion.p>
         </div>
 
-        {/* Desktop Top Right: Botón ULTRA-PREMIUM RADIO EN VIVO */}
+        {/* Desktop Top Right: Botones RADIO EN VIVO & NOTICIAS EN VIVO */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="hidden md:flex items-center absolute z-20 pointer-events-auto"
+          className="hidden md:flex flex-col gap-3 items-end absolute z-20 pointer-events-auto"
           style={{ right: '5vw', top: 'calc(56px + 12vh)' }} // Bajado a 12vh para mejorar el encuadre visual
         >
+          {/* BOTÓN RADIO */}
           <motion.button
             type="button"
             onClick={onOpenRadio}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className="group relative flex items-center h-[52px] rounded-full px-2 pr-6 bg-black/30 backdrop-blur-xl border border-white/10 hover:border-white/30 hover:bg-black/50 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-500 cursor-pointer overflow-hidden"
+            className="group relative flex items-center justify-between h-[52px] w-[210px] rounded-full px-2 bg-black/30 backdrop-blur-xl border border-white/10 hover:border-[#E0457B]/50 hover:bg-black/50 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-500 cursor-pointer overflow-hidden"
             title="Sintonizar Radio Live"
             data-cursor="Play"
           >
-            {/* Animación de luz que barre el botón (sheen) */}
             <div className="absolute inset-0 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-[1500ms] ease-in-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none skew-x-12" />
 
-            {/* Glowing Icon Wrapper */}
-            <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full bg-gradient-to-br from-[#E0457B] to-[#A3285C] shadow-[0_0_20px_rgba(224,69,123,0.5)] mr-4 border border-white/20 relative">
-              <span className="absolute inset-0 rounded-full animate-ping bg-[#E0457B]/40" style={{ animationDuration: '3s' }} />
-              <Radio size={16} className="text-white drop-shadow-sm relative z-10" />
-            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full bg-gradient-to-br from-white/10 to-white/5 shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/20 relative group-hover:border-[#E0457B]/50 transition-colors">
+                <Radio size={16} className="text-white drop-shadow-sm relative z-10 group-hover:text-[#E0457B] transition-colors" />
+              </div>
 
-            {/* Texto Premium */}
-            <div className="flex flex-col items-start justify-center">
-              <span className="font-satoshi text-[9px] text-white/50 tracking-[0.3em] uppercase leading-none mb-1">Live Now</span>
-              <span className="font-satoshi text-xs font-semibold text-white tracking-[0.18em] uppercase leading-none">RADIO EN VIVO</span>
+              <div className="flex flex-col items-start justify-center">
+                <span className="font-satoshi text-[9px] text-white/50 tracking-[0.3em] uppercase leading-none mb-1">Live Now</span>
+                <span className="font-satoshi text-xs font-semibold text-white tracking-[0.18em] uppercase leading-none">RADIO EN VIVO</span>
+              </div>
             </div>
             
-            {/* Live Dot */}
-            <span className="relative flex h-1.5 w-1.5 ml-4">
+            <span className="relative flex h-1.5 w-1.5 mr-4">
+              <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+            </span>
+          </motion.button>
+
+          {/* BOTÓN NOTICIAS */}
+          <motion.button
+            type="button"
+            onClick={onOpenIPTV}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+            className="group relative flex items-center justify-between h-[52px] w-[210px] rounded-full px-2 bg-black/30 backdrop-blur-xl border border-white/10 hover:border-[#E0457B]/50 hover:bg-black/50 shadow-[0_15px_35px_-5px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.15)] transition-all duration-500 cursor-pointer overflow-hidden"
+            title="Ver Noticias en Vivo"
+            data-cursor="Play"
+          >
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-[200%] transition-transform duration-[1500ms] ease-in-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none skew-x-12" />
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full bg-gradient-to-br from-white/10 to-white/5 shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/20 relative group-hover:border-[#E0457B]/50 transition-colors">
+                <Play size={16} className="text-white drop-shadow-sm relative z-10 ml-0.5 group-hover:text-[#E0457B] transition-colors" />
+              </div>
+
+              <div className="flex flex-col items-start justify-center">
+                <span className="font-satoshi text-[9px] text-white/50 tracking-[0.3em] uppercase leading-none mb-1">Live Now</span>
+                <span className="font-satoshi text-xs font-semibold text-white tracking-[0.18em] uppercase leading-none">NOTICIAS EN VIVO</span>
+              </div>
+            </div>
+            
+            <span className="relative flex h-1.5 w-1.5 mr-4">
               <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
             </span>
@@ -296,19 +326,37 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio }) => {
           Emisión ininterrumpida 24/7 // Sonido de vanguardia
         </p>
 
-        <div className="mt-5 flex items-center">
+        <div className="mt-5 flex flex-col gap-3 items-start">
           <motion.button
             type="button"
             onClick={onOpenRadio}
             whileTap={{ scale: 0.97 }}
-            className="group relative inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full bg-[#FFE9D6] text-[#A3285C] font-satoshi text-xs font-bold tracking-[0.18em] uppercase shadow-[0_8px_20px_rgba(163,40,92,0.35)] cursor-pointer"
+            className="group relative flex justify-between items-center w-[220px] px-6 py-3 rounded-full bg-black/20 text-[#FFE9D6] border border-white/20 font-satoshi text-xs font-bold tracking-[0.18em] uppercase shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black/30 hover:border-white/40 transition-all cursor-pointer"
           >
-            <ButterflyIcon size={13} color="#A3285C" strokeWidth={1.5} />
+            <div className="flex items-center gap-2.5">
+              <ButterflyIcon size={13} color="#FFE9D6" strokeWidth={1.5} />
+              <span>RADIO EN VIVO</span>
+            </div>
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#A3285C] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#A3285C]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
             </span>
-            <span>RADIO EN VIVO</span>
+          </motion.button>
+          
+          <motion.button
+            type="button"
+            onClick={onOpenIPTV}
+            whileTap={{ scale: 0.97 }}
+            className="group relative flex justify-between items-center w-[220px] px-6 py-3 rounded-full bg-black/20 text-[#FFE9D6] border border-white/20 font-satoshi text-xs font-bold tracking-[0.18em] uppercase shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:bg-black/30 hover:border-white/40 transition-all cursor-pointer"
+          >
+            <div className="flex items-center gap-2.5">
+              <Play size={13} strokeWidth={2} className="text-[#FFE9D6]" />
+              <span>NOTICIAS EN VIVO</span>
+            </div>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+            </span>
           </motion.button>
         </div>
       </div>
@@ -323,6 +371,7 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('home');
   const [lightboxCard, setLightboxCard] = useState<any>(null);
   const [radioModalOpen, setRadioModalOpen] = useState(false);
+  const [iptvModalOpen, setIptvModalOpen] = useState(false);
   const [hoveredGalleryCard, setHoveredGalleryCard] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(true);
@@ -634,7 +683,7 @@ export default function Home() {
             1. HERO VIDEO (Sin filtros, sin tintes, color original)
         ========================================== */}
         <div id="home">
-          <HeroVideo onOpenRadio={() => setRadioModalOpen(true)} />
+          <HeroVideo onOpenRadio={() => setRadioModalOpen(true)} onOpenIPTV={() => setIptvModalOpen(true)} />
         </div>
 
         {/* ==========================================
@@ -1104,6 +1153,11 @@ export default function Home() {
               <CoverFlowRadio onClose={() => setRadioModalOpen(false)} />
             </div>
           </div>
+        )}
+
+        {/* Modal de IPTV en Vivo */}
+        {iptvModalOpen && (
+          <IPTVPlayer onClose={() => setIptvModalOpen(false)} />
         )}
 
         {/* Cookie Consent Banner */}
