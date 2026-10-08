@@ -116,8 +116,29 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
           PAGE OFFICIELLE
         </div>
 
+        {/* SOUND CHOICES (Between Subtitle and Signature) */}
+        <div 
+          ref={choicesRef} 
+          className="mt-6 md:mt-8 flex flex-row items-center justify-center gap-3 md:gap-4 opacity-0 pointer-events-none z-30"
+        >
+          <button
+            onClick={() => handleChoice(true)}
+            className="flex items-center gap-1.5 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 text-white font-['Jost'] font-semibold tracking-[0.15em] text-[9px] md:text-[10px] uppercase rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:bg-white/20 hover:scale-105 transition-all duration-300"
+          >
+            <Volume2 size={13} strokeWidth={2.5} />
+            Entrar con sonido
+          </button>
+          <button
+            onClick={() => handleChoice(false)}
+            className="flex items-center gap-1.5 px-4 py-2 bg-black/10 backdrop-blur-md border border-white/10 text-white/80 font-['Jost'] font-semibold tracking-[0.15em] text-[9px] md:text-[10px] uppercase rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:bg-white/10 hover:text-white hover:scale-105 transition-all duration-300"
+          >
+            <VolumeX size={13} strokeWidth={2.5} />
+            Sin sonido
+          </button>
+        </div>
+
         {/* ELEGANT SIGNATURE (T) */}
-        <div className="absolute top-[100%] left-1/2 -translate-x-1/2 mt-4 md:mt-8 w-[200px] md:w-[300px] pointer-events-none opacity-90 mix-blend-overlay">
+        <div className="absolute top-[100%] left-1/2 -translate-x-1/2 mt-4 md:mt-8 w-[180px] md:w-[260px] pointer-events-none opacity-80 mix-blend-overlay">
           <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               ref={signaturePathRef}
@@ -130,27 +151,6 @@ export const ThiagoPreloader: React.FC<{ onComplete?: () => void }> = ({ onCompl
             />
           </svg>
         </div>
-      </div>
-
-      {/* SOUND CHOICES */}
-      <div 
-        ref={choicesRef} 
-        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-row items-center justify-center gap-4 opacity-0 pointer-events-none z-30"
-      >
-        <button
-          onClick={() => handleChoice(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md border border-white/20 text-white font-['Jost'] font-bold tracking-widest text-[10px] md:text-xs uppercase rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/20 hover:scale-105 transition-all duration-300"
-        >
-          <Volume2 size={16} strokeWidth={2.5} />
-          Entrar con sonido
-        </button>
-        <button
-          onClick={() => handleChoice(false)}
-          className="flex items-center gap-2 px-6 py-3 bg-black/10 backdrop-blur-md border border-white/10 text-white/80 font-['Jost'] font-bold tracking-widest text-[10px] md:text-xs uppercase rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:bg-white/10 hover:text-white hover:scale-105 transition-all duration-300"
-        >
-          <VolumeX size={16} strokeWidth={2.5} />
-          Sin sonido
-        </button>
       </div>
 
       {/* Loading Percentage */}
