@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { PLAYLIST_VIDEOS } from '@/components/TVOnlinePlayer/playlistData';
 import { TVVideo } from '@/components/TVOnlinePlayer/types';
 
+export const runtime = 'edge';
 export const revalidate = 60; // Cache for 60 seconds
 
 export async function GET() {
