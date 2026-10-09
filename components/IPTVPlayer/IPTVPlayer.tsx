@@ -18,21 +18,21 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     id: "la_1",
     name: "La 1",
     group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=rtve.es",
+    logo: "/images/channels/la1.png",
     url: "https://rtvelivestream.rtve.es/rtvesec/la1/la1_main_dvr.m3u8"
   },
   {
     id: "la_1_hd",
     name: "La 1 Hd",
     group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=rtve.es",
+    logo: "/images/channels/la1.png",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414798.m3u8"
   },
   {
     id: "la_2",
     name: "La 2",
     group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=rtve.es",
+    logo: "/images/channels/la2.png",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414795.m3u8"
   },
   {
@@ -74,7 +74,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     id: "odisea_4k",
     name: "Odisea 4K",
     group: "Documentales",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=canaldocumental.es",
+    logo: "/images/channels/odisea.png",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414730.m3u8"
   },
   {
@@ -102,7 +102,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     id: "history_channel",
     name: "History Channel",
     group: "Documentales",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=canalhistoria.es",
+    logo: "/images/channels/history.webp",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414741.m3u8"
   },
   {
@@ -137,7 +137,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     id: "24_horas",
     name: "24 Horas",
     group: "Informativos",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=rtve.es",
+    logo: "/images/channels/24h.png",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414778.m3u8"
   },
   {
