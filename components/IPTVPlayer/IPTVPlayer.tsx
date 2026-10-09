@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
+import * as dashjs from 'dashjs';
 import { X, Play, Square, Loader2, Volume2, VolumeX, Maximize } from 'lucide-react';
 import { useMediaStore } from '@/lib/mediaStore';
 
@@ -55,6 +56,13 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     group: "Generalistas",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=cuatro.com",
     url: "https://cdn.jsdelivr.net/gh/FreakinGuns/listacanalestdtiptv@main/manifests/cuatro.mpd"
+  },
+  {
+    id: "la_4_op_2",
+    name: "la 4 op 2",
+    group: "Generalistas",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=cuatro.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414791.m3u8"
   },
   {
     id: "telecinco",
@@ -1338,6 +1346,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
+  const dashRef = useRef<dashjs.MediaPlayerClass | null>(null);
   const { setActiveMedia } = useMediaStore();
 
   useEffect(() => {
@@ -1354,17 +1363,38 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
       
       const proxyUrl = `/api/proxy?url=${encodeURIComponent(activeChannel.url)}`;
 
-      if (Hls.isSupported()) {
-        if (hlsRef.current) {
-          hlsRef.current.destroy();
-        }
+      // Clean up previous instances
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+        hlsRef.current = null;
+      }
+      if (dashRef.current) {
+        dashRef.current.destroy();
+        dashRef.current = null;
+      }
+
+      const isMpd = activeChannel.url.includes('.mpd');
+
+      if (isMpd) {
+        const player = dashjs.MediaPlayer().create();
+        dashRef.current = player;
+        player.initialize(video, proxyUrl, true);
         
+        player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, () => {
+          setIsLoading(false);
+        });
+        
+        player.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+          console.error("DASH Error:", e);
+          setHasError(true);
+          setIsLoading(false);
+        });
+      } else if (Hls.isSupported()) {
         const hls = new Hls({
           enableWorker: true,
         });
         
         hlsRef.current = hls;
-        
         hls.loadSource(proxyUrl);
         hls.attachMedia(video);
         
@@ -1378,8 +1408,6 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
             setHasError(true);
             setIsLoading(false);
             console.error("HLS Fatal Error:", data);
-            // Optionally, we could show the error type on screen:
-            // setErrorMsg(data.type + ' : ' + data.details);
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -1402,6 +1430,10 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
         hlsRef.current = null;
+      }
+      if (dashRef.current) {
+        dashRef.current.destroy();
+        dashRef.current = null;
       }
     };
   }, [activeChannel]);

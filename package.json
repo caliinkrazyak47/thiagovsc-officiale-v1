@@ -11,6 +11,7 @@
     "@gsap/react": "^2.1.2",
     "@studio-freight/react-lenis": "^0.0.47",
     "clsx": "^2.1.1",
+    "dashjs": "^5.2.1",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^11.3.19",
