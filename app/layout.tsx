@@ -68,7 +68,7 @@ const spaceMono = Space_Mono({
   variable: "--font-geist-mono"
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://thiagovsc.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://thiagovsc.es';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -107,7 +107,7 @@ export const metadata: Metadata = {
     description: "TV Online 4K Ultra HD en directo, radio streaming en vivo, feed viral y ranking de influencers.",
     images: [
       {
-        url: "/icon.svg",
+        url: "/hero-poster.jpg",
         width: 512,
         height: 512,
         alt: "Thiago VSC Official Logo",
@@ -118,7 +118,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Thiago VSC | The Influencer Experience",
     description: "Transmisión 24/7 en directo: TV Online 4K, Radio en Vivo y TikTok Feed.",
-    images: ["/icon.svg"],
+    images: ["/hero-poster.jpg"],
     creator: "@thiagovsc",
   },
   robots: {
@@ -134,10 +134,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/hero-poster.jpg", type: "image/svg+xml" },
     ],
     apple: [
-      { url: "/icon.svg", sizes: "180x180", type: "image/svg+xml" },
+      { url: "/hero-poster.jpg", sizes: "180x180", type: "image/svg+xml" },
     ],
   },
   manifest: "/manifest.webmanifest",
