@@ -73,7 +73,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://thiagovsc.com';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Thiagovsc | Officiale v1",
+    default: "Thiagovsc | Officiale",
     template: "%s | Thiagovsc",
   },
   description: "Canal oficial de Thiago VSC: TV Online en 4K Ultra HD, Emisora de Radio en Vivo, TikTok Viral Feed y Cobertura de Eventos Exclusivos.",
