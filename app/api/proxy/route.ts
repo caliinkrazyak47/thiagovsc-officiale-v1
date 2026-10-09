@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': '*/*',
         'Connection': 'keep-alive',
-        'Referer': 'http://cloudtvserviceplatinum.site:8080/'
+        'Referer': url.startsWith('http://cloudtvserviceplatinum') ? 'http://cloudtvserviceplatinum.site:8080/' : ''
       }
     });
 
@@ -65,9 +65,24 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Para segmentos de video (.ts) u otros archivos, streamear directo
-    const buffer = await response.arrayBuffer();
-    return new NextResponse(buffer, {
+    // Si es un manifesto DASH (.mpd), reescribimos URLs internas?
+    // En DASH es más complicado porque es XML. Si el servidor origen tiene CORS,
+    // lo ideal es no pasarlo por el proxy.
+    // De momento lo devolvemos tal cual.
+    if (contentType.includes('dash+xml') || url.includes('.mpd')) {
+      const text = await response.text();
+      return new NextResponse(text, {
+        headers: {
+          'Content-Type': 'application/dash+xml',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': '*'
+        }
+      });
+    }
+
+    // Para segmentos de video (.ts) u otros archivos, STREAMEAR directamente para no reventar la RAM
+    return new NextResponse(response.body, {
       headers: {
         'Content-Type': contentType || 'video/MP2T',
         'Access-Control-Allow-Origin': '*',

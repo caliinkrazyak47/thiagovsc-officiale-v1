@@ -1361,7 +1361,10 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
       setIsLoading(true);
       setHasError(false);
       
-      const proxyUrl = `/api/proxy?url=${encodeURIComponent(activeChannel.url)}`;
+      let proxyUrl = `/api/proxy?url=${encodeURIComponent(activeChannel.url)}`;
+      if (activeChannel.url.includes('cdn.jsdelivr.net') || activeChannel.url.includes('rtvelivestream.rtve.es')) {
+        proxyUrl = activeChannel.url;
+      }
 
       // Clean up previous instances
       if (hlsRef.current) {
