@@ -189,48 +189,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=ufc.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/149276.m3u8"
-  },
-  {
-    id: "13c_cl",
-    name: "13C (Chile)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=13c.cl",
-    url: "https://origin.dpsgo.com/ssai/event/GI-9cp_bT8KcerLpZwkuhw/master.m3u8"
-  },
-  {
-    id: "telefe_ar",
-    name: "Telefe (AR)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=telefe.com",
-    url: "http://45.134.141.161:2200/ARG/TELEFE_HD/index.m3u8"
-  },
-  {
-    id: "panamericana_pe",
-    name: "Panamericana (PE)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=panamericana.pe",
-    url: "http://45.171.108.253:8888/PANAMERICANA/index.m3u8"
-  },
-  {
-    id: "latina_pe",
-    name: "Latina (PE)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=latina.pe",
-    url: "http://190.93.224.42/LATINA/index.m3u8"
-  },
-  {
-    id: "caracol_co",
-    name: "Caracol HD2 (CO)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=caracoltv.com",
-    url: "http://181.78.14.26:4000/play/a00d/index.m3u8"
-  },
-  {
-    id: "rcn_co",
-    name: "Canal RCN (CO)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=canalrcn.com",
-    url: "http://138.121.15.230:9002/RCN/index.m3u8"
   }
 ];
 
