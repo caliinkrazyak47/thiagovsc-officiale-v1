@@ -191,39 +191,11 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/149276.m3u8"
   },
   {
-    id: "a24_ar",
-    name: "A24 Argentina",
-    group: "Noticias",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=a24.com",
-    url: "https://g5.vxral-slo.transport.edge-access.net/a12/ngrp:a24-100056_all/playlist.m3u8?sense=true"
-  },
-  {
-    id: "america_tv_pe",
-    name: "América TV (Perú)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=americatv.com.pe",
-    url: "https://live-bd1.tv360.bitel.com.pe/manifest/america/master_clean_source.m3u8"
-  },
-  {
-    id: "canal_1_co",
-    name: "Canal 1 (Colombia)",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=canal1.com.co",
-    url: "http://138.121.15.230:9002/CANAL-UNO/index.m3u8"
-  },
-  {
     id: "13c_cl",
     name: "13C (Chile)",
     group: "Generalistas",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=13c.cl",
     url: "https://origin.dpsgo.com/ssai/event/GI-9cp_bT8KcerLpZwkuhw/master.m3u8"
-  },
-  {
-    id: "azteca_deportes_mx",
-    name: "Azteca Deportes (MX)",
-    group: "Deportes",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tvazteca.com",
-    url: "http://38.194.226.190:8000/play/a02r/index.m3u8"
   },
   {
     id: "telefe_ar",
