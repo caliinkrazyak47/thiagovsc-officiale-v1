@@ -55,13 +55,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     name: "la 4",
     group: "Generalistas",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=cuatro.com",
-    url: "https://cdn.jsdelivr.net/gh/FreakinGuns/listacanalestdtiptv@main/manifests/cuatro.mpd"
-  },
-  {
-    id: "la_4_op_2",
-    name: "la 4 op 2",
-    group: "Generalistas",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=cuatro.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414791.m3u8"
   },
   {
