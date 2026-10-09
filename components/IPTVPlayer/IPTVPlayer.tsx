@@ -33,7 +33,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     name: "La 2",
     group: "Generalistas",
     logo: "/images/channels/la2.png",
-    url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414795.m3u8"
+    url: "https://rtvelivestream.rtve.es/rtvesec/la2/la2_main.m3u8"
   },
   {
     id: "antena_3",
@@ -63,13 +63,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=lasexta.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414783.m3u8"
   },
-  {
-    id: "telemadrid",
-    name: "Telemadrid",
-    group: "Autonómicos",
-    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=telemadrid.es",
-    url: "https://live.telemadrid.cross-media.es/6389770581112/eu-central-1/6416060453001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiajI5YjgyLmVncmVzcy5haGc3NmwiLCJhY2NvdW50X2lkIjoiNjQxNjA2MDQ1MzAwMSIsImVobiI6ImxpdmUudGVsZW1hZHJpZC5jcm9zcy1tZWRpYS5lcyIsImlzcyI6ImJsaXZlLXBsYXliYWNrLXNvdXJjZS1hcGkiLCJzdWIiOiJwYXRobWFwdG9rZW4iLCJhdWQiOlsiNjQxNjA2MDQ1MzAwMSJdLCJqdGkiOiI2Mzg5NzcwNTgxMTEyIn0.kqriAMUkHT6m0V6wkCHJum_EUyL4PAi1zJMKlfmYHEU/playlist-hls.m3u8"
-  },
+
   {
     id: "odisea_4k",
     name: "Odisea 4K",
