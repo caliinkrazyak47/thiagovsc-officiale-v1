@@ -1377,7 +1377,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     name: "Pokémon 24/7",
     group: "Entretenimiento 24/7",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
-    url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/575769.m3u8"
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575769.m3u8"
   },
   {
     id: "el_chavo_del_8",
