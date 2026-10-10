@@ -1521,6 +1521,7 @@ interface IPTVPlayerProps {
 export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   const [activeChannel, setActiveChannel] = useState<IPTVChannel>(IPTV_CHANNELS[2]); // Default Antena 3 or Telecinco
   const [activeCategory, setActiveCategory] = useState<string>('Todos');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
   // Hardcoded ordered categories so Spain and main groups are first
@@ -1546,9 +1547,13 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
     return '';
   };
 
-  const filteredChannels = activeCategory === 'Todos' 
+  const filteredByCategory = activeCategory === 'Todos' 
     ? IPTV_CHANNELS 
     : IPTV_CHANNELS.filter(c => c.group === activeCategory || c.country === activeCategory);
+    
+  const filteredChannels = searchQuery.trim() === '' 
+    ? filteredByCategory 
+    : filteredByCategory.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase()));
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -1802,21 +1807,33 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
               Directorio de Canales
             </h3>
             
-            {/* Category Pills */}
-            <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar-horizontal" data-lenis-prevent>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`whitespace-nowrap px-4 py-1.5 rounded-full font-satoshi text-[10px] tracking-widest uppercase transition-all duration-300 ${
-                    activeCategory === category 
-                      ? 'bg-[#E0457B] text-white shadow-[0_0_15px_rgba(224,69,123,0.5)] font-bold' 
-                      : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
-                  }`}
+            {/* Menu Bar: Search and Category Dropdown */}
+            <div className="flex flex-col gap-3">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Buscar canal (Ej: La 1)..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-[11px] text-white placeholder-white/40 font-satoshi focus:outline-none focus:border-[#E0457B]/70 focus:bg-white/5 transition-colors shadow-inner"
+                />
+              </div>
+              <div className="relative">
+                <select 
+                  value={activeCategory}
+                  onChange={(e) => setActiveCategory(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-[11px] text-white font-satoshi appearance-none focus:outline-none focus:border-[#E0457B]/70 focus:bg-white/5 transition-colors cursor-pointer shadow-inner"
                 >
-                  {getFlag(category)}{category}
-                </button>
-              ))}
+                  {categories.map(category => (
+                    <option key={category} value={category} className="bg-[#140A0E] text-white">
+                      {getFlag(category)} {category}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/50 text-[10px]">
+                  ▼
+                </div>
+              </div>
             </div>
           </div>
           
