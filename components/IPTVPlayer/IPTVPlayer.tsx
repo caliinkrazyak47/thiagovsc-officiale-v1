@@ -211,7 +211,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_premium_2",
     name: "ESPN PREMIUM 2",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591998.m3u8"
@@ -219,7 +218,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_premium_arg",
     name: "ESPN PREMIUM ARG",
-    country: "Argentina",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591997.m3u8"
@@ -227,7 +225,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_7",
     name: "ESPN 7",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591996.m3u8"
@@ -235,7 +232,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_6",
     name: "ESPN 6",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591995.m3u8"
@@ -243,7 +239,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_5",
     name: "ESPN 5",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591994.m3u8"
@@ -251,7 +246,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_4",
     name: "ESPN 4",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591991.m3u8"
@@ -259,7 +253,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_4_arg",
     name: "ESPN 4 ARG",
-    country: "Argentina",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591990.m3u8"
@@ -267,7 +260,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_3",
     name: "ESPN 3",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591989.m3u8"
@@ -275,7 +267,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_2",
     name: "ESPN 2",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591984.m3u8"
@@ -283,7 +274,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_2_espa_a",
     name: "ESPN 2 ESPAÑA",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591980.m3u8"
@@ -291,7 +281,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_mex",
     name: "ESPN MEX",
-    country: "México",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591978.m3u8"
@@ -299,7 +288,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_espa_a",
     name: "ESPN ESPAÑA",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591977.m3u8"
@@ -315,7 +303,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_deportes",
     name: "ESPN DEPORTES",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591971.m3u8"
@@ -787,7 +774,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_premium",
     name: "ESPN Premium",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712747.m3u8"
@@ -795,7 +781,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_4",
     name: "ESPN 4",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712746.m3u8"
@@ -803,7 +788,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_3",
     name: "ESPN 3",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712745.m3u8"
@@ -811,7 +795,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn_2",
     name: "ESPN 2",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712744.m3u8"
@@ -819,7 +802,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   {
     id: "espn",
     name: "ESPN",
-    country: "España",
     group: "Deportes",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712743.m3u8"
