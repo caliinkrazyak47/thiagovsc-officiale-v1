@@ -1401,9 +1401,22 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
 
         hls.on(Hls.Events.ERROR, (event, data) => {
           if (data.fatal) {
-            setHasError(true);
-            setIsLoading(false);
-            console.error("HLS Fatal Error:", data);
+            switch (data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.log("fatal network error encountered, try to recover");
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.log("fatal media error encountered, try to recover");
+                hls.recoverMediaError();
+                break;
+              default:
+                console.error("HLS Fatal Error cannot be recovered:", data);
+                hls.destroy();
+                setHasError(true);
+                setIsLoading(false);
+                break;
+            }
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -1513,7 +1526,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
                   <Square className="w-6 h-6 text-red-500" />
                 </div>
                 <h3 className="font-panchang text-sm tracking-widest text-white/90 mb-2">Error de Reproducción</h3>
-                <p className="font-satoshi text-xs text-white/50 max-w-md">No se puede decodificar el video de {activeChannel.name}. Formato incompatible o protegido (HEVC/MPEG2).</p>
+                <p className="font-satoshi text-xs text-white/50 max-w-md">No se puede decodificar el video de {activeChannel.name}. La señal se ha cortado o el formato es incompatible.</p>
                 {/* <p className="font-mono text-[9px] mt-4 text-red-400 opacity-50 break-all">{errorDetails}</p> */}
               </div>
             )}
