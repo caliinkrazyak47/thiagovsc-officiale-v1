@@ -86,7 +86,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     country: "España",
     group: "Generalistas",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=telemadrid.es",
-    url: "https://live.telemadrid.cross-media.es/6389770581112/eu-central-1/6416060453001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiajI5YjgyLmVncmVzcy5haGc3NmwiLCJhY2NvdW50X2lkIjoiNjQxNjA2MDQ1MzAwMSIsImVobiI6ImxpdmUudGVsZW1hZHJpZC5jcm9zcy1tZWRpYS5lcyIsImlzcyI6ImJsaXZlLXBsYXliYWNrLXNvdXJjZS1hcGkiLCJzdWIiOiJwYXRobWFwdG9rZW4iLCJhdWQiOlsiNjQxNjA2MDQ1MzAwMSJdLCJqdGkiOiI2Mzg5NzcwNTgxMTEyIn0.kqriAMUkHT6m0V6wkCHJum_EUyL4PAi1zJMKlfmYHEU/playlist-hls.m3u8"
+    url: "http://cloudtvserviceplatinum.site:8080/live/alex_elvir/elvir123/505147.m3u8"
   },
   {
     id: "odisea_4k",
