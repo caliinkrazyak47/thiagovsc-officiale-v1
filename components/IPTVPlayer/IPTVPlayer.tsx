@@ -1586,7 +1586,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
 
       if (isMpd) {
         import('dashjs').then((dashjsModule) => {
-          const dashjs = dashjsModule.default || dashjsModule;
+          const dashjs = (dashjsModule as any).default || dashjsModule;
           const player = dashjs.MediaPlayer().create();
           dashRef.current = player;
           player.initialize(video, proxyUrl, true);
