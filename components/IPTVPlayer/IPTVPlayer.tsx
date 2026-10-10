@@ -1332,7 +1332,13 @@ interface IPTVPlayerProps {
 
 export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   const [activeChannel, setActiveChannel] = useState<IPTVChannel>(IPTV_CHANNELS[2]); // Default Antena 3 or Telecinco
+  const [activeCategory, setActiveCategory] = useState<string>('Todos');
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
+
+  const categories = ['Todos', ...Array.from(new Set(IPTV_CHANNELS.map(c => c.group)))];
+  const filteredChannels = activeCategory === 'Todos' 
+    ? IPTV_CHANNELS 
+    : IPTV_CHANNELS.filter(c => c.group === activeCategory);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -1573,12 +1579,33 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
         </div>
 
         {/* CHANNEL LIST SIDEBAR (Desktop) / BOTTOM BAR (Mobile) */}
-        <div className={`w-full md:w-80 lg:w-96 flex-shrink-0 ${theme.bgApp} border-t md:border-t-0 md:border-l ${theme.borderColor} flex flex-col h-[40vh] md:h-full`}>
-          <div className={`px-6 py-4 border-b ${theme.borderColor} bg-black/20`}>
-            <h3 className="font-satoshi text-xs font-bold tracking-[0.2em] uppercase text-white/70">Canales Disponibles</h3>
+        <div className={`w-full md:w-80 lg:w-[400px] flex-shrink-0 ${theme.bgApp} border-t md:border-t-0 md:border-l ${theme.borderColor} flex flex-col h-[40vh] md:h-full bg-gradient-to-b from-[#140A0E] to-[#0A0507]`}>
+          <div className={`px-6 py-5 border-b ${theme.borderColor} bg-black/40 backdrop-blur-xl sticky top-0 z-10`}>
+            <h3 className="font-panchang text-[10px] font-bold tracking-[0.3em] uppercase text-white/50 mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#E0457B] animate-pulse"></span>
+              Directorio de Canales
+            </h3>
+            
+            {/* Category Pills */}
+            <div className="flex gap-2 overflow-x-auto pb-2 custom-scrollbar-horizontal" data-lenis-prevent>
+              {categories.map(category => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`whitespace-nowrap px-4 py-1.5 rounded-full font-satoshi text-[10px] tracking-widest uppercase transition-all duration-300 ${
+                    activeCategory === category 
+                      ? 'bg-[#E0457B] text-white shadow-[0_0_15px_rgba(224,69,123,0.5)] font-bold' 
+                      : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-2 custom-scrollbar" data-lenis-prevent>
-            {IPTV_CHANNELS.map((channel) => {
+          
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 custom-scrollbar" data-lenis-prevent>
+            {filteredChannels.map((channel) => {
               const isActive = activeChannel.id === channel.id;
               return (
                 <button
@@ -1621,6 +1648,26 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: rgba(224, 69, 123, 0.4);
           border-radius: 4px;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar {
+          height: 3px;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar {
+          height: 3px;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.1);
+          border-radius: 3px;
         }
       `}} />
     </div>
