@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
-import * as dashjs from 'dashjs';
+
 import { X, Play, Square, Loader2, Volume2, VolumeX, Maximize } from 'lucide-react';
 import { useMediaStore } from '@/lib/mediaStore';
 
@@ -1585,18 +1585,24 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
       const isMpd = activeChannel.url.includes('.mpd');
 
       if (isMpd) {
-        const player = dashjs.MediaPlayer().create();
-        dashRef.current = player;
-        player.initialize(video, proxyUrl, true);
-        
-        player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, () => {
-          setIsLoading(false);
-        });
-        
-        player.on(dashjs.MediaPlayer.events.ERROR, (e) => {
-          console.error("DASH Error:", e);
+        import('dashjs').then((dashjsModule) => {
+          const dashjs = dashjsModule.default || dashjsModule;
+          const player = dashjs.MediaPlayer().create();
+          dashRef.current = player;
+          player.initialize(video, proxyUrl, true);
+          
+          player.on(dashjs.MediaPlayer.events.PLAYBACK_STARTED, () => {
+            setIsLoading(false);
+          });
+          
+          player.on(dashjs.MediaPlayer.events.ERROR, (e: any) => {
+            console.error("DASH Error:", e);
+            setHasError(true);
+            setIsLoading(false);
+          });
+        }).catch(err => {
+          console.error("Failed to load dashjs", err);
           setHasError(true);
-          setIsLoading(false);
         });
       } else if (Hls.isSupported()) {
         const hls = new Hls({
