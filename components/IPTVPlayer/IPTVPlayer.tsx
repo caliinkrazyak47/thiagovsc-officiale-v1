@@ -1388,11 +1388,11 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/575793.m3u8"
   },
   {
-    id: "la_familia_monster_24_7",
-    name: "La Familia Monster 24/7",
+    id: "los_locos_addams",
+    name: "Los Locos Adams",
     group: "Entretenimiento 24/7",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
-    url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/575795.m3u8"
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575795.m3u8"
   },
   {
     id: "el_chiringuito",
