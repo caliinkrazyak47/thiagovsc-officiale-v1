@@ -1523,9 +1523,12 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   const [activeCategory, setActiveCategory] = useState<string>('Todos');
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
 
-  const groups = Array.from(new Set(IPTV_CHANNELS.map(c => c.group)));
-  const countries = Array.from(new Set(IPTV_CHANNELS.map(c => c.country).filter(Boolean)));
-  const categories = ['Todos', ...groups, ...countries];
+  // Hardcoded ordered categories so Spain and main groups are first
+  const baseCategories = ['Todos', 'España', 'Películas', 'Deportes', 'Noticias', 'Documentales', 'Generalistas', 'Entretenimiento 24/7'];
+  const otherCountries = ['México', 'Argentina', 'Colombia', 'Perú', 'Chile', 'Puerto Rico', 'Estados Unidos'];
+  
+  // Combine ensuring uniqueness
+  const categories = Array.from(new Set([...baseCategories, ...otherCountries]));
 
   const getFlag = (name: string) => {
     if (name === 'España') return '🇪🇸 ';
