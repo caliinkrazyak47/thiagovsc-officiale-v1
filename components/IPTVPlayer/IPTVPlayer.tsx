@@ -17,6 +17,102 @@ export interface IPTVChannel {
 
 export const IPTV_CHANNELS: IPTVChannel[] = [
   {
+    "id": "ten_sd",
+    "name": "TEN SD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414774.m3u8"
+  },
+  {
+    "id": "dkiss_sd",
+    "name": "DKISS SD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414773.m3u8"
+  },
+  {
+    "id": "bmad",
+    "name": "BMAD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414770.m3u8"
+  },
+  {
+    "id": "nova_fhd",
+    "name": "NOVA FHD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414766.m3u8"
+  },
+  {
+    "id": "energy_fhd",
+    "name": "ENERGY FHD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414765.m3u8"
+  },
+  {
+    "id": "fdf_fhd",
+    "name": "FDF FHD",
+    "country": "España",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414760.m3u8"
+  },
+  {
+    "id": "m_plus_series_fhd",
+    "name": "M+ Series FHD",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=movistarplus.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013148.m3u8"
+  },
+  {
+    "id": "axn_fhd_espain",
+    "name": "AXN FHD ESPAIN",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=axn.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013151.m3u8"
+  },
+  {
+    "id": "calle_13_fhd",
+    "name": "Calle 13 FHD",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=calle13.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013159.m3u8"
+  },
+  {
+    "id": "cosmo_fhd",
+    "name": "COSMO FHD",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=canalcosmo.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013162.m3u8"
+  },
+  {
+    "id": "es_amc_fhd",
+    "name": "ES AMC FHD",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=amctv.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013165.m3u8"
+  },
+  {
+    "id": "axn_movies_fhd",
+    "name": "AXN Movies FHD",
+    "country": "España",
+    "group": "Películas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=axn.es",
+    "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013166.m3u8"
+  },
+  {
     id: "la_1",
     name: "la 1",
     country: "Espa├▒a",
