@@ -1537,7 +1537,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
     if (name === 'Puerto Rico') return '🇵🇷 ';
     if (name === 'Chile') return '🇨🇱 ';
     if (name === 'Deportes') return '⚽ ';
-    if (name === 'Cine y Series') return '🎬 ';
+    if (name === 'Películas') return '🎬 ';
     if (name === 'Noticias') return '📰 ';
     if (name === 'Documentales') return '🌍 ';
     return '';
