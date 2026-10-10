@@ -1392,7 +1392,70 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     name: "Los Locos Adams",
     group: "Entretenimiento 24/7",
     logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/575795.m3u8"
+  },
+  {
+    id: "el_coche_del_futuro_24_7",
+    name: "El Coche del Futuro 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575631.m3u8"
+  },
+  {
+    id: "dragon_ball_z_24_7",
+    name: "Dragon Ball Z 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575725.m3u8"
+  },
+  {
+    id: "futurama_24_7",
+    name: "Futurama 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=fox.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575744.m3u8"
+  },
+  {
+    id: "los_simpson_news_24_7",
+    name: "Los Simpson News 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=fox.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575762.m3u8"
+  },
+  {
+    id: "cine_terror_24_7",
+    name: "Cine Terror 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575790.m3u8"
+  },
+  {
+    id: "malcolm_24_7",
+    name: "Malcolm 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=fox.com",
     url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575795.m3u8"
+  },
+  {
+    id: "naruto_24_7",
+    name: "Naruto 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575798.m3u8"
+  },
+  {
+    id: "super_campeones_24_7",
+    name: "Super Campeones 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/575807.m3u8"
+  },
+  {
+    id: "los_tres_chiflados_24_7",
+    name: "Los Tres Chiflados 24/7",
+    group: "Entretenimiento 24/7",
+    logo: "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
+    url: "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/737501.m3u8"
   },
   {
     id: "el_chiringuito",
