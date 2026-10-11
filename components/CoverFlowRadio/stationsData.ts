@@ -14,6 +14,18 @@ export const RADIO_STATIONS: RadioStation[] = [
     accentColor: '#E6007E',
   },
   {
+    id: 'cacoteo-radio',
+    name: 'Cacoteo Radio',
+    country: 'ESTADOS UNIDOS',
+    countryCode: 'US',
+    flag: '🇺🇸',
+    frequency: 'CACOTEO RADIO • The Heavy Hitter Station',
+    genre: 'REGGAETÓN, HIP HOP & TRAP LATINO',
+    cover: '/images/radios/cacoteo-radio.png',
+    streamUrl: 'https://s6.autopo.st/proxy/cacoteoradio?mp=/stream',
+    accentColor: '#E50914',
+  },
+  {
     id: 'hits-fm',
     name: 'Hits FM',
     country: 'ESPAÑA',
