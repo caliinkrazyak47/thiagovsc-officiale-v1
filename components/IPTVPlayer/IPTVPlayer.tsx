@@ -409,6 +409,72 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     ]
   },
   {
+    "id": "dazn_f1_fhd",
+    "name": "DAZN F1 FHD",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/155619.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
+    "id": "dazn_1",
+    "name": "DAZN 1",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/155620.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
+    "id": "dazn_2",
+    "name": "DAZN 2",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/155622.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
+    "id": "dazn_3",
+    "name": "DAZN 3",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/155624.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
+    "id": "dazn_4",
+    "name": "DAZN 4",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/155625.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
+    "id": "dazn_moto_gp",
+    "name": "DAZN MOTO GP",
+    "group": "Deportes",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=dazn.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/750199.m3u8",
+    "categories": [
+      "DEPORTES",
+      "ESPAÑA"
+    ]
+  },
+  {
     "id": "veo_7",
     "name": "VEO 7",
     "group": "Generalistas",
