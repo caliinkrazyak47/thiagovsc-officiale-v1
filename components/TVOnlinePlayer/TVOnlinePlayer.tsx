@@ -16,7 +16,7 @@ export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
 
 const getYoutubeEmbedUrl = (videoId: string, muted: boolean, originStr: string) => {
   const originPart = originStr ? `&origin=${encodeURIComponent(originStr)}&widget_referrer=${encodeURIComponent(originStr)}` : '';
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${originPart}`;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080&cc_load_policy=0${originPart}`;
 };
 
 export const TVOnlinePlayer: React.FC = () => {
@@ -74,6 +74,15 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, []);
 
+  const disableCaptions = useCallback(() => {
+    try {
+      sendCommand('unloadModule', ['captions']);
+      sendCommand('unloadModule', ['cc']);
+      sendCommand('setOption', ['captions', 'track', {}]);
+      sendCommand('setOption', ['cc', 'track', {}]);
+    } catch {}
+  }, [sendCommand]);
+
   const playNextVideo = useCallback(() => {
     if (shuffledPlaylist.length === 0) return;
     const total = shuffledPlaylist.length;
@@ -89,8 +98,9 @@ export const TVOnlinePlayer: React.FC = () => {
       setIsPlaying(true);
       setActiveMedia('tv');
 
-      // Guarantee volume remains at 100% on video transition
+      // Guarantee volume remains at 100% on video transition and subtitles remain off
       setTimeout(() => {
+        disableCaptions();
         if (!isMutedRef.current) {
           sendCommand('unMute');
           sendCommand('setVolume', [vol]);
@@ -115,6 +125,7 @@ export const TVOnlinePlayer: React.FC = () => {
       setActiveMedia('tv');
 
       setTimeout(() => {
+        disableCaptions();
         if (!isMutedRef.current) {
           sendCommand('unMute');
           sendCommand('setVolume', [vol]);
@@ -136,6 +147,12 @@ export const TVOnlinePlayer: React.FC = () => {
 
         if (isEnded) {
           playNextVideo();
+        }
+        if (
+          (data.event === 'onStateChange' && data.info === 1) ||
+          (data.event === 'infoDelivery' && data.info && data.info.playerState === 1)
+        ) {
+          disableCaptions();
         }
       } catch (err) {}
     };
@@ -167,13 +184,15 @@ export const TVOnlinePlayer: React.FC = () => {
       } else {
         sendCommand('mute');
       }
+      disableCaptions();
       if (isPlaying) {
         sendCommand('playVideo');
       }
     }, 400);
 
-    // Re-assert volume at 1200ms so YouTube player doesn't fall back to lower default
+    // Re-assert volume at 1200ms and ensure subtitles are disabled
     setTimeout(() => {
+      disableCaptions();
       if (!isMutedRef.current) {
         sendCommand('unMute');
         sendCommand('setVolume', [volumeRef.current || 100]);
