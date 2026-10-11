@@ -141,6 +141,9 @@ export const metadata: Metadata = {
     ],
   },
   manifest: "/manifest.webmanifest",
+  other: {
+    'impact-site-verification': 'd3b076cd-8488-42fd-b80e-4973a6fd7db9',
+  },
 };
 
 export const viewport: Viewport = {
@@ -202,6 +205,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://playerservices.streamtheworld.com" />
         <link rel="dns-prefetch" href="https://liveaudio.lamusica.com" />
+
+        {/* Site Verification */}
+        <meta name="impact-site-verification" {...{ value: "d3b076cd-8488-42fd-b80e-4973a6fd7db9" }} />
+        <meta name="impact-site-verification" content="d3b076cd-8488-42fd-b80e-4973a6fd7db9" />
 
         {/* Structured Data Schema */}
         <script
