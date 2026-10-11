@@ -1464,6 +1464,54 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     ]
   },
   {
+    "id": "exitosa",
+    "name": "Exitosa",
+    "country": "Perú",
+    "group": "Noticias",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=exitosanoticias.pe",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/9494.m3u8",
+    "categories": [
+      "PERU",
+      "NOTICIAS"
+    ]
+  },
+  {
+    "id": "canal_n",
+    "name": "Canal N",
+    "country": "Perú",
+    "group": "Noticias",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=canaln.pe",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/9491.m3u8",
+    "categories": [
+      "PERU",
+      "NOTICIAS"
+    ]
+  },
+  {
+    "id": "willax_tv",
+    "name": "Willax TV",
+    "country": "Perú",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=willax.pe",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/9496.m3u8",
+    "categories": [
+      "PERU",
+      "GENERAL"
+    ]
+  },
+  {
+    "id": "la_karibena",
+    "name": "La Karibeña",
+    "country": "Perú",
+    "group": "Música",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=radiokaribena.pe",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/9495.m3u8",
+    "categories": [
+      "PERU",
+      "GENERAL"
+    ]
+  },
+  {
     "id": "movistar_deportes",
     "name": "Movistar Deportes",
     "country": "Perú",
