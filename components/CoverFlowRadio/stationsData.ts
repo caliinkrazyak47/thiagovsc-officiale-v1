@@ -38,6 +38,18 @@ export const RADIO_STATIONS: RadioStation[] = [
     accentColor: '#4338CA',
   },
   {
+    id: 'iparty-radio',
+    name: 'iPartyRadio',
+    country: 'ESTADOS UNIDOS',
+    countryCode: 'US',
+    flag: '🇺🇸',
+    frequency: 'iPartyRadio • Dance & Party Hits',
+    genre: 'DANCE, EDM & PARTY MIX',
+    cover: '/images/radios/ipartyradio.png',
+    streamUrl: 'https://streaming.live365.com/a90324_2',
+    accentColor: '#D60000',
+  },
+  {
     id: 'hits-fm',
     name: 'Hits FM',
     country: 'ESPAÑA',
