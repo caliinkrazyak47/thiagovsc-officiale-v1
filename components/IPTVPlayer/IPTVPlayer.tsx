@@ -418,7 +418,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591997.m3u8",
     "categories": [
-      "GENERAL",
       "DEPORTES"
     ]
   },
@@ -469,7 +468,6 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591990.m3u8",
     "categories": [
-      "GENERAL",
       "DEPORTES"
     ]
   },
@@ -495,7 +493,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   },
   {
     "id": "espn_2_espa_a",
-    "name": "ESPN 2 ESPA├æA",
+    "name": "ESPN 2 ESPAÑA",
     "group": "Deportes",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591980.m3u8",
@@ -515,7 +513,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
   },
   {
     "id": "espn_espa_a",
-    "name": "ESPN ESPA├æA",
+    "name": "ESPN ESPAÑA",
     "group": "Deportes",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/591977.m3u8",
