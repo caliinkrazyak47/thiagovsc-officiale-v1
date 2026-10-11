@@ -16,7 +16,7 @@ export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
 
 const getYoutubeEmbedUrl = (videoId: string, muted: boolean, originStr: string) => {
   const originPart = originStr ? `&origin=${encodeURIComponent(originStr)}&widget_referrer=${encodeURIComponent(originStr)}` : '';
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080&cc_load_policy=0${originPart}`;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080&suggestedQuality=hd1080&cc_load_policy=0${originPart}`;
 };
 
 export const TVOnlinePlayer: React.FC = () => {
@@ -74,6 +74,14 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, []);
 
+  const enforceMaxQuality = useCallback(() => {
+    try {
+      sendCommand('setPlaybackQuality', ['hd1080']);
+      sendCommand('setPlaybackQualityRange', ['hd1080', 'highres']);
+      sendCommand('setSuggestedQuality', ['hd1080']);
+    } catch {}
+  }, [sendCommand]);
+
   const disableCaptions = useCallback(() => {
     try {
       sendCommand('unloadModule', ['captions']);
@@ -98,16 +106,21 @@ export const TVOnlinePlayer: React.FC = () => {
       setIsPlaying(true);
       setActiveMedia('tv');
 
-      // Guarantee volume remains at 100% on video transition and subtitles remain off
+      // Guarantee volume remains at 100%, subtitles off, and quality locked to 1080p HD
       setTimeout(() => {
         disableCaptions();
+        enforceMaxQuality();
         if (!isMutedRef.current) {
           sendCommand('unMute');
           sendCommand('setVolume', [vol]);
         }
       }, 400);
+
+      setTimeout(() => {
+        enforceMaxQuality();
+      }, 1200);
     }
-  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand]);
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand, disableCaptions, enforceMaxQuality]);
 
   const playPrevVideo = useCallback(() => {
     if (shuffledPlaylist.length === 0) return;
@@ -126,15 +139,20 @@ export const TVOnlinePlayer: React.FC = () => {
 
       setTimeout(() => {
         disableCaptions();
+        enforceMaxQuality();
         if (!isMutedRef.current) {
           sendCommand('unMute');
           sendCommand('setVolume', [vol]);
         }
       }, 400);
-    }
-  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand]);
 
-  // Listen for video end to auto-play next
+      setTimeout(() => {
+        enforceMaxQuality();
+      }, 1200);
+    }
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand, disableCaptions, enforceMaxQuality]);
+
+  // Listen for video end to auto-play next and enforce quality on play
   useEffect(() => {
     const handleMessage = (e: MessageEvent) => {
       try {
@@ -153,12 +171,13 @@ export const TVOnlinePlayer: React.FC = () => {
           (data.event === 'infoDelivery' && data.info && data.info.playerState === 1)
         ) {
           disableCaptions();
+          enforceMaxQuality();
         }
       } catch (err) {}
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [playNextVideo]);
+  }, [playNextVideo, disableCaptions, enforceMaxQuality]);
 
   const handleIframeLoaded = useCallback(() => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
@@ -175,8 +194,7 @@ export const TVOnlinePlayer: React.FC = () => {
 
     setTimeout(() => {
       sendCommand('addEventListener', ['onStateChange']);
-      sendCommand('setPlaybackQuality', ['hd1080']);
-      sendCommand('setSuggestedQuality', ['hd1080']);
+      enforceMaxQuality();
       sendCommand('setVolume', [currentVol]);
       if (!currentMuted) {
         sendCommand('unMute');
@@ -190,15 +208,16 @@ export const TVOnlinePlayer: React.FC = () => {
       }
     }, 400);
 
-    // Re-assert volume at 1200ms and ensure subtitles are disabled
+    // Re-assert volume at 1200ms and ensure subtitles are disabled and max quality locked
     setTimeout(() => {
       disableCaptions();
+      enforceMaxQuality();
       if (!isMutedRef.current) {
         sendCommand('unMute');
         sendCommand('setVolume', [volumeRef.current || 100]);
       }
     }, 1200);
-  }, [isPlaying, sendCommand]);
+  }, [isPlaying, sendCommand, disableCaptions, enforceMaxQuality]);
 
   useEffect(() => {
     const handlePreloaderFinished = (e: any) => {
@@ -220,11 +239,14 @@ export const TVOnlinePlayer: React.FC = () => {
       }
       setIsPlaying(true);
       sendCommand('playVideo');
+      setTimeout(() => {
+        enforceMaxQuality();
+      }, 400);
     };
 
     window.addEventListener('preloader-finished', handlePreloaderFinished);
     return () => window.removeEventListener('preloader-finished', handlePreloaderFinished);
-  }, [sendCommand, setActiveMedia]);
+  }, [sendCommand, setActiveMedia, enforceMaxQuality]);
 
   const togglePlayPause = useCallback(() => {
     if (isPlaying) {
@@ -233,10 +255,10 @@ export const TVOnlinePlayer: React.FC = () => {
     } else {
       setActiveMedia('tv');
       sendCommand('playVideo');
-      sendCommand('setPlaybackQuality', ['hd1080']);
+      enforceMaxQuality();
       setIsPlaying(true);
     }
-  }, [isPlaying, sendCommand, setActiveMedia]);
+  }, [isPlaying, sendCommand, setActiveMedia, enforceMaxQuality]);
 
   const toggleMute = useCallback(() => {
     if (isMuted) {
