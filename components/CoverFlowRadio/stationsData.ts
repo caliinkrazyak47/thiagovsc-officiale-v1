@@ -2,6 +2,18 @@ import { RadioStation } from './types';
 
 export const RADIO_STATIONS: RadioStation[] = [
   {
+    id: 'motiva-fm',
+    name: 'Motiva FM',
+    country: 'ESPAÑA',
+    countryCode: 'ES',
+    flag: '🇪🇸',
+    frequency: 'MOTIVA FM • Solo Éxitos',
+    genre: 'POP, DANCE & URBAN HITS',
+    cover: '/images/radios/motiva-fm.png',
+    streamUrl: 'https://stream.guadigo.es/listen/motiva/motiva.mp3',
+    accentColor: '#E6007E',
+  },
+  {
     id: 'hits-fm',
     name: 'Hits FM',
     country: 'ESPAÑA',
