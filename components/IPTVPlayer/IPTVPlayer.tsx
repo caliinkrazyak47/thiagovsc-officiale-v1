@@ -1458,7 +1458,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "country": "Perú",
     "group": "Generalistas",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
-    "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/9493.m3u8",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/9493.m3u8",
     "categories": [
       "PERU"
     ]
