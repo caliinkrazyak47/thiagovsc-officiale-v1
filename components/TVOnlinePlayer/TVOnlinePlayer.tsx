@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { Maximize, Minimize, Volume2, VolumeX, Play, Pause, Plus, Minus, Tv, SkipBack, SkipForward, ExternalLink } from 'lucide-react';
+import { Maximize, Minimize, Volume2, VolumeX, Play, Pause, Plus, Minus, Tv, SkipBack, SkipForward } from 'lucide-react';
 import { PLAYLIST_VIDEOS } from './playlistData';
 import { TVVideo } from './types';
 import { BicolorSectionTitle } from '@/components/BicolorSectionTitle';
@@ -16,7 +16,7 @@ export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
 
 const getYoutubeEmbedUrl = (videoId: string, muted: boolean, originStr: string) => {
   const originPart = originStr ? `&origin=${encodeURIComponent(originStr)}&widget_referrer=${encodeURIComponent(originStr)}` : '';
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1${originPart}`;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080${originPart}`;
 };
 
 export const TVOnlinePlayer: React.FC = () => {
@@ -140,6 +140,8 @@ export const TVOnlinePlayer: React.FC = () => {
     // Force maximum 1080p HD quality and smooth playback
     setTimeout(() => {
       sendCommand('addEventListener', ['onStateChange']);
+      sendCommand('setPlaybackQuality', ['hd1080']);
+      sendCommand('setSuggestedQuality', ['hd1080']);
       sendCommand('setVolume', [volume]);
       if (!isMuted) {
         sendCommand('unMute');
@@ -181,6 +183,7 @@ export const TVOnlinePlayer: React.FC = () => {
     } else {
       setActiveMedia('tv');
       sendCommand('playVideo');
+      sendCommand('setPlaybackQuality', ['hd1080']);
       setIsPlaying(true);
     }
   }, [isPlaying, sendCommand, setActiveMedia]);
@@ -431,18 +434,6 @@ export const TVOnlinePlayer: React.FC = () => {
                 <Maximize className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Pantalla completa</span>
               </button>
-
-              {/* Abrir en YouTube si hay bloqueo antibot */}
-              <a
-                href={`https://www.youtube.com/watch?v=${currentVideo?.id || 'kPa7bsKwL-c'}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--brand)] hover:bg-[var(--blush)] font-medium tracking-[0.15em] uppercase text-[11px] cursor-pointer transition-all"
-                title="Abrir video en YouTube oficial"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">YouTube</span>
-              </a>
             </div>
           </div>
         </div>
