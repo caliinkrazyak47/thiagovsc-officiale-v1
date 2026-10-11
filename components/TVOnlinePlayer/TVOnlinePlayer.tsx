@@ -31,6 +31,8 @@ export const TVOnlinePlayer: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [volume, setVolumeState] = useState<number>(100);
   const [isMuted, setIsMuted] = useState<boolean>(true); // Start muted to allow initial autoplay
+  const volumeRef = useRef<number>(100);
+  const isMutedRef = useRef<boolean>(true);
   const [clientOrigin, setClientOrigin] = useState<string>('');
 
   useEffect(() => {
@@ -81,13 +83,21 @@ export const TVOnlinePlayer: React.FC = () => {
 
     const nextVideo = shuffledPlaylist[nextIndex];
     if (nextVideo && iframeRef.current) {
-      iframeRef.current.src = getYoutubeEmbedUrl(nextVideo.id, false, clientOrigin);
+      const vol = volumeRef.current || 100;
+      const muted = isMutedRef.current;
+      iframeRef.current.src = getYoutubeEmbedUrl(nextVideo.id, muted, clientOrigin);
       setIsPlaying(true);
-      setIsMuted(false);
-      setVolumeState(100);
       setActiveMedia('tv');
+
+      // Guarantee volume remains at 100% on video transition
+      setTimeout(() => {
+        if (!isMutedRef.current) {
+          sendCommand('unMute');
+          sendCommand('setVolume', [vol]);
+        }
+      }, 400);
     }
-  }, [clientOrigin, setActiveMedia, shuffledPlaylist]);
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand]);
 
   const playPrevVideo = useCallback(() => {
     if (shuffledPlaylist.length === 0) return;
@@ -98,13 +108,20 @@ export const TVOnlinePlayer: React.FC = () => {
 
     const prevVideo = shuffledPlaylist[prevIndex];
     if (prevVideo && iframeRef.current) {
-      iframeRef.current.src = getYoutubeEmbedUrl(prevVideo.id, false, clientOrigin);
+      const vol = volumeRef.current || 100;
+      const muted = isMutedRef.current;
+      iframeRef.current.src = getYoutubeEmbedUrl(prevVideo.id, muted, clientOrigin);
       setIsPlaying(true);
-      setIsMuted(false);
-      setVolumeState(100);
       setActiveMedia('tv');
+
+      setTimeout(() => {
+        if (!isMutedRef.current) {
+          sendCommand('unMute');
+          sendCommand('setVolume', [vol]);
+        }
+      }, 400);
     }
-  }, [clientOrigin, setActiveMedia, shuffledPlaylist]);
+  }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand]);
 
   // Listen for video end to auto-play next
   useEffect(() => {
@@ -127,7 +144,6 @@ export const TVOnlinePlayer: React.FC = () => {
   }, [playNextVideo]);
 
   const handleIframeLoaded = useCallback(() => {
-    // Send standard listening command to start receiving infoDelivery
     if (iframeRef.current && iframeRef.current.contentWindow) {
       try {
         iframeRef.current.contentWindow.postMessage(
@@ -137,34 +153,49 @@ export const TVOnlinePlayer: React.FC = () => {
       } catch {}
     }
 
-    // Force maximum 1080p HD quality and smooth playback
+    const currentVol = volumeRef.current || 100;
+    const currentMuted = isMutedRef.current;
+
     setTimeout(() => {
       sendCommand('addEventListener', ['onStateChange']);
       sendCommand('setPlaybackQuality', ['hd1080']);
       sendCommand('setSuggestedQuality', ['hd1080']);
-      sendCommand('setVolume', [volume]);
-      if (!isMuted) {
+      sendCommand('setVolume', [currentVol]);
+      if (!currentMuted) {
         sendCommand('unMute');
+        sendCommand('setVolume', [currentVol]);
       } else {
         sendCommand('mute');
       }
       if (isPlaying) {
         sendCommand('playVideo');
       }
-    }, 500);
-  }, [isPlaying, isMuted, volume, sendCommand]);
+    }, 400);
+
+    // Re-assert volume at 1200ms so YouTube player doesn't fall back to lower default
+    setTimeout(() => {
+      if (!isMutedRef.current) {
+        sendCommand('unMute');
+        sendCommand('setVolume', [volumeRef.current || 100]);
+      }
+    }, 1200);
+  }, [isPlaying, sendCommand]);
 
   useEffect(() => {
     const handlePreloaderFinished = (e: any) => {
       const withSound = e.detail?.sound;
       setActiveMedia('tv');
       if (withSound) {
+        isMutedRef.current = false;
         setIsMuted(false);
+        volumeRef.current = 100;
         setVolumeState(100);
         sendCommand('unMute');
         sendCommand('setVolume', [100]);
       } else {
+        isMutedRef.current = true;
         setIsMuted(true);
+        volumeRef.current = 0;
         setVolumeState(0);
         sendCommand('mute');
       }
@@ -191,40 +222,46 @@ export const TVOnlinePlayer: React.FC = () => {
   const toggleMute = useCallback(() => {
     if (isMuted) {
       setActiveMedia('tv');
-      sendCommand('unMute');
-      sendCommand('setVolume', [volume || 100]);
-      sendCommand('playVideo');
+      isMutedRef.current = false;
       setIsMuted(false);
+      const vol = volumeRef.current || 100;
+      volumeRef.current = vol;
+      setVolumeState(vol);
+      sendCommand('unMute');
+      sendCommand('setVolume', [vol]);
+      sendCommand('playVideo');
     } else {
-      sendCommand('mute');
+      isMutedRef.current = true;
       setIsMuted(true);
+      sendCommand('mute');
     }
-  }, [isMuted, volume, sendCommand, setActiveMedia]);
+  }, [isMuted, sendCommand, setActiveMedia]);
 
   const handleVolumeUp = useCallback(() => {
-    const newVol = Math.min(100, volume + 10);
+    const newVol = Math.min(100, (volumeRef.current || 100) + 10);
+    volumeRef.current = newVol;
     setVolumeState(newVol);
-    if (isMuted) {
-      sendCommand('unMute');
-      setIsMuted(false);
-    }
+    isMutedRef.current = false;
+    setIsMuted(false);
+    sendCommand('unMute');
     sendCommand('setVolume', [newVol]);
-  }, [volume, isMuted, sendCommand]);
+  }, [sendCommand]);
 
   const handleVolumeDown = useCallback(() => {
-    const newVol = Math.max(0, volume - 10);
+    const newVol = Math.max(0, (volumeRef.current || 100) - 10);
+    volumeRef.current = newVol;
     setVolumeState(newVol);
     if (newVol === 0) {
-      sendCommand('mute');
+      isMutedRef.current = true;
       setIsMuted(true);
+      sendCommand('mute');
     } else {
-      if (isMuted) {
-        sendCommand('unMute');
-        setIsMuted(false);
-      }
+      isMutedRef.current = false;
+      setIsMuted(false);
+      sendCommand('unMute');
       sendCommand('setVolume', [newVol]);
     }
-  }, [volume, isMuted, sendCommand]);
+  }, [sendCommand]);
 
   const handleToggleFullscreen = useCallback(() => {
     if (!screenWrapperRef.current) return;
@@ -271,7 +308,8 @@ export const TVOnlinePlayer: React.FC = () => {
   }, { scope: sectionRef });
 
   const initialVideoId = currentVideo?.id || 'kPa7bsKwL-c';
-  const youtubeEmbedUrl = getYoutubeEmbedUrl(initialVideoId, isMuted, clientOrigin);
+  // Initial embed starts muted in src so browser autoplays, but does NOT re-render on unMute so video doesn't restart
+  const youtubeEmbedUrl = getYoutubeEmbedUrl(initialVideoId, true, clientOrigin);
 
   return (
     <section
