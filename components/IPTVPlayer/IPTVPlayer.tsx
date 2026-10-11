@@ -1160,8 +1160,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     ]
   },
   {
-    "id": "espn_4",
-    "name": "ESPN 4",
+    "id": "espn_4_op2",
+    "name": "ESPN 4 (Opción 2)",
     "group": "Deportes",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712746.m3u8",
@@ -1170,8 +1170,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     ]
   },
   {
-    "id": "espn_3",
-    "name": "ESPN 3",
+    "id": "espn_3_op2",
+    "name": "ESPN 3 (Opción 2)",
     "group": "Deportes",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712745.m3u8",
@@ -1180,8 +1180,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     ]
   },
   {
-    "id": "espn_2",
-    "name": "ESPN 2",
+    "id": "espn_2_op2",
+    "name": "ESPN 2 (Opción 2)",
     "group": "Deportes",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=espn.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712744.m3u8",
@@ -2251,9 +2251,31 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
     return '';
   };
 
+  const handleCategoryChange = (newCategory: string) => {
+    setActiveCategory(newCategory);
+    // If switching away from DEPORTES/TODOS and current channel is ESPN, auto-switch to first channel of that category
+    if (newCategory !== 'TODOS' && newCategory !== 'DEPORTES') {
+      const available = IPTV_CHANNELS.filter(c => {
+        if (c.name.toLowerCase().includes('espn') || c.id.toLowerCase().includes('espn')) {
+          return false;
+        }
+        return c.categories?.includes(newCategory) || c.group === newCategory || c.country === newCategory;
+      });
+      if (available.length > 0 && (activeChannel.name.toLowerCase().includes('espn') || !available.some(c => c.id === activeChannel.id))) {
+        setActiveChannel(available[0]);
+      }
+    }
+  };
+
   const filteredByCategory = activeCategory === 'TODOS' 
     ? IPTV_CHANNELS 
-    : IPTV_CHANNELS.filter(c => c.categories?.includes(activeCategory) || c.group === activeCategory || c.country === activeCategory);
+    : IPTV_CHANNELS.filter(c => {
+        // STRICT RULE: ESPN channels can ONLY exist inside DEPORTES
+        if (c.name.toLowerCase().includes('espn') || c.id.toLowerCase().includes('espn')) {
+          return activeCategory === 'DEPORTES';
+        }
+        return c.categories?.includes(activeCategory) || c.group === activeCategory || c.country === activeCategory;
+      });
     
   const filteredChannels = searchQuery.trim() === '' 
     ? filteredByCategory 
@@ -2548,7 +2570,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
             <div className="relative">
               <select 
                 value={activeCategory}
-                onChange={(e) => setActiveCategory(e.target.value)}
+                onChange={(e) => handleCategoryChange(e.target.value)}
                 className="w-full h-12 sm:h-12 bg-black/60 hover:bg-black/80 border border-white/15 focus:border-[#E0457B] rounded-xl px-4 pr-11 text-sm sm:text-base font-bold text-white tracking-wide appearance-none focus:outline-none transition-all cursor-pointer shadow-lg"
               >
                 {categories.map(category => (
@@ -2569,7 +2591,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
                 return (
                   <button
                     key={cat}
-                    onClick={() => setActiveCategory(cat)}
+                    onClick={() => handleCategoryChange(cat)}
                     className={`px-3.5 py-2 rounded-xl font-satoshi text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${
                       isSelected
                         ? 'bg-gradient-to-r from-[#E0457B] to-[#C92C62] text-white shadow-[0_0_15px_rgba(224,69,123,0.6)] border border-[#E0457B]'
@@ -2618,11 +2640,11 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
                 </button>
               </div>
             ) : (
-              filteredChannels.map((channel) => {
+              filteredChannels.map((channel, idx) => {
                 const isActive = activeChannel.id === channel.id;
                 return (
                   <button
-                    key={channel.id}
+                    key={`${channel.id}-${idx}`}
                     onClick={() => setActiveChannel(channel)}
                     className={`w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl transition-all duration-200 border cursor-pointer text-left group active:scale-[0.99] ${
                       isActive 
