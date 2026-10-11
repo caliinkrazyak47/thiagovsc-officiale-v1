@@ -26,6 +26,18 @@ export const RADIO_STATIONS: RadioStation[] = [
     accentColor: '#E50914',
   },
   {
+    id: 'edm-taste',
+    name: 'EDM Taste',
+    country: 'INTERNACIONAL',
+    countryCode: 'GLOBAL',
+    flag: '🌍',
+    frequency: 'EDM TASTE • Best Electronic Music',
+    genre: 'EDM, ELECTRO HOUSE & FESTIVAL',
+    cover: '/images/radios/edm-taste.jpg',
+    streamUrl: 'https://listen.radioking.com/radio/745510/stream/812101',
+    accentColor: '#4338CA',
+  },
+  {
     id: 'hits-fm',
     name: 'Hits FM',
     country: 'ESPAÑA',
