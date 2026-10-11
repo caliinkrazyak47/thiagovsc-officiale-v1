@@ -50,6 +50,18 @@ export const RADIO_STATIONS: RadioStation[] = [
     accentColor: '#D60000',
   },
   {
+    id: 'tomorrowland-owr',
+    name: 'Tomorrowland OWR',
+    country: 'BÉLGICA',
+    countryCode: 'BE',
+    flag: '🇧🇪',
+    frequency: 'TOMORROWLAND • One World Radio',
+    genre: 'EDM, FESTIVAL & CLUB HITS',
+    cover: '/images/radios/tomorrowland-owr.jpg',
+    streamUrl: 'https://playerservices.streamtheworld.com/api/livestream-redirect/OWR_INTERNATIONAL.mp3',
+    accentColor: '#7C3AED',
+  },
+  {
     id: 'hits-fm',
     name: 'Hits FM',
     country: 'ESPAÑA',
