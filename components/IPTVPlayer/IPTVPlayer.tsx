@@ -1583,7 +1583,7 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "country": "Argentina",
     "group": "Generalistas",
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
-    "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/712704.m3u8",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/712704.m3u8",
     "categories": [
       "GENERAL",
       "ARGENTINA"
