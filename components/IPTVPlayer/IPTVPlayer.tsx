@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
-import { X, Play, Square, Loader2, Volume2, VolumeX, Maximize } from 'lucide-react';
+import { X, Play, Square, Loader2, Volume2, VolumeX, Maximize, Search, ChevronDown, Tv } from 'lucide-react';
 import { useMediaStore } from '@/lib/mediaStore';
 
 export interface IPTVChannel {
@@ -2400,65 +2400,88 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
     if (videoRef.current?.requestFullscreen) {
       videoRef.current.requestFullscreen();
     }
-  };
-
-  // Premium Charcoal/Pink Theme (matching the radio)
+  };  // Premium Dark Glow Theme
   const theme = {
-    bgApp: 'bg-[#140A0E]',
-    headerBg: 'bg-[#0A0507]/95',
+    bgApp: 'bg-[#0E060A]',
+    headerBg: 'bg-[#080306]/95',
     borderColor: 'border-[#E0457B]/20',
-    cardInner: 'bg-[#1E0F15]',
-    cardOuter: 'bg-[#0A0507]/90',
-    cardCenterOuter: 'bg-[#E0457B]/15',
-    btnBg: 'bg-[#211117]',
-    btnHover: 'hover:bg-[#E0457B]',
-    btnTextHover: 'hover:text-white',
+    cardInner: 'bg-white/[0.03]',
+    cardBorder: 'border-white/[0.08]',
+    cardActive: 'bg-gradient-to-r from-[#E0457B]/25 via-[#E0457B]/10 to-transparent border-[#E0457B]/80 shadow-[0_0_20px_rgba(224,69,123,0.2)]',
     accent: 'text-[#E0457B]',
+    accentBg: 'bg-[#E0457B]',
   };
 
   return (
-    <div className={`fixed inset-0 z-[10000] flex flex-col ${theme.bgApp} text-white animate-in fade-in duration-300`} data-lenis-prevent>
+    <div className={`fixed inset-0 z-[10000] flex flex-col ${theme.bgApp} text-white animate-in fade-in duration-300 font-satoshi`} data-lenis-prevent>
       {/* HEADER */}
-      <header className={`flex items-center justify-between px-6 py-4 ${theme.headerBg} border-b ${theme.borderColor} shadow-lg z-10`}>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center w-[36px] h-[36px] rounded-full bg-gradient-to-br from-[#E0457B] to-[#A3285C] shadow-[0_0_15px_rgba(224,69,123,0.4)]">
-            <span className="font-bodoni font-bold text-white text-lg">T</span>
+      <header className={`flex items-center justify-between px-4 sm:px-6 py-3.5 ${theme.headerBg} border-b ${theme.borderColor} backdrop-blur-2xl shadow-xl z-20 flex-shrink-0`}>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#E0457B] to-[#7B173D] shadow-[0_0_20px_rgba(224,69,123,0.45)] border border-white/20">
+            <Tv size={20} className="text-white drop-shadow" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500 border border-black"></span>
+            </span>
           </div>
           <div>
-            <h2 className="font-panchang text-sm tracking-[0.2em] uppercase text-white/90">Noticias en Vivo</h2>
-            <p className="font-satoshi text-[10px] tracking-[0.1em] text-white/50 uppercase">TV HD Stream</p>
+            <div className="flex items-center gap-2">
+              <h2 className="font-panchang text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white">Noticias en Vivo</h2>
+              <span className="hidden xs:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">EN DIRECTO</span>
+            </div>
+            <p className="font-satoshi text-[10px] sm:text-[11px] tracking-wider text-white/50 uppercase">Canales en Alta Definición</p>
           </div>
+        </div>
+
+        {/* CURRENTLY PLAYING BADGE (Desktop) */}
+        <div className="hidden lg:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-xl shadow-inner">
+          <span className="w-2 h-2 rounded-full bg-[#E0457B] animate-pulse"></span>
+          <span className="font-satoshi text-xs text-white/50">Reproduciendo:</span>
+          <span className="font-panchang text-xs text-white font-bold tracking-wide truncate max-w-xs">{activeChannel.name}</span>
         </div>
         
         <button
           onClick={onClose}
-          className={`w-10 h-10 rounded-full ${theme.btnBg} border ${theme.borderColor} flex items-center justify-center ${theme.btnHover} ${theme.btnTextHover} transition-all shadow-sm cursor-pointer hover:scale-105 active:scale-95`}
-          title="Cerrar IPTV"
+          className="w-10 h-10 rounded-full bg-white/10 hover:bg-[#E0457B] border border-white/15 flex items-center justify-center text-white transition-all duration-200 shadow-md cursor-pointer hover:scale-105 active:scale-95"
+          title="Cerrar reproductor"
         >
           <X size={18} />
         </button>
       </header>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
         {/* VIDEO PLAYER AREA */}
-        <div className="flex-1 flex flex-col relative bg-black">
-          <div className="relative flex-1 w-full flex items-center justify-center group overflow-hidden">
+        <div className="w-full h-[34vh] sm:h-[40vh] md:h-full md:flex-1 flex flex-col relative bg-black flex-shrink-0">
+          <div className="relative flex-1 w-full flex items-center justify-center group overflow-hidden bg-black">
+            {/* Ambient Background Aura */}
+            <div className="absolute inset-0 bg-radial from-[#E0457B]/10 via-transparent to-transparent pointer-events-none opacity-40 blur-2xl" />
+
+            {/* Top-Left Live Stream Status Chip */}
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/70 backdrop-blur-md border border-white/15 shadow-xl pointer-events-none">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+              <span className="font-panchang text-[9px] sm:text-[10px] font-bold text-white tracking-widest uppercase">EN VIVO</span>
+              <span className="w-px h-3 bg-white/20"></span>
+              <span className="font-satoshi text-xs text-white font-bold truncate max-w-[150px] sm:max-w-xs">{activeChannel.name}</span>
+            </div>
+
             {isLoading && !hasError && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-10">
-                <Loader2 className={`w-10 h-10 ${theme.accent} animate-spin mb-4`} />
-                <span className="font-satoshi text-xs tracking-widest uppercase text-white/70">Conectando...</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 z-10 backdrop-blur-sm">
+                <Loader2 className="w-10 h-10 text-[#E0457B] animate-spin mb-3 drop-shadow-[0_0_15px_rgba(224,69,123,0.8)]" />
+                <span className="font-satoshi text-xs tracking-widest uppercase text-white/80 font-bold">Conectando señal...</span>
               </div>
             )}
             
             {hasError && (
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#140A0E] z-10 px-6 text-center">
-                <div className="w-16 h-16 rounded-full bg-red-900/30 flex items-center justify-center mb-4">
+                <div className="w-14 h-14 rounded-full bg-red-900/30 border border-red-500/30 flex items-center justify-center mb-3">
                   <Square className="w-6 h-6 text-red-500" />
                 </div>
-                <h3 className="font-panchang text-sm tracking-widest text-white/90 mb-2">Error de Reproducción</h3>
-                <p className="font-satoshi text-xs text-white/50 max-w-md">No se puede decodificar el video de {activeChannel.name}. La señal se ha cortado o el formato es incompatible.</p>
-                {/* <p className="font-mono text-[9px] mt-4 text-red-400 opacity-50 break-all">{errorDetails}</p> */}
+                <h3 className="font-panchang text-sm tracking-widest text-white/90 mb-1.5">Error de Reproducción</h3>
+                <p className="font-satoshi text-xs text-white/50 max-w-md">No se puede reproducir la señal de {activeChannel.name}. Podría estar temporalmente desconectada.</p>
               </div>
             )}
 
@@ -2471,30 +2494,31 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
               onClick={togglePlay}
             />
 
-            {/* OSD (On Screen Display) - Shows on hover */}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <button onClick={togglePlay} className={`w-12 h-12 rounded-full bg-[#E0457B] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-[0_0_20px_rgba(224,69,123,0.4)]`}>
-                    {isPlaying ? <Square size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-1" />}
+            {/* OSD (On Screen Display Controls) */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 sm:p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="flex items-center justify-between max-w-5xl mx-auto bg-black/70 backdrop-blur-2xl border border-white/15 rounded-2xl p-3 sm:p-4 shadow-2xl">
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <button 
+                    onClick={togglePlay} 
+                    className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-[#E0457B] to-[#C92C62] text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(224,69,123,0.6)] cursor-pointer flex-shrink-0"
+                    title={isPlaying ? "Pausar" : "Reproducir"}
+                  >
+                    {isPlaying ? <Square size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
                   </button>
-                  <div>
-                    <h3 className="font-panchang text-base uppercase tracking-wider">{activeChannel.name}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                      </span>
-                      <span className="font-satoshi text-[10px] text-white/70 tracking-widest uppercase">En Directo</span>
+                  <div className="min-w-0">
+                    <h3 className="font-panchang text-xs sm:text-sm font-bold uppercase tracking-wider text-white truncate">{activeChannel.name}</h3>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                      <span className="font-satoshi text-[10px] text-white/60 tracking-wider uppercase">Directo HD</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <button onClick={toggleMute} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center transition-colors">
+                <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                  <button onClick={toggleMute} className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center transition-colors text-white" title={isMuted ? "Activar sonido" : "Silenciar"}>
                     {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
                   </button>
-                  <button onClick={requestFullscreen} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center transition-colors">
+                  <button onClick={requestFullscreen} className="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md flex items-center justify-center transition-colors text-white" title="Pantalla completa">
                     <Maximize size={18} />
                   </button>
                 </div>
@@ -2503,88 +2527,177 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
           </div>
         </div>
 
-        {/* CHANNEL LIST SIDEBAR (Desktop) / BOTTOM BAR (Mobile) */}
-        <div className={`w-full md:w-80 lg:w-[400px] flex-shrink-0 border-t md:border-t-0 md:border-l border-white/10 flex flex-col h-[40vh] md:h-full bg-black/80 backdrop-blur-3xl shadow-[-10px_0_30px_rgba(224,69,123,0.1)]`}>
-          <div className={`px-6 py-5 border-b border-white/5 bg-gradient-to-b from-black/80 to-transparent backdrop-blur-xl sticky top-0 z-10`}>
-            <h3 className="font-panchang text-[10px] font-bold tracking-[0.3em] uppercase text-white/50 mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#E0457B] animate-pulse"></span>
-              Directorio de Canales
-            </h3>
+        {/* CHANNEL LIST SIDEBAR (Desktop) / BOTTOM SECTION (Mobile) */}
+        <div className="w-full flex-1 md:flex-initial md:w-[380px] lg:w-[430px] flex-shrink-0 border-t md:border-t-0 md:border-l border-white/10 flex flex-col h-full bg-[#0B0408]/95 backdrop-blur-3xl shadow-2xl relative z-10">
+          
+          {/* STICKY CONTROL BAR: TITLE, DROPDOWN, PILLS & SEARCH */}
+          <div className="p-3.5 sm:p-5 border-b border-white/10 bg-gradient-to-b from-[#12070D] to-[#0B0408]/90 backdrop-blur-2xl space-y-3">
             
-            {/* Menu Bar: Search and Category Dropdown */}
-            <div className="flex flex-col gap-3">
-              <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Buscar canal (Ej: La 1)..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-[11px] text-white placeholder-white/40 font-satoshi focus:outline-none focus:border-[#E0457B]/70 focus:bg-white/5 transition-colors shadow-inner"
-                />
+            {/* Header: Title + Channel Count Badge */}
+            <div className="flex items-center justify-between">
+              <h3 className="font-panchang text-xs sm:text-xs font-bold tracking-[0.25em] uppercase text-white/80 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#E0457B] animate-pulse shadow-[0_0_10px_rgba(224,69,123,0.8)]"></span>
+                Directorio de Canales
+              </h3>
+              <span className="font-satoshi text-[11px] font-bold text-[#E0457B] bg-[#E0457B]/15 border border-[#E0457B]/30 px-2.5 py-0.5 rounded-full">
+                {filteredChannels.length} canales
+              </span>
+            </div>
+            
+            {/* 1. Large Touch-Friendly Category Dropdown (Mobile-Optimized) */}
+            <div className="relative">
+              <select 
+                value={activeCategory}
+                onChange={(e) => setActiveCategory(e.target.value)}
+                className="w-full h-12 sm:h-12 bg-black/60 hover:bg-black/80 border border-white/15 focus:border-[#E0457B] rounded-xl px-4 pr-11 text-sm sm:text-base font-bold text-white tracking-wide appearance-none focus:outline-none transition-all cursor-pointer shadow-lg"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category} className="bg-[#140A0E] text-white py-2 text-sm font-bold">
+                    {getFlag(category)} {category}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#E0457B]">
+                <ChevronDown size={18} />
               </div>
-              <div className="relative">
-                <select 
-                  value={activeCategory}
-                  onChange={(e) => setActiveCategory(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2.5 text-[11px] text-white font-satoshi appearance-none focus:outline-none focus:border-[#E0457B]/70 focus:bg-white/5 transition-colors cursor-pointer shadow-inner"
+            </div>
+
+            {/* 2. Quick Horizontal Swipeable Category Chips (Pills) for Mobile */}
+            <div className="flex gap-2 overflow-x-auto pb-1 pt-0.5 custom-scrollbar-horizontal scroll-smooth no-scrollbar" data-lenis-prevent>
+              {categories.map(cat => {
+                const isSelected = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-3.5 py-2 rounded-xl font-satoshi text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 flex-shrink-0 cursor-pointer ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-[#E0457B] to-[#C92C62] text-white shadow-[0_0_15px_rgba(224,69,123,0.6)] border border-[#E0457B]'
+                        : 'bg-white/[0.05] hover:bg-white/[0.1] text-white/70 hover:text-white border border-white/10'
+                    }`}
+                  >
+                    <span>{getFlag(cat)}</span>
+                    <span>{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 3. Sleek Search Input */}
+            <div className="relative">
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" />
+              <input 
+                type="text" 
+                placeholder="Buscar canal por nombre..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-11 bg-white/[0.04] border border-white/10 focus:border-[#E0457B]/70 rounded-xl pl-10 pr-9 text-xs sm:text-sm text-white placeholder-white/35 font-satoshi focus:outline-none focus:bg-white/[0.07] transition-all shadow-inner"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white p-1"
                 >
-                  {categories.map(category => (
-                    <option key={category} value={category} className="bg-[#140A0E] text-white">
-                      {getFlag(category)} {category}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/50 text-[10px]">
-                  ▼
-                </div>
-              </div>
+                  <X size={14} />
+                </button>
+              )}
             </div>
           </div>
           
-          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 custom-scrollbar" data-lenis-prevent>
-            {filteredChannels.map((channel) => {
-              const isActive = activeChannel.id === channel.id;
-              return (
-                <button
-                  key={channel.id}
-                  onClick={() => setActiveChannel(channel)}
-                  className={`w-full flex items-center gap-4 p-3 rounded-xl transition-all duration-300 border ${
-                    isActive 
-                      ? 'bg-[#E0457B]/20 border-[#E0457B]/50 shadow-[0_0_15px_rgba(224,69,123,0.15)]' 
-                      : `${theme.cardInner} ${theme.borderColor} hover:bg-white/5 hover:border-white/20`
-                  }`}
+          {/* CHANNEL LIST */}
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 custom-scrollbar" data-lenis-prevent>
+            {filteredChannels.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center px-4">
+                <Tv size={36} className="text-white/20 mb-3" />
+                <p className="font-satoshi text-sm text-white/60 font-medium">No se encontraron canales en esta categoría</p>
+                <button 
+                  onClick={() => { setActiveCategory('TODOS'); setSearchQuery(''); }}
+                  className="mt-3 px-4 py-2 rounded-xl bg-white/10 hover:bg-[#E0457B] text-xs font-bold uppercase tracking-wider text-white transition-colors"
                 >
-                  <div className="w-14 h-14 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0 p-2">
-                    <img src={channel.logo} alt={channel.name} className="max-w-full max-h-full object-contain drop-shadow-md" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h4 className={`font-satoshi font-bold text-sm tracking-wide ${isActive ? 'text-white' : 'text-white/80'}`}>{channel.name}</h4>
-                    <span className="font-satoshi text-[10px] text-white/40 uppercase tracking-wider">{channel.group}</span>
-                  </div>
-                  {isActive && (
-                    <div className="flex flex-col items-center gap-1 opacity-80">
-                      <div className="w-1 h-1 bg-[#E0457B] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-1 h-1 bg-[#E0457B] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-1 h-1 bg-[#E0457B] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  )}
+                  Ver todos los canales
                 </button>
-              );
-            })}
+              </div>
+            ) : (
+              filteredChannels.map((channel) => {
+                const isActive = activeChannel.id === channel.id;
+                return (
+                  <button
+                    key={channel.id}
+                    onClick={() => setActiveChannel(channel)}
+                    className={`w-full flex items-center gap-3.5 p-3 sm:p-3.5 rounded-2xl transition-all duration-200 border cursor-pointer text-left group active:scale-[0.99] ${
+                      isActive 
+                        ? theme.cardActive 
+                        : '${theme.cardInner} ${theme.cardBorder} hover:bg-white/[0.08] hover:border-white/20'
+                    }`}
+                  >
+                    {/* Channel Logo Frame */}
+                    <div className={`w-[52px] h-[52px] sm:w-[56px] sm:h-[56px] rounded-xl flex items-center justify-center flex-shrink-0 p-2 transition-all shadow-inner ${
+                      isActive 
+                        ? 'bg-black/80 border border-[#E0457B]/60 shadow-[0_0_15px_rgba(224,69,123,0.3)]' 
+                        : 'bg-black/50 border border-white/10 group-hover:border-white/20'
+                    }`}>
+                      <img 
+                        src={channel.logo} 
+                        alt={channel.name} 
+                        className="max-w-full max-h-full object-contain drop-shadow" 
+                        loading="lazy"
+                      />
+                    </div>
+
+                    {/* Channel Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className={`font-satoshi font-bold text-sm sm:text-base tracking-wide truncate transition-colors ${
+                        isActive ? 'text-white' : 'text-white/90 group-hover:text-white'
+                      }`}>
+                        {channel.name}
+                      </h4>
+                      <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                        {channel.categories && channel.categories.length > 0 ? (
+                          <span className="text-[10px] font-bold tracking-wider text-[#E0457B] bg-[#E0457B]/15 border border-[#E0457B]/30 px-2 py-0.5 rounded-md uppercase">
+                            {channel.categories[0]}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold tracking-wider text-[#E0457B] bg-[#E0457B]/15 border border-[#E0457B]/30 px-2 py-0.5 rounded-md uppercase">
+                            {channel.group}
+                          </span>
+                        )}
+                        {channel.country && (
+                          <span className="text-[10px] font-medium tracking-wider text-white/60 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
+                            {channel.country}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Active Live Equalizer Bars */}
+                    {isActive && (
+                      <div className="flex items-end gap-1 px-2 py-1 flex-shrink-0">
+                        <span className="w-1 bg-[#E0457B] rounded-full animate-bounce h-4" style={{ animationDelay: '0ms' }} />
+                        <span className="w-1 bg-[#E0457B] rounded-full animate-bounce h-6" style={{ animationDelay: '150ms' }} />
+                        <span className="w-1 bg-[#E0457B] rounded-full animate-bounce h-3" style={{ animationDelay: '300ms' }} />
+                      </div>
+                    )}
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `
         .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
+          width: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
           background: rgba(0,0,0,0.2);
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: rgba(224, 69, 123, 0.4);
-          border-radius: 4px;
+          border-radius: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(224, 69, 123, 0.8);
         }
         .custom-scrollbar-horizontal::-webkit-scrollbar {
           height: 3px;
@@ -2593,18 +2706,15 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
           background: transparent;
         }
         .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
-          background: rgba(255,255,255,0.1);
+          background: rgba(224, 69, 123, 0.3);
           border-radius: 3px;
         }
-        .custom-scrollbar-horizontal::-webkit-scrollbar {
-          height: 3px;
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
         }
-        .custom-scrollbar-horizontal::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
-          background: rgba(255,255,255,0.1);
-          border-radius: 3px;
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}} />
     </div>
