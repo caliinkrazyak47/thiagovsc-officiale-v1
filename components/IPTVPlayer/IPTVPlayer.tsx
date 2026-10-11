@@ -2303,6 +2303,204 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "categories": [
       "GENERAL"
     ]
+  },
+  {
+    "id": "canale_5_it",
+    "name": "CANALE 5",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mediaset.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600240.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "rai_1_it_main",
+    "name": "RAI 1",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=rai.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600302.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "rai_3_it",
+    "name": "RAI 3",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=rai.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600308.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "rai_gulp_it",
+    "name": "RAI GULP",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=rai.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600315.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "rai_premium_it",
+    "name": "RAI PREMIUM",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=rai.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600320.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "rai_1_it",
+    "name": "RAI 1 IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=rai.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600323.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "real_time_it",
+    "name": "REAL TIME IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=discoveryplus.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600329.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "tv8_it",
+    "name": "TV8 IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv8.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600450.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "cartoonito_hd_it",
+    "name": "CARTOONITO HD",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=cartoonito.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600243.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "discovery_it",
+    "name": "DISCOVERY IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=discovery.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600253.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "discovery_turbo_it",
+    "name": "DISCOVERY TURBO",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=discovery.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600294.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "nove_it",
+    "name": "NOVE",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=discoveryplus.com",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600257.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "la_1_it",
+    "name": "LA 1 IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mediaset.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600281.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "la_5_it",
+    "name": "LA 5 IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mediaset.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600285.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "la_7_it",
+    "name": "LA 7 IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=la7.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600288.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "mediaset_extra_hd_it",
+    "name": "MEDIASET EXTRA HD IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mediaset.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600289.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "la_2_mediaset_it_due_hd",
+    "name": "LA 2 MEDIASET IT DUE HD",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mediaset.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600291.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
+  },
+  {
+    "id": "mtv_it",
+    "name": "MTV IT",
+    "country": "Italia",
+    "group": "Generalistas",
+    "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=mtv.it",
+    "url": "http://cloudtvserviceplatinum.site:8080/live/Clau1123carras/hjcy8YMW6t/600295.m3u8",
+    "categories": [
+      "ITALIA"
+    ]
   }
 ];
 
@@ -2320,6 +2518,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   const categories = [
     'TODOS',
     'ESPAÑA',
+    'ITALIA',
     'PELICULAS',
     'NOTICIAS',
     'GENERAL',
@@ -2336,6 +2535,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   const getFlag = (name: string) => {
     if (name === 'TODOS') return '📺 ';
     if (name === 'ESPAÑA') return '🇪🇸 ';
+    if (name === 'ITALIA') return '🇮🇹 ';
     if (name === 'PELICULAS') return '🎬 ';
     if (name === 'NOTICIAS') return '📰 ';
     if (name === 'GENERAL') return '📡 ';
