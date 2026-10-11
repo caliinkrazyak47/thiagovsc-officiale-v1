@@ -25,7 +25,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "/images/channels/la1.png",
     "url": "https://rtvelivestream.rtve.es/rtvesec/la1/la1_main_dvr.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -36,7 +37,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "/images/channels/la2.png",
     "url": "https://rtvelivestream.rtve.es/rtvesec/la2/la2_main.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -47,7 +49,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=antena3.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414792.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -58,7 +61,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=cuatro.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414791.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -69,7 +73,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=telecinco.es",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414787.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -80,7 +85,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=lasexta.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414783.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -90,7 +96,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=telemadrid.es",
     "url": "http://cloudtvserviceplatinum.site:8080/live/alex_elvir/elvir123/505147.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -101,7 +108,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414766.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -112,7 +120,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414760.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -123,7 +132,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414765.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -134,7 +144,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414770.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -145,7 +156,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414774.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -156,7 +168,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/miatorres7/Stream2025/414773.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -167,7 +180,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=movistarplus.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013148.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -178,7 +192,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=axn.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013151.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -189,7 +204,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=calle13.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013159.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -200,7 +216,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=canalcosmo.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013162.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -211,7 +228,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=amctv.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013165.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -222,7 +240,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=axn.es",
     "url": "http://latinostream.xyz/live/felixpenatv/L20260730/1013166.m3u8",
     "categories": [
-      "PELICULAS"
+      "PELICULAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -233,7 +252,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "/images/channels/la1.png",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414798.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -244,7 +264,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=antena3.com",
     "url": "http://179.60.224.196:8000/play/a0f2/index.m3u8",
     "categories": [
-      "NOTICIAS"
+      "NOTICIAS",
+      "ESPAÑA"
     ]
   },
   {
@@ -254,7 +275,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "/images/channels/odisea.png",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414730.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -264,7 +286,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=discovery.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414734.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -315,7 +338,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414698.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -325,7 +349,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414696.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -335,7 +360,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/414775.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -367,7 +393,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/1328682.m3u8",
     "categories": [
-      "DEPORTES"
+      "DEPORTES",
+      "ESPAÑA"
     ]
   },
   {
@@ -377,7 +404,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/1328692.m3u8",
     "categories": [
-      "DEPORTES"
+      "DEPORTES",
+      "ESPAÑA"
     ]
   },
   {
@@ -387,7 +415,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=tv.com",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/1328737.m3u8",
     "categories": [
-      "GENERAL"
+      "GENERAL",
+      "ESPAÑA"
     ]
   },
   {
@@ -398,7 +427,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=movistar.es",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/750204.m3u8",
     "categories": [
-      "DEPORTES"
+      "DEPORTES",
+      "ESPAÑA"
     ]
   },
   {
@@ -1386,7 +1416,8 @@ export const IPTV_CHANNELS: IPTVChannel[] = [
     "logo": "https://www.google.com/s2/favicons?sz=128&domain_url=movistar.es",
     "url": "http://cloudtvserviceplatinum.site:8080/live/rosalmadabas/6789098710/9468.m3u8",
     "categories": [
-      "PERU"
+      "PERU",
+      "ESPAÑA"
     ]
   },
   {
@@ -2222,6 +2253,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
   // Ordered categories exactly as requested by user
   const categories = [
     'TODOS',
+    'ESPAÑA',
     'PELICULAS',
     'NOTICIAS',
     'GENERAL',
@@ -2237,6 +2269,7 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
 
   const getFlag = (name: string) => {
     if (name === 'TODOS') return '📺 ';
+    if (name === 'ESPAÑA') return '🇪🇸 ';
     if (name === 'PELICULAS') return '🎬 ';
     if (name === 'NOTICIAS') return '📰 ';
     if (name === 'GENERAL') return '📡 ';
