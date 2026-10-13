@@ -34,6 +34,32 @@ export const TVOnlinePlayer: React.FC = () => {
   const volumeRef = useRef<number>(100);
   const isMutedRef = useRef<boolean>(true);
   const [clientOrigin, setClientOrigin] = useState<string>('');
+  const [scale, setScale] = useState<number>(1);
+
+  // Enforce true 1080p/4K rendering: By sizing iframe to 1920x1080 and GPU scaling down to fit,
+  // YouTube's adaptive player measures window.innerHeight = 1080 and NEVER drops down to 720p.
+  useEffect(() => {
+    const el = screenWrapperRef.current;
+    if (!el) return;
+
+    const updateScale = () => {
+      if (screenWrapperRef.current) {
+        const w = screenWrapperRef.current.clientWidth;
+        if (w > 0) {
+          setScale(w / 1920);
+        }
+      }
+    };
+
+    updateScale();
+    const ro = new ResizeObserver(updateScale);
+    ro.observe(el);
+    window.addEventListener('resize', updateScale);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', updateScale);
+    };
+  }, [isFullscreen]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -66,6 +92,11 @@ export const TVOnlinePlayer: React.FC = () => {
   const sendCommand = useCallback((func: string, args: any[] = []) => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       try {
+        const id = iframeRef.current.id;
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func, args, id }),
+          '*'
+        );
         iframeRef.current.contentWindow.postMessage(
           JSON.stringify({ event: 'command', func, args }),
           '*'
@@ -81,8 +112,10 @@ export const TVOnlinePlayer: React.FC = () => {
       sendCommand('setPlaybackQualityRange', [q, 'highres']);
       sendCommand('setSuggestedQuality', [q]);
       if (!targetQuality) {
+        sendCommand('setPlaybackQuality', ['hd1080']);
+        sendCommand('setSuggestedQuality', ['hd1080']);
+        sendCommand('setPlaybackQuality', ['hd1440']);
         sendCommand('setPlaybackQuality', ['hd2160']);
-        sendCommand('setSuggestedQuality', ['hd2160']);
         sendCommand('setPlaybackQuality', ['highres']);
       }
     } catch {}
@@ -426,7 +459,16 @@ export const TVOnlinePlayer: React.FC = () => {
               id="tv-online-yt-iframe"
               src={youtubeEmbedUrl}
               title="Thiago VSC TV Online"
-              className="w-full h-full border-0 transform-gpu"
+              style={{
+                width: '1920px',
+                height: '1080px',
+                transform: `scale(${scale})`,
+                transformOrigin: '0 0',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+              }}
+              className="border-0 transform-gpu pointer-events-auto"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
