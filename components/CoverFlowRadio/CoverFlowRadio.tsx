@@ -35,6 +35,25 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
   const hlsRef = useRef<Hls | null>(null);
   const currentStation = RADIO_STATIONS[activeIndex] || RADIO_STATIONS[0];
 
+  const handleCloseAction = onClose || (isStandalone ? () => {
+    if (typeof window !== 'undefined') {
+      window.close();
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 100);
+    }
+  } : undefined);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && handleCloseAction) {
+        handleCloseAction();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleCloseAction]);
+
   const loadStream = useCallback((url: string, playNow: boolean) => {
     if (!audioRef.current) return;
     const audio = audioRef.current;
@@ -177,7 +196,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
   };
 
   return (
-    <div className={`w-full h-full min-h-[640px] flex flex-col justify-between ${theme.bgApp} ${theme.textMain} select-none overflow-hidden relative font-jost transition-colors duration-500`}>
+    <div className={`w-full h-full min-h-[500px] sm:min-h-[620px] flex flex-col justify-between ${theme.bgApp} ${theme.textMain} select-none overflow-hidden relative font-jost transition-colors duration-500`}>
       <audio
         ref={audioRef}
         preload="none"
@@ -187,28 +206,28 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
       />
 
       {/* HEADER */}
-      <header className={`w-full px-5 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between border-b ${theme.borderColor} ${theme.headerBg} backdrop-blur-xl z-30 transition-colors duration-500`}>
-        <div className="flex items-center gap-3">
-          <div className={`w-9 h-9 rounded-full ${theme.btnBg} border ${theme.borderColor} flex items-center justify-center shadow-sm`}>
+      <header className={`w-full px-3.5 sm:px-8 py-2.5 sm:py-4 flex items-center justify-between border-b ${theme.borderColor} ${theme.headerBg} backdrop-blur-xl z-30 transition-colors duration-500`}>
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 pr-2">
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${theme.btnBg} border ${theme.borderColor} flex items-center justify-center shadow-sm flex-shrink-0`}>
             <ButterflyIcon size={16} color={theme.iconColor} />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className={`font-bodoni font-normal text-base tracking-tight ${theme.textMain}`}>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className={`font-bodoni font-normal text-sm sm:text-base tracking-tight ${theme.textMain} truncate`}>
                 Thiago VSC <span className={`italic ${theme.accent}`}>Studio</span>
               </span>
-              <span className={`text-[10px] font-jost px-2.5 py-0.5 rounded-full ${theme.accentBg}/15 border ${theme.borderColor} ${theme.accent} font-semibold uppercase tracking-widest`}>
+              <span className={`hidden sm:inline-block text-[10px] font-jost px-2.5 py-0.5 rounded-full ${theme.accentBg}/15 border ${theme.borderColor} ${theme.accent} font-semibold uppercase tracking-widest flex-shrink-0`}>
                 FM Broadcast
               </span>
             </div>
-            <p className={`text-[10px] font-jost ${theme.textSub} tracking-wider uppercase font-medium`}>
+            <p className={`hidden sm:block text-[10px] font-jost ${theme.textSub} tracking-wider uppercase font-medium`}>
               Receptor sintonizador 24/7
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className={`hidden sm:flex items-center gap-2 px-3 py-1 rounded-full ${theme.btnBg} border ${theme.borderColor}`}>
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className={`hidden md:flex items-center gap-2 px-3 py-1 rounded-full ${theme.btnBg} border ${theme.borderColor}`}>
             <span className={`text-[10px] font-jost ${theme.textSub} uppercase tracking-widest font-medium`}>Señal</span>
             <div className="flex items-end gap-1 h-3">
               <span className={`w-1 h-1 ${theme.accentBg} rounded-full`} />
@@ -219,7 +238,7 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
             </div>
           </div>
 
-          <div className={`flex items-center gap-2 px-3.5 py-1 rounded-full ${theme.accentBg} text-[#FFE9D6] text-[10px] font-jost font-semibold tracking-widest uppercase shadow-sm`}>
+          <div className={`hidden xs:flex items-center gap-2 px-3 py-1 rounded-full ${theme.accentBg} text-[#FFE9D6] text-[10px] font-jost font-semibold tracking-widest uppercase shadow-sm`}>
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFE9D6] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FFE9D6]"></span>
@@ -229,21 +248,26 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
 
           {/* NIGHT MODE TOGGLE */}
           <button
+            type="button"
             onClick={() => setIsNightMode(!isNightMode)}
-            className={`w-8 h-8 rounded-full ${theme.btnBg} ${theme.btnHover} ${theme.btnTextHover} border ${theme.borderColor} ${theme.textMain} flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95`}
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full ${theme.btnBg} ${theme.btnHover} ${theme.btnTextHover} border ${theme.borderColor} ${theme.textMain} flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95`}
             title="Cambiar Modo Noche"
+            aria-label="Cambiar Modo Noche"
           >
             {isNightMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
 
           {/* CLOSE BUTTON */}
-          {onClose && (
+          {handleCloseAction && (
             <button
-              onClick={onClose}
-              className={`w-8 h-8 rounded-full ${theme.btnBg} ${theme.btnHover} ${theme.btnTextHover} border ${theme.borderColor} ${theme.textMain} flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95`}
+              type="button"
+              onClick={handleCloseAction}
+              className="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#E0457B] hover:bg-[#C92C62] text-white font-jost text-xs font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-[0_4px_15px_rgba(224,69,123,0.4)] hover:shadow-[0_6px_20px_rgba(224,69,123,0.6)] hover:scale-105 active:scale-95 flex-shrink-0 border border-white/20"
               title="Cerrar sintonizador"
+              aria-label="Cerrar sintonizador"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 text-white stroke-[2.5]" />
+              <span className="text-xs">Cerrar</span>
             </button>
           )}
         </div>
@@ -325,37 +349,12 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                         : `${theme.cardOuter} border ${theme.borderColor} hover:${theme.cardCenterOuter} shadow-sm`
                     }`}
                   >
-                    <div className={`w-full h-full rounded-[calc(2.25rem-0.6rem)] overflow-hidden relative ${theme.cardInner} border ${theme.borderColor} flex flex-col justify-between`}>
-                      <div className={`relative w-full h-full flex items-center justify-center p-4 ${theme.btnBg}`}>
-                        <img
-                          src={station.cover}
-                          alt={station.name}
-                          className="w-full h-full object-contain pointer-events-none transition-transform duration-700 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10 pointer-events-none">
-                        {isCenter && isPlaying ? (
-                          <div className={`inline-flex items-center gap-1.5 ${theme.accentBg} text-[#FFE9D6] text-[9px] font-jost font-semibold px-2.5 py-0.5 rounded-full shadow-sm`}>
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#FFE9D6] animate-pulse" />
-                            <span>ON AIR</span>
-                          </div>
-                        ) : (
-                          <div className={`inline-flex items-center gap-1 ${theme.btnBg}/95 border ${theme.borderColor} ${theme.textMain} text-[9px] font-jost font-medium px-2 py-0.5 rounded-full shadow-sm`}>
-                            <span>0{idx + 1}</span>
-                          </div>
-                        )}
-                        <div className={`px-2 py-0.5 rounded-full ${theme.btnBg}/95 border ${theme.borderColor} text-[9px] font-jost font-medium ${theme.textMain} uppercase tracking-wider shadow-sm`}>
-                          [{station.countryCode}]
-                        </div>
-                      </div>
-                      <div className={`absolute bottom-0 inset-x-0 p-3 pt-6 ${theme.cardCenterOuter}/95 border-t ${theme.borderColor} pointer-events-none`}>
-                        <div className={`text-[10px] font-jost ${theme.accent} uppercase truncate font-semibold`}>
-                          {station.frequency}
-                        </div>
-                        <h4 className={`font-bodoni text-sm sm:text-base ${theme.textMain} tracking-tight uppercase truncate font-normal`}>
-                          {station.name}
-                        </h4>
-                      </div>
+                    <div className={`w-full h-full rounded-[calc(2.25rem-0.6rem)] overflow-hidden relative ${theme.cardInner} border ${theme.borderColor} flex items-center justify-center p-3 sm:p-4 ${theme.btnBg} shadow-inner`}>
+                      <img
+                        src={station.cover}
+                        alt={station.name}
+                        className="w-full h-full object-contain pointer-events-none transition-transform duration-700 group-hover:scale-105"
+                      />
                     </div>
                   </div>
                 </div>

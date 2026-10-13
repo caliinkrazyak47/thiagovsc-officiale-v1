@@ -1,12 +1,18 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { CoverFlowRadio } from '@/components/CoverFlowRadio';
 
 export default function RadioPopupPage() {
+  const router = useRouter();
+
   const handleClose = () => {
     if (typeof window !== 'undefined') {
       window.close();
+      setTimeout(() => {
+        router.push('/');
+      }, 150);
     }
   };
 

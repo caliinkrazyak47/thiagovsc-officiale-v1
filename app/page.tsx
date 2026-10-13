@@ -21,6 +21,14 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SoundToggle } from '@/components/SoundToggle';
 import { SectionColorMorph } from '@/components/SectionColorMorph';
 import { useMediaStore } from '@/lib/mediaStore';
+import { UnderConstruction } from '@/components/UnderConstruction/UnderConstruction';
+
+// ============================================================================
+// INTERRUPTOR DE MODO EN CONSTRUCCIÓN (MAINTENANCE MODE)
+// ============================================================================
+// Cambiar a true cuando se ordene publicar el sitio en construcción.
+// Cambiar a false para volver a la página web normal completa.
+const IS_UNDER_CONSTRUCTION = false;
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -368,6 +376,27 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio, onOpenIPTV }) => {
 // MAIN PAGE COMPONENT
 // ==========================================
 export default function Home() {
+  const [showUnderConstruction, setShowUnderConstruction] = useState(IS_UNDER_CONSTRUCTION);
+
+  // Permitir previsualizar localmente con ?preview=construccion
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('preview') === 'construccion') {
+        setShowUnderConstruction(true);
+      }
+    }
+  }, []);
+
+  if (showUnderConstruction) {
+    return (
+      <UnderConstruction 
+        isBypassable={true} 
+        onBypass={() => setShowUnderConstruction(false)} 
+      />
+    );
+  }
+
   const [activeSection, setActiveSection] = useState('home');
   const [lightboxCard, setLightboxCard] = useState<any>(null);
   const [radioModalOpen, setRadioModalOpen] = useState(false);
@@ -1144,7 +1173,22 @@ export default function Home() {
             className="fixed inset-0 z-[250] flex items-center justify-center p-3 sm:p-6 md:p-10 animate-in fade-in duration-200 select-none"
             onClick={() => setRadioModalOpen(false)}
           >
-            <div className="absolute inset-0 bg-[#2B0F1E]/80 backdrop-blur-2xl" />
+            <div className="absolute inset-0 bg-[#2B0F1E]/85 backdrop-blur-2xl" />
+
+            {/* Botón flotante cerrar en esquina superior derecha */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setRadioModalOpen(false);
+              }}
+              className="fixed top-3.5 right-3.5 sm:top-6 sm:right-6 z-[260] flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full bg-[#E0457B] hover:bg-[#C92C62] text-white font-jost text-xs sm:text-sm font-bold tracking-wider uppercase shadow-[0_10px_25px_rgba(224,69,123,0.5)] border border-white/30 backdrop-blur-md transition-all duration-200 active:scale-95 cursor-pointer group"
+              title="Cerrar Radio en Vivo"
+              aria-label="Cerrar Radio en Vivo"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5 text-white stroke-[2.5] transition-transform duration-200 group-hover:rotate-90" />
+              <span>Cerrar</span>
+            </button>
 
             <div
               className="relative w-full max-w-5xl h-[88vh] max-h-[780px] bg-[#FFF4F7] rounded-3xl overflow-hidden border border-[#E0457B]/35 shadow-[0_30px_90px_rgba(224,69,123,0.35)] z-10 animate-in zoom-in-95 duration-200 flex flex-col ring-1 ring-[#E0457B]/20"
