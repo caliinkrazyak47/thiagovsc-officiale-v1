@@ -21,14 +21,6 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SoundToggle } from '@/components/SoundToggle';
 import { SectionColorMorph } from '@/components/SectionColorMorph';
 import { useMediaStore } from '@/lib/mediaStore';
-import { UnderConstruction } from '@/components/UnderConstruction/UnderConstruction';
-
-// ============================================================================
-// INTERRUPTOR DE MODO EN CONSTRUCCIÓN (MAINTENANCE MODE)
-// ============================================================================
-// Cambiar a true cuando se ordene publicar el sitio en construcción.
-// Cambiar a false para volver a la página web normal completa.
-const IS_UNDER_CONSTRUCTION = false;
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -376,27 +368,6 @@ const HeroVideo: React.FC<HeroVideoProps> = ({ onOpenRadio, onOpenIPTV }) => {
 // MAIN PAGE COMPONENT
 // ==========================================
 export default function Home() {
-  const [showUnderConstruction, setShowUnderConstruction] = useState(IS_UNDER_CONSTRUCTION);
-
-  // Permitir previsualizar localmente con ?preview=construccion
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('preview') === 'construccion') {
-        setShowUnderConstruction(true);
-      }
-    }
-  }, []);
-
-  if (showUnderConstruction) {
-    return (
-      <UnderConstruction 
-        isBypassable={true} 
-        onBypass={() => setShowUnderConstruction(false)} 
-      />
-    );
-  }
-
   const [activeSection, setActiveSection] = useState('home');
   const [lightboxCard, setLightboxCard] = useState<any>(null);
   const [radioModalOpen, setRadioModalOpen] = useState(false);
