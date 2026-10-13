@@ -355,6 +355,15 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                         alt={station.name}
                         className="w-full h-full object-contain pointer-events-none transition-transform duration-700 group-hover:scale-105"
                       />
+                      {/* Bandera del país en esquina superior derecha (sin números 01) */}
+                      <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 pointer-events-none">
+                        <span 
+                          className={`inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full ${theme.btnBg}/90 backdrop-blur-md border ${theme.borderColor} text-sm sm:text-base shadow-sm`}
+                          title={station.country}
+                        >
+                          {station.flag}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -364,8 +373,11 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
         </div>
 
         <div className="text-center mt-5 sm:mt-7 z-30 max-w-xl mx-auto flex flex-col items-center">
-          <div className={`inline-flex items-center gap-2 px-4 py-1 rounded-full ${theme.btnBg} border ${theme.borderColor} ${theme.textMain} font-jost text-[11px] font-medium uppercase tracking-wider mb-2 shadow-sm`}>
-            <span>[{currentStation.countryCode}] {currentStation.country}</span>
+          <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${theme.btnBg} border ${theme.borderColor} ${theme.textMain} font-jost text-[11px] font-medium uppercase tracking-wider mb-2 shadow-sm`}>
+            <span className="flex items-center gap-1.5 font-semibold">
+              <span className="text-sm leading-none">{currentStation.flag}</span>
+              <span>{currentStation.country}</span>
+            </span>
             <span className={theme.accent}>•</span>
             <span className={`${theme.accent} font-semibold`}>{currentStation.genre}</span>
           </div>
@@ -397,8 +409,11 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                 <span className={`font-bodoni font-normal text-sm ${theme.textMain} tracking-tight truncate max-w-[150px]`}>
                   {currentStation.name}
                 </span>
-                <span className={`text-[9px] font-jost px-1.5 py-0.5 rounded ${theme.btnBg} ${theme.accent} font-semibold shrink-0 border ${theme.borderColor}`}>
-                  [{currentStation.countryCode}]
+                <span 
+                  className={`text-sm px-1.5 py-0.5 rounded-full ${theme.btnBg} shrink-0 border ${theme.borderColor} shadow-xs leading-none`}
+                  title={currentStation.country}
+                >
+                  {currentStation.flag}
                 </span>
               </div>
               <span className={`text-[10px] font-jost ${theme.textSub} truncate uppercase font-medium`}>
