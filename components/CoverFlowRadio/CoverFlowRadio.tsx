@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { RADIO_STATIONS } from './stationsData';
 import { ButterflyIcon } from '@/components/ButterflyIcon';
+import { CountryFlag } from './CountryFlag';
 
 interface CoverFlowRadioProps {
   onClose?: () => void;
@@ -355,14 +356,13 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                         alt={station.name}
                         className="w-full h-full object-contain pointer-events-none transition-transform duration-700 group-hover:scale-105"
                       />
-                      {/* Bandera del país en esquina superior derecha (sin números 01) */}
+                      {/* Bandera real del país en esquina superior derecha (SVG auténtico) */}
                       <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10 pointer-events-none">
-                        <span 
-                          className={`inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full ${theme.btnBg}/90 backdrop-blur-md border ${theme.borderColor} text-sm sm:text-base shadow-sm`}
+                        <CountryFlag
+                          countryCode={station.countryCode}
+                          className="w-6 h-6 sm:w-7 sm:h-7 rounded-full shadow-md ring-2 ring-white/30"
                           title={station.country}
-                        >
-                          {station.flag}
-                        </span>
+                        />
                       </div>
                     </div>
                   </div>
@@ -374,8 +374,12 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
 
         <div className="text-center mt-5 sm:mt-7 z-30 max-w-xl mx-auto flex flex-col items-center">
           <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full ${theme.btnBg} border ${theme.borderColor} ${theme.textMain} font-jost text-[11px] font-medium uppercase tracking-wider mb-2 shadow-sm`}>
-            <span className="flex items-center gap-1.5 font-semibold">
-              <span className="text-sm leading-none">{currentStation.flag}</span>
+            <span className="flex items-center gap-2 font-semibold">
+              <CountryFlag
+                countryCode={currentStation.countryCode}
+                className="w-4 h-4 rounded-full"
+                title={currentStation.country}
+              />
               <span>{currentStation.country}</span>
             </span>
             <span className={theme.accent}>•</span>
@@ -409,12 +413,11 @@ export const CoverFlowRadio: React.FC<CoverFlowRadioProps> = ({ onClose, isStand
                 <span className={`font-bodoni font-normal text-sm ${theme.textMain} tracking-tight truncate max-w-[150px]`}>
                   {currentStation.name}
                 </span>
-                <span 
-                  className={`text-sm px-1.5 py-0.5 rounded-full ${theme.btnBg} shrink-0 border ${theme.borderColor} shadow-xs leading-none`}
+                <CountryFlag
+                  countryCode={currentStation.countryCode}
+                  className="w-4 h-4 rounded-full shadow-xs"
                   title={currentStation.country}
-                >
-                  {currentStation.flag}
-                </span>
+                />
               </div>
               <span className={`text-[10px] font-jost ${theme.textSub} truncate uppercase font-medium`}>
                 {isPlaying ? 'Emisión en directo' : 'En pausa'}
