@@ -16,7 +16,7 @@ export const TV_VIDEOS: TVVideo[] = PLAYLIST_VIDEOS;
 
 const getYoutubeEmbedUrl = (videoId: string, muted: boolean, originStr: string) => {
   const originPart = originStr ? `&origin=${encodeURIComponent(originStr)}&widget_referrer=${encodeURIComponent(originStr)}` : '';
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=hd1080&suggestedQuality=hd1080&cc_load_policy=0${originPart}`;
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=${muted ? '1' : '0'}&enablejsapi=1&playsinline=1&rel=0&modestbranding=1&hd=1&vq=highres&suggestedQuality=highres&cc_load_policy=0${originPart}`;
 };
 
 export const TVOnlinePlayer: React.FC = () => {
@@ -74,11 +74,17 @@ export const TVOnlinePlayer: React.FC = () => {
     }
   }, []);
 
-  const enforceMaxQuality = useCallback(() => {
+  const enforceMaxQuality = useCallback((targetQuality?: string) => {
     try {
-      sendCommand('setPlaybackQuality', ['hd1080']);
-      sendCommand('setPlaybackQualityRange', ['hd1080', 'highres']);
-      sendCommand('setSuggestedQuality', ['hd1080']);
+      const q = targetQuality || 'highres';
+      sendCommand('setPlaybackQuality', [q]);
+      sendCommand('setPlaybackQualityRange', [q, 'highres']);
+      sendCommand('setSuggestedQuality', [q]);
+      if (!targetQuality) {
+        sendCommand('setPlaybackQuality', ['hd2160']);
+        sendCommand('setSuggestedQuality', ['hd2160']);
+        sendCommand('setPlaybackQuality', ['highres']);
+      }
     } catch {}
   }, [sendCommand]);
 
@@ -106,7 +112,7 @@ export const TVOnlinePlayer: React.FC = () => {
       setIsPlaying(true);
       setActiveMedia('tv');
 
-      // Guarantee volume remains at 100%, subtitles off, and quality locked to 1080p HD
+      // Guarantee volume remains at 100%, subtitles off, and quality locked to 4K / max
       setTimeout(() => {
         disableCaptions();
         enforceMaxQuality();
@@ -119,6 +125,10 @@ export const TVOnlinePlayer: React.FC = () => {
       setTimeout(() => {
         enforceMaxQuality();
       }, 1200);
+
+      setTimeout(() => {
+        enforceMaxQuality();
+      }, 2500);
     }
   }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand, disableCaptions, enforceMaxQuality]);
 
@@ -149,6 +159,10 @@ export const TVOnlinePlayer: React.FC = () => {
       setTimeout(() => {
         enforceMaxQuality();
       }, 1200);
+
+      setTimeout(() => {
+        enforceMaxQuality();
+      }, 2500);
     }
   }, [clientOrigin, setActiveMedia, shuffledPlaylist, sendCommand, disableCaptions, enforceMaxQuality]);
 
@@ -166,12 +180,29 @@ export const TVOnlinePlayer: React.FC = () => {
         if (isEnded) {
           playNextVideo();
         }
+
+        // Lock to highest quality available in YouTube's stream manifest
+        if (data.event === 'infoDelivery' && data.info) {
+          if (Array.isArray(data.info.availableQualityLevels) && data.info.availableQualityLevels.length > 0) {
+            const topQuality = data.info.availableQualityLevels[0];
+            if (topQuality && topQuality !== 'auto') {
+              enforceMaxQuality(topQuality);
+            }
+          }
+          // If YouTube downscales to 720p or lower, force back to max quality
+          if (data.info.playbackQuality && ['hd720', 'large', 'medium', 'small', 'tiny'].includes(data.info.playbackQuality)) {
+            enforceMaxQuality();
+          }
+        }
+
         if (
           (data.event === 'onStateChange' && data.info === 1) ||
           (data.event === 'infoDelivery' && data.info && data.info.playerState === 1)
         ) {
           disableCaptions();
           enforceMaxQuality();
+          setTimeout(() => enforceMaxQuality(), 600);
+          setTimeout(() => enforceMaxQuality(), 1800);
         }
       } catch (err) {}
     };
@@ -217,6 +248,10 @@ export const TVOnlinePlayer: React.FC = () => {
         sendCommand('setVolume', [volumeRef.current || 100]);
       }
     }, 1200);
+
+    setTimeout(() => {
+      enforceMaxQuality();
+    }, 2500);
   }, [isPlaying, sendCommand, disableCaptions, enforceMaxQuality]);
 
   useEffect(() => {
@@ -415,7 +450,7 @@ export const TVOnlinePlayer: React.FC = () => {
             {/* Live Indicator Badge on top left of screen */}
             <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white font-satoshi text-[11px] tracking-widest uppercase pointer-events-none">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span>EMISIÓN HD</span>
+              <span>EMISIÓN 4K ULTRA HD</span>
             </div>
 
             {isFullscreen && (

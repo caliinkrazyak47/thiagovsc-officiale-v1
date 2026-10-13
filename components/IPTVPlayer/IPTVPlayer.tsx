@@ -2689,14 +2689,18 @@ export const IPTVPlayer: React.FC<IPTVPlayerProps> = ({ onClose }) => {
       } else if (Hls.isSupported()) {
         const hls = new Hls({
           enableWorker: true,
+          capLevelToPlayerSize: false,
         });
         
         hlsRef.current = hls;
         hls.loadSource(proxyUrl);
         hls.attachMedia(video);
         
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        hls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
           setIsLoading(false);
+          if (data && data.levels && data.levels.length > 0) {
+            hls.currentLevel = data.levels.length - 1;
+          }
           video.play().catch(() => setIsPlaying(false));
         });
 
